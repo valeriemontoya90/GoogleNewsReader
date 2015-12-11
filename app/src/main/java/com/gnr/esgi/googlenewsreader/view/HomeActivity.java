@@ -1,4 +1,4 @@
-package com.gnr.esgi.googlenewsreader;
+package com.gnr.esgi.googlenewsreader.view;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,10 +9,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
+import com.gnr.esgi.googlenewsreader.R;
 import com.gnr.esgi.googlenewsreader.model.News;
 
 public class HomeActivity extends AppCompatActivity {
+
+    ListView newsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +35,16 @@ public class HomeActivity extends AppCompatActivity {
                 openNews(3);
             }
         });
+
+        newsList = (ListView) findViewById(R.id.news_list);
+
+        // Click event on news list item
+        newsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+        });
     }
 
     private void openNews(int idNews) {
@@ -37,8 +52,8 @@ public class HomeActivity extends AppCompatActivity {
 
         News news = new News();
         news.id = idNews;
-        news.title = "ESGI célèbre 40ans d'existence";
-        news.content = "Après 40ans d'existence l'école Supérieure de Génie Informatique placée à Nation célèbre son anniversaire.";
+        news.title = "ESGI cï¿½lï¿½bre 40ans d'existence";
+        news.content = "Aprï¿½s 40ans d'existence l'ï¿½cole Supï¿½rieure de Gï¿½nie Informatique placï¿½e ï¿½ Nation cï¿½lï¿½bre son anniversaire.";
 
         intent.putExtra("news", news);
 

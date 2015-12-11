@@ -1,9 +1,10 @@
-package com.gnr.esgi.googlenewsreader;
+package com.gnr.esgi.googlenewsreader.view;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import com.gnr.esgi.googlenewsreader.R;
 import com.gnr.esgi.googlenewsreader.model.News;
 
 public class NewsActivity extends AppCompatActivity {
