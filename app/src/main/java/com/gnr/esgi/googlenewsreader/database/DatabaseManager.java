@@ -15,12 +15,21 @@ import java.util.List;
 public class DatabaseManager {
     private List<Tag> _tags;
 
-    public DatabaseManager() throws MalformedURLException {
+    public DatabaseManager() {
         _tags = new ArrayList<Tag>();
 
         // FOR TEST
-        for(int i=0; i<5; i++)
-            _tags.add(new Tag());
+        for(int i=0; i<5; i++) {
+            Tag tag = new Tag();
+            tag.setName("apple");
+            //tag = NewsReader.readNews(tag);
+            _tags.add(tag);
+        }
+
+        NewsReader newsReader = new NewsReader(_tags);
+        newsReader.execute();
+
+        _tags = newsReader.getTags();
     }
 
     public List<Tag> getTags() {
@@ -51,6 +60,6 @@ public class DatabaseManager {
     }
 
     public void refresh() {
-
+        new DatabaseManager();
     }
 }

@@ -12,7 +12,7 @@ public class Tag {
     private String _name;
     private List<News> _news;
 
-    public Tag() throws MalformedURLException {
+    public Tag() {
         _id = 0;
         _name = "Tag name";
         _news = new ArrayList<News>();

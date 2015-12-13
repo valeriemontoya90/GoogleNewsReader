@@ -18,7 +18,7 @@ public class News implements Parcelable {
     private Source _source;
     private Boolean _read;
 
-    public News() throws MalformedURLException {
+    public News() {
         _id = 1;
         _title = "Titre n° ";
         _date = new Date();

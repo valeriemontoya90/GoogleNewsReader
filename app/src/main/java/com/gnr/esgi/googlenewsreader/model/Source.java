@@ -9,12 +9,12 @@ import java.net.URL;
 public class Source {
     private Integer _id;
     private String _name;
-    private URL _url;
+    private String _url;
 
-    public Source() throws MalformedURLException {
+    public Source() {
         _id = 2;
         _name = "ESGI";
-        _url = new URL("http://esgi.fr");
+        _url = "http://esgi.fr";
     }
 
     public Integer getId() {
@@ -33,11 +33,11 @@ public class Source {
         _name = name;
     }
 
-    public URL getUrl() {
+    public String getUrl() {
         return _url;
     }
 
-    public void setUrl(URL url) {
+    public void setUrl(String url) {
         _url = url;
     }
 }

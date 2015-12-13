@@ -3,6 +3,7 @@ package com.gnr.esgi.googlenewsreader.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -26,41 +27,44 @@ public class HomeActivity extends Activity {
 
     ListView listview;
     LazyAdapter adapter;
+    DatabaseManager _databaseManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        try
-        {
-            super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
 
-            final DatabaseManager databaseManager = new DatabaseManager();
+        _databaseManager = new DatabaseManager();
 
-            setContentView(R.layout.activity_home);
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setContentView(R.layout.activity_home);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.button_refresh);
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    databaseManager.refresh();
-                }
-            });
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.button_refresh);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                _databaseManager.refresh();
+            }
+        });
 
-            listview = (ListView) findViewById(R.id.news_list);
 
-            adapter = new LazyAdapter(this, databaseManager.getAllNews());
-            listview.setAdapter(adapter);
+    }
 
-            // Click event on news list item
-            listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    @Override
+    protected void onResume() {
+        super.onResume();
 
-                }
-            });
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
+        listview = (ListView) findViewById(R.id.news_list);
+
+        adapter = new LazyAdapter(this, _databaseManager.getAllNews());
+        listview.setAdapter(adapter);
+
+        // Click event on news list item
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+        });
     }
 
     private void openNews(int idNews) throws MalformedURLException {
