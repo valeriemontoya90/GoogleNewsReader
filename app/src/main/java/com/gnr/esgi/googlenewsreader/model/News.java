@@ -2,23 +2,52 @@ package com.gnr.esgi.googlenewsreader.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import java.util.Date;
 
 /**
  * Created by Ismail on 11-12-2015.
  */
 public class News implements Parcelable{
-    public int id;
-    public String title;
-    public String content;
+    private Integer _id;
+    private String _title;
+    private String _content;
+    private Date _date;
+    private String _picture;
+    private Source _source;
+    private Boolean _read;
 
     public News() {
 
     }
 
     protected News(Parcel in) {
-        id = in.readInt();
-        title = in.readString();
-        content = in.readString();
+        _id = in.readInt();
+        _title = in.readString();
+        _content = in.readString();
+    }
+
+    public Integer getId() {
+        return _id;
+    }
+
+    public void setId(Integer id) {
+        _id = id;
+    }
+
+    public String getTitle() {
+        return _title;
+    }
+
+    public void setTitle(String title) {
+        _title = title;
+    }
+
+    public String getContent() {
+        return _content;
+    }
+
+    public void setContent(String content) {
+        _content = content;
     }
 
     public static final Creator<News> CREATOR = new Creator<News>() {
@@ -40,8 +69,8 @@ public class News implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeString(title);
-        dest.writeString(content);
+        dest.writeInt(_id);
+        dest.writeString(_title);
+        dest.writeString(_content);
     }
 }

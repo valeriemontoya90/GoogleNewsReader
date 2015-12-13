@@ -1,5 +1,6 @@
-package com.gnr.esgi.googlenewsreader.view;
+package com.gnr.esgi.googlenewsreader.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -13,18 +14,23 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.gnr.esgi.googlenewsreader.R;
+import com.gnr.esgi.googlenewsreader.adapter.LazyAdapter;
 import com.gnr.esgi.googlenewsreader.model.News;
 
-public class HomeActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.HashMap;
 
-    ListView newsList;
+public class HomeActivity extends Activity {
+
+    ListView listview;
+    LazyAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.button_refresh);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -36,10 +42,24 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        newsList = (ListView) findViewById(R.id.news_list);
+        ArrayList<HashMap<String, String>> newsList = new ArrayList<HashMap<String, String>>();
+
+        for(int i=0; i<6; i++)
+        {
+            HashMap<String, String> map = new HashMap<String, String>();
+            map.put("title", "titre"+i);
+            map.put("date", "3 days ago"+i);
+            map.put("source", "source"+i);
+            newsList.add(map);
+        }
+
+        listview = (ListView) findViewById(R.id.news_list);
+
+        adapter = new LazyAdapter(this, newsList);
+        listview.setAdapter(adapter);
 
         // Click event on news list item
-        newsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 

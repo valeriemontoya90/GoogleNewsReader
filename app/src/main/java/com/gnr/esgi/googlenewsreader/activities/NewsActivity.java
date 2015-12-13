@@ -1,4 +1,4 @@
-package com.gnr.esgi.googlenewsreader.view;
+package com.gnr.esgi.googlenewsreader.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

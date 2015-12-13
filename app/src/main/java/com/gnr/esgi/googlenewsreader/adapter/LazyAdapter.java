@@ -1,4 +1,4 @@
-package com.gnr.esgi.googlenewsreader;
+package com.gnr.esgi.googlenewsreader.adapter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.gnr.esgi.googlenewsreader.R;
 
 import org.w3c.dom.Text;
 
@@ -28,7 +30,7 @@ public class LazyAdapter extends BaseAdapter {
                         ArrayList<HashMap<String, String>> data) {
         _activity = activity;
         _data = data;
-        _inflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        _inflater = (LayoutInflater)_activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
@@ -53,17 +55,17 @@ public class LazyAdapter extends BaseAdapter {
                         : convertView;
 
         TextView title = (TextView) view.findViewById(R.id.news_title);
-        TextView content = (TextView) view.findViewById(R.id.news_content);
+        TextView date = (TextView) view.findViewById(R.id.news_date);
         TextView source = (TextView) view.findViewById(R.id.news_source);
-        ImageView picture = (ImageView) view.findViewById(R.id.news_picture);
+        //ImageView picture = (ImageView) view.findViewById(R.id.news_picture);
 
-        HashMap<String, String> newsList = new HashMap<String, String>();
-        newsList = _data.get(position);
+        HashMap<String, String> news = new HashMap<String, String>();
+        news = _data.get(position);
 
         // Settings all news in list
-        title.setText(newsList.get("title"));
-        content.setText(newsList.get("content"));
-        source.setText(newsList.get("source"));
+        title.setText(news.get("title"));
+        date.setText(news.get("date"));
+        source.setText(news.get("source"));
         //picture.setImageURI(new URI(newsList.get("picture")));
 
         return view;
