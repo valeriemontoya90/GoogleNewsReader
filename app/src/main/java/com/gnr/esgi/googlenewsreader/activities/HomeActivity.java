@@ -31,34 +31,33 @@ public class HomeActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         try
         {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            super.onCreate(savedInstanceState);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.button_refresh);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                //openNews(3);
-            }
-        });
+            final DatabaseManager databaseManager = new DatabaseManager();
 
-        DatabaseManager databaseManager = new DatabaseManager();
+            setContentView(R.layout.activity_home);
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        listview = (ListView) findViewById(R.id.news_list);
+            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.button_refresh);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    databaseManager.refresh();
+                }
+            });
 
-        adapter = new LazyAdapter(this, databaseManager.getAllNews());
-        listview.setAdapter(adapter);
+            listview = (ListView) findViewById(R.id.news_list);
 
-        // Click event on news list item
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            adapter = new LazyAdapter(this, databaseManager.getAllNews());
+            listview.setAdapter(adapter);
 
-            }
-        });
+            // Click event on news list item
+            listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                }
+            });
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }

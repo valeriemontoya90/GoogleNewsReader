@@ -49,4 +49,8 @@ public class DatabaseManager {
 
         return newsList;
     }
+
+    public void refresh() {
+
+    }
 }
