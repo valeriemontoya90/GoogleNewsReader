@@ -1,5 +1,6 @@
 package com.gnr.esgi.googlenewsreader.model;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
@@ -9,6 +10,12 @@ public class Source {
     private Integer _id;
     private String _name;
     private URL _url;
+
+    public Source() throws MalformedURLException {
+        _id = 2;
+        _name = "ESGI";
+        _url = new URL("http://esgi.fr");
+    }
 
     public Integer getId() {
         return _id;

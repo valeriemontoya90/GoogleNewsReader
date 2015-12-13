@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.gnr.esgi.googlenewsreader.R;
+import com.gnr.esgi.googlenewsreader.model.News;
 
 import org.w3c.dom.Text;
 
@@ -23,19 +24,19 @@ import java.util.HashMap;
 public class LazyAdapter extends BaseAdapter {
 
     private Activity _activity;
-    private ArrayList<HashMap<String, String>> _data;
+    private ArrayList<News> _news;
     private static LayoutInflater _inflater = null;
 
     public LazyAdapter(Activity activity,
-                        ArrayList<HashMap<String, String>> data) {
+                        ArrayList<News> news) {
         _activity = activity;
-        _data = data;
+        _news = news;
         _inflater = (LayoutInflater)_activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
     public int getCount() {
-        return _data.size();
+        return _news.size();
     }
 
     @Override
@@ -59,13 +60,12 @@ public class LazyAdapter extends BaseAdapter {
         TextView source = (TextView) view.findViewById(R.id.news_source);
         //ImageView picture = (ImageView) view.findViewById(R.id.news_picture);
 
-        HashMap<String, String> news = new HashMap<String, String>();
-        news = _data.get(position);
+        News news = _news.get(position);
 
         // Settings all news in list
-        title.setText(news.get("title"));
-        date.setText(news.get("date"));
-        source.setText(news.get("source"));
+        title.setText(news.getTitle());
+        date.setText(news.getDate().toString());
+        source.setText(news.getSource().getName());
         //picture.setImageURI(new URI(newsList.get("picture")));
 
         return view;

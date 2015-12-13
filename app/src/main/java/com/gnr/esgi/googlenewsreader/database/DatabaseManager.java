@@ -1,9 +1,12 @@
 package com.gnr.esgi.googlenewsreader.database;
 
 import com.gnr.esgi.googlenewsreader.model.News;
+import com.gnr.esgi.googlenewsreader.model.Source;
 import com.gnr.esgi.googlenewsreader.model.Tag;
-
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -11,6 +14,14 @@ import java.util.List;
  */
 public class DatabaseManager {
     private List<Tag> _tags;
+
+    public DatabaseManager() throws MalformedURLException {
+        _tags = new ArrayList<Tag>();
+
+        // FOR TEST
+        for(int i=0; i<5; i++)
+            _tags.add(new Tag());
+    }
 
     public List<Tag> getTags() {
         return _tags;
@@ -26,6 +37,15 @@ public class DatabaseManager {
         for(Tag _tag : _tags)
             if(_tag.getId().compareTo(id) == 0)
                 newsList = _tag.getNews();
+
+        return newsList;
+    }
+
+    public ArrayList<News> getAllNews() {
+        ArrayList<News> newsList = new ArrayList<News>();
+
+        for(Tag tag : _tags)
+            newsList.addAll(tag.getNews());
 
         return newsList;
     }

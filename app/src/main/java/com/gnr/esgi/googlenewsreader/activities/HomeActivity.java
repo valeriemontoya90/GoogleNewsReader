@@ -15,8 +15,10 @@ import android.widget.ListView;
 
 import com.gnr.esgi.googlenewsreader.R;
 import com.gnr.esgi.googlenewsreader.adapter.LazyAdapter;
+import com.gnr.esgi.googlenewsreader.database.DatabaseManager;
 import com.gnr.esgi.googlenewsreader.model.News;
 
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -27,6 +29,8 @@ public class HomeActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        try
+        {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -37,24 +41,15 @@ public class HomeActivity extends Activity {
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-                openNews(3);
+                //openNews(3);
             }
         });
 
-        ArrayList<HashMap<String, String>> newsList = new ArrayList<HashMap<String, String>>();
-
-        for(int i=0; i<6; i++)
-        {
-            HashMap<String, String> map = new HashMap<String, String>();
-            map.put("title", "titre"+i);
-            map.put("date", "3 days ago"+i);
-            map.put("source", "source"+i);
-            newsList.add(map);
-        }
+        DatabaseManager databaseManager = new DatabaseManager();
 
         listview = (ListView) findViewById(R.id.news_list);
 
-        adapter = new LazyAdapter(this, newsList);
+        adapter = new LazyAdapter(this, databaseManager.getAllNews());
         listview.setAdapter(adapter);
 
         // Click event on news list item
@@ -64,9 +59,12 @@ public class HomeActivity extends Activity {
 
             }
         });
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void openNews(int idNews) {
+    private void openNews(int idNews) throws MalformedURLException {
         Intent intent = new Intent(this, NewsActivity.class);
 
         News news = new News();

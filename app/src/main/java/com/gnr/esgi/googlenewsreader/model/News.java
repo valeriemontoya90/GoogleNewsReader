@@ -2,12 +2,14 @@ package com.gnr.esgi.googlenewsreader.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import java.net.MalformedURLException;
 import java.util.Date;
 
 /**
  * Created by Ismail on 11-12-2015.
  */
-public class News implements Parcelable{
+public class News implements Parcelable {
     private Integer _id;
     private String _title;
     private String _content;
@@ -16,8 +18,12 @@ public class News implements Parcelable{
     private Source _source;
     private Boolean _read;
 
-    public News() {
-
+    public News() throws MalformedURLException {
+        _id = 1;
+        _title = "Titre n° ";
+        _date = new Date();
+        _content = "aaaaaaaaa";
+        _source = new Source();
     }
 
     protected News(Parcel in) {
@@ -72,5 +78,37 @@ public class News implements Parcelable{
         dest.writeInt(_id);
         dest.writeString(_title);
         dest.writeString(_content);
+    }
+
+    public String getPicture() {
+        return _picture;
+    }
+
+    public void setPicture(String picture) {
+        _picture = picture;
+    }
+
+    public Date getDate() {
+        return _date;
+    }
+
+    public void setDate(Date date) {
+        _date = date;
+    }
+
+    public Source getSource() {
+        return _source;
+    }
+
+    public void setSource(Source source) {
+        _source = source;
+    }
+
+    public Boolean getRead() {
+        return _read;
+    }
+
+    public void setRead(Boolean read) {
+        _read = read;
     }
 }
