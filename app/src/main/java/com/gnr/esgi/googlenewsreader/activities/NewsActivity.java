@@ -22,7 +22,7 @@ public class NewsActivity extends AppCompatActivity {
 
         News news = getIntent().getParcelableExtra("news");
 
-        title.setText(news.title);
-        content.setText(news.content);
+        title.setText(news.getTitle());
+        content.setText(news.getContent());
     }
 }

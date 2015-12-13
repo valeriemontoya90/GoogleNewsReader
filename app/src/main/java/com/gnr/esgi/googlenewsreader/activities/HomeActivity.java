@@ -30,7 +30,6 @@ public class HomeActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.button_refresh);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -71,9 +70,9 @@ public class HomeActivity extends Activity {
         Intent intent = new Intent(this, NewsActivity.class);
 
         News news = new News();
-        news.id = idNews;
-        news.title = "ESGI c�l�bre 40ans d'existence";
-        news.content = "Apr�s 40ans d'existence l'�cole Sup�rieure de G�nie Informatique plac�e � Nation c�l�bre son anniversaire.";
+        news.setId(idNews);
+        news.setTitle("ESGI c�l�bre 40ans d'existence");
+        news.setContent("Apr�s 40ans d'existence l'�cole Sup�rieure de G�nie Informatique plac�e � Nation c�l�bre son anniversaire.");
 
         intent.putExtra("news", news);
 
