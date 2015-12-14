@@ -55,12 +55,21 @@ public class DatabaseManager {
         for(Tag tag : _tags)
             newsList.addAll(tag.getNews());
 
-        return setIndex(newsList);
+        return setIndex(escapeDoubles(newsList));
     }
 
     private List<News> setIndex(List<News> newsList) {
         for(int i=0; i<newsList.size(); i++)
             newsList.get(i).setId(i);
+
+        return newsList;
+    }
+
+    private List<News> escapeDoubles(List<News> newsList) {
+        for(int i=0; i<newsList.size(); i++)
+            for(int j=newsList.size()-1; j>0; j--)
+                if(newsList.get(i) == newsList.get(j))
+                    newsList.remove(j);
 
         return newsList;
     }
