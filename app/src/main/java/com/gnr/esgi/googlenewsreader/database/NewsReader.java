@@ -50,7 +50,7 @@ public class NewsReader extends AsyncTask<String, String, String> {
 
             NodeList nl = doc.getElementsByTagName(KEY_NEWS);
 
-            List<News> newsList = new ArrayList<News>();
+            List<News> newsList = new ArrayList<>();
             for(int i=0; i<nl.getLength(); i++) {
                 News news = new News();
                 Element e = (Element) nl.item(i);

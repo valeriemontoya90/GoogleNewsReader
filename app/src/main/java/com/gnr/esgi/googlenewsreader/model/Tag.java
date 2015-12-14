@@ -12,10 +12,10 @@ public class Tag {
     private String _name;
     private List<News> _news;
 
-    public Tag() {
+    public Tag(String name) {
         _id = 0;
-        _name = "Tag name";
-        _news = new ArrayList<News>();
+        _name = name;
+        _news = new ArrayList<>();
 
         // FOR TEST
         for(int i=0; i<15; i++)
