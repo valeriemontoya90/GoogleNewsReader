@@ -49,13 +49,28 @@ public class DatabaseManager {
         return newsList;
     }
 
-    public ArrayList<News> getAllNews() {
-        ArrayList<News> newsList = new ArrayList<News>();
+    public List<News> getAllNews() {
+        List<News> newsList = new ArrayList<News>();
 
         for(Tag tag : _tags)
             newsList.addAll(tag.getNews());
 
+        return setIndex(newsList);
+    }
+
+    private List<News> setIndex(List<News> newsList) {
+        for(int i=0; i<newsList.size(); i++)
+            newsList.get(i).setId(i);
+
         return newsList;
+    }
+
+    public News findNewsById(Integer id) {
+        for(News news : getAllNews())
+            if(news.getId().compareTo(id) == 0)
+                return news;
+
+        return null;
     }
 
     public void refresh() {

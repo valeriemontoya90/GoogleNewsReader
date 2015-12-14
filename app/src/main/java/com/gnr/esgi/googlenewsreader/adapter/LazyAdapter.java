@@ -17,6 +17,7 @@ import org.w3c.dom.Text;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Ismail on 11-12-2015.
@@ -24,11 +25,11 @@ import java.util.HashMap;
 public class LazyAdapter extends BaseAdapter {
 
     private Activity _activity;
-    private ArrayList<News> _news;
+    private List<News> _news;
     private static LayoutInflater _inflater = null;
 
     public LazyAdapter(Activity activity,
-                        ArrayList<News> news) {
+                        List<News> news) {
         _activity = activity;
         _news = news;
         _inflater = (LayoutInflater)_activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

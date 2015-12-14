@@ -22,6 +22,7 @@ import com.gnr.esgi.googlenewsreader.model.News;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class HomeActivity extends Activity {
 
@@ -48,8 +49,8 @@ public class HomeActivity extends Activity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
 
         listview = (ListView) findViewById(R.id.news_list);
 
@@ -60,20 +61,15 @@ public class HomeActivity extends Activity {
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                showNewsOverview(position);
             }
         });
     }
 
-    private void openNews(int idNews) throws MalformedURLException {
+    private void showNewsOverview(Integer id) {
         Intent intent = new Intent(this, NewsActivity.class);
 
-        News news = new News();
-        news.setId(idNews);
-        news.setTitle("ESGI c�l�bre 40ans d'existence");
-        news.setContent("Apr�s 40ans d'existence l'�cole Sup�rieure de G�nie Informatique plac�e � Nation c�l�bre son anniversaire.");
-
-        intent.putExtra("news", news);
+        intent.putExtra("news", _databaseManager.findNewsById(id));
 
         startActivity(intent);
     }
