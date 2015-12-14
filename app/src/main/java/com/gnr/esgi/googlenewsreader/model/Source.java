@@ -1,8 +1,5 @@
 package com.gnr.esgi.googlenewsreader.model;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 /**
  * Created by Ismail on 13-12-2015.
  */

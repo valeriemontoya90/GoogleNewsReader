@@ -22,7 +22,6 @@ public class DatabaseManager {
         for(int i=0; i<5; i++) {
             Tag tag = new Tag();
             tag.setName("apple");
-            //tag = NewsReader.readNews(tag);
             _tags.add(tag);
         }
 

@@ -45,8 +45,6 @@ public class HomeActivity extends Activity {
                 _databaseManager.refresh();
             }
         });
-
-
     }
 
     @Override

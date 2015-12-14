@@ -1,7 +1,6 @@
 package com.gnr.esgi.googlenewsreader.database;
 
 import android.os.AsyncTask;
-
 import com.gnr.esgi.googlenewsreader.model.News;
 import com.gnr.esgi.googlenewsreader.model.Tag;
 import org.w3c.dom.Document;
@@ -38,39 +37,32 @@ public class NewsReader extends AsyncTask<String, String, String> {
 
     @Override
     protected String doInBackground(String... params) {
-        _tags = readNews(_tags);
+        readNews();
 
         return null;
     }
 
-    private Tag readNews(Tag tag) {
-        XMLParser parser = new XMLParser();
-        String xml = parser.getXmlFromUrl(getUrl(tag.getName()));
-        Document doc = parser.getDomElement(xml);
+    private void readNews() {
+        for(Tag tag : _tags) {
+            XMLParser parser = new XMLParser();
+            String xml = parser.getXmlFromUrl(getUrl(tag.getName()));
+            Document doc = parser.getDomElement(xml);
 
-        NodeList nl = doc.getElementsByTagName(KEY_NEWS);
+            NodeList nl = doc.getElementsByTagName(KEY_NEWS);
 
-        List<News> newsList = new ArrayList<News>();
-        for(int i=0; i<nl.getLength(); i++) {
-            News news = new News();
-            Element e = (Element) nl.item(i);
+            List<News> newsList = new ArrayList<News>();
+            for(int i=0; i<nl.getLength(); i++) {
+                News news = new News();
+                Element e = (Element) nl.item(i);
 
-            news.setTitle(parser.getValue(e, KEY_TITLE));
-            news.setContent(parser.getValue(e, KEY_CONTENT));
+                news.setTitle(parser.getValue(e, KEY_TITLE));
+                news.setContent(parser.getValue(e, KEY_CONTENT));
 
-            newsList.add(news);
+                newsList.add(news);
+            }
+
+            tag.setNews(newsList);
         }
-
-        tag.setNews(newsList);
-
-        return tag;
-    }
-
-    private List<Tag> readNews(List<Tag> tags) {
-        for(Tag tag : tags)
-            tag = readNews(tag);
-
-        return tags;
     }
 
     private String getUrl(String tagName) {
