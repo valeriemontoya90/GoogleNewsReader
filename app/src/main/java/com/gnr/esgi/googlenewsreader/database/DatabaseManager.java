@@ -3,14 +3,10 @@ package com.gnr.esgi.googlenewsreader.database;
 import com.gnr.esgi.googlenewsreader.model.News;
 import com.gnr.esgi.googlenewsreader.model.Tag;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created by Ismail on 13-12-2015.
- */
 public class DatabaseManager {
     private List<Tag> _tags;
 

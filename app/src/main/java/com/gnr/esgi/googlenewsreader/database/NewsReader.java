@@ -2,19 +2,20 @@ package com.gnr.esgi.googlenewsreader.database;
 
 import android.os.AsyncTask;
 import com.gnr.esgi.googlenewsreader.model.News;
+import com.gnr.esgi.googlenewsreader.model.SearchResponse;
 import com.gnr.esgi.googlenewsreader.model.Tag;
 import com.gnr.esgi.googlenewsreader.parser.NewsParser;
 import com.gnr.esgi.googlenewsreader.parser.XMLParser;
-
+import com.google.gson.Gson;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Ismail on 13-12-2015.
- */
 public class NewsReader extends AsyncTask<String, String, String> {
 
     public static final String KEY_API_URL = "https://news.google.com/news?output=rss&q=";
@@ -46,6 +47,20 @@ public class NewsReader extends AsyncTask<String, String, String> {
     }
 
     private void readNews() {
+        for(Tag tag : _tags) {
+            InputStream source = BaseProxy.retrieveStream(getUrl(tag.getName()));
+
+            Gson gson = new Gson();
+
+            Reader reader = new InputStreamReader(source);
+
+            SearchResponse response = gson.fromJson(reader, SearchResponse.class);
+
+            tag.setNews(response.news);
+        }
+    }
+
+    private void readNewsXML() {
         for(Tag tag : _tags) {
             XMLParser parser = new XMLParser();
             String xml = parser.getXmlFromUrl(getUrl(tag.getName()));

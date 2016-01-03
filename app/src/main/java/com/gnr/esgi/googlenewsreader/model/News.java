@@ -3,15 +3,18 @@ package com.gnr.esgi.googlenewsreader.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.net.MalformedURLException;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Date;
 
-/**
- * Created by Ismail on 11-12-2015.
- */
 public class News implements Parcelable {
+
     private Integer _id;
+
+    @SerializedName("titleNoFormatting")
     private String _title;
+
+    @SerializedName("content")
     private String _content;
     private Date _date;
     private String _picture;
@@ -60,7 +63,7 @@ public class News implements Parcelable {
         @Override
         public News createFromParcel(Parcel in) {
             return new News(in);
-        }   
+        }
 
         @Override
         public News[] newArray(int size) {

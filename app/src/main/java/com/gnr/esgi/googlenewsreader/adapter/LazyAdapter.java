@@ -6,22 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.gnr.esgi.googlenewsreader.R;
 import com.gnr.esgi.googlenewsreader.model.News;
-
-import org.w3c.dom.Text;
-
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created by Ismail on 11-12-2015.
- */
 public class LazyAdapter extends BaseAdapter {
 
     private Activity _activity;

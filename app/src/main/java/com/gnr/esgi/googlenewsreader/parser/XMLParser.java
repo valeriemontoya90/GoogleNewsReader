@@ -16,9 +16,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-/**
- * Created by Ismail on 13-12-2015.
- */
 public class XMLParser {
     public String getXmlFromUrl(String url) {
         String xml = null;

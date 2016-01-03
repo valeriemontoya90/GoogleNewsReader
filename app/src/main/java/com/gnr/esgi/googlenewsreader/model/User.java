@@ -2,9 +2,6 @@ package com.gnr.esgi.googlenewsreader.model;
 
 import com.gnr.esgi.googlenewsreader.database.DatabaseManager;
 
-/**
- * Created by Ismail on 13-12-2015.
- */
 public class User {
     private Boolean _autoUpdate;
     private DatabaseManager _data;

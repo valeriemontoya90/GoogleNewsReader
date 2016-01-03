@@ -1,17 +1,14 @@
 package com.gnr.esgi.googlenewsreader.model;
 
-/**
- * Created by Ismail on 13-12-2015.
- */
 public class Source {
     private Integer _id;
     private String _name;
     private String _url;
 
     public Source() {
-        _id = 2;
-        _name = "ESGI";
-        _url = "http://esgi.fr";
+        _id = 0;
+        _name = new String();
+        _url = new String();
     }
 
     public Integer getId() {

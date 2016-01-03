@@ -1,9 +1,5 @@
 package com.gnr.esgi.googlenewsreader.parser;
 
-/**
- * Created by Ismail on 14-12-2015.
- */
-
 public final class HTMLParser {
     public static final String ELLIPSIS = "&ellip;";
     public static final String TAG_PATTERN = "<[^>]+>";

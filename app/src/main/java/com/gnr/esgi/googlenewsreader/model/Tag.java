@@ -1,12 +1,8 @@
 package com.gnr.esgi.googlenewsreader.model;
 
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Ismail on 13-12-2015.
- */
 public class Tag {
     private Integer _id;
     private String _name;
@@ -16,10 +12,6 @@ public class Tag {
         _id = 0;
         _name = name;
         _news = new ArrayList<>();
-
-        // FOR TEST
-        for(int i=0; i<15; i++)
-            _news.add(new News());
     }
 
     public Integer getId() {

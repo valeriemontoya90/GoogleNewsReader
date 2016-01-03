@@ -3,7 +3,6 @@ package com.gnr.esgi.googlenewsreader.activities;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
-
 import com.gnr.esgi.googlenewsreader.R;
 import com.gnr.esgi.googlenewsreader.model.News;
 
