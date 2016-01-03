@@ -5,9 +5,10 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class News implements Parcelable {
+public class News implements Parcelable, Serializable {
 
     private Integer _id;
 

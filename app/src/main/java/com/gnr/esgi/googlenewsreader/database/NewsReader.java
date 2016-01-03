@@ -2,11 +2,14 @@ package com.gnr.esgi.googlenewsreader.database;
 
 import android.os.AsyncTask;
 import com.gnr.esgi.googlenewsreader.model.News;
-import com.gnr.esgi.googlenewsreader.model.SearchResponse;
 import com.gnr.esgi.googlenewsreader.model.Tag;
+import com.gnr.esgi.googlenewsreader.parser.JsonParser;
 import com.gnr.esgi.googlenewsreader.parser.NewsParser;
 import com.gnr.esgi.googlenewsreader.parser.XMLParser;
+import com.gnr.esgi.googlenewsreader.services.HttpRetriever;
 import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -14,11 +17,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class NewsReader extends AsyncTask<String, String, String> {
 
-    public static final String KEY_API_URL = "https://news.google.com/news?output=rss&q=";
+    public static final String KEY_API_URL = "http://ajax.googleapis.com/ajax/services/search/news?v=1.0&q="; //"http://news.google.com/news?output=rss&q=";
     public static final String KEY_NEWS = "item";
     public static final String KEY_TITLE = "title";
     public static final String KEY_CONTENT = "description";
@@ -48,15 +53,16 @@ public class NewsReader extends AsyncTask<String, String, String> {
 
     private void readNews() {
         for(Tag tag : _tags) {
-            InputStream source = BaseProxy.retrieveStream(getUrl(tag.getName()));
+            InputStream source = HttpRetriever.retrieveStream(getUrl(tag.getName()));
 
             Gson gson = new Gson();
 
             Reader reader = new InputStreamReader(source);
 
-            SearchResponse response = gson.fromJson(reader, SearchResponse.class);
+            Map<String, Object> response = new HashMap<>();
+            response = (Map<String, Object>) gson.fromJson(reader, response.getClass());
 
-            tag.setNews(response.news);
+            tag.setNews(JsonParser.parse((ArrayList<LinkedTreeMap<String, Object>>) ((LinkedTreeMap<String, Object>) response.get("responseData")).get("results")));
         }
     }
 

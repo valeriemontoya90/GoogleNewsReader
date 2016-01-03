@@ -3,6 +3,7 @@ package com.gnr.esgi.googlenewsreader.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -23,6 +24,7 @@ public class HomeActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         _databaseManager = new DatabaseManager();
 
@@ -59,7 +61,7 @@ public class HomeActivity extends Activity {
     private void showNewsOverview(Integer id) {
         Intent intent = new Intent(this, NewsActivity.class);
 
-        intent.putExtra("news", _databaseManager.findNewsById(id));
+        intent.putExtra("news", (Parcelable)_databaseManager.findNewsById(id));
 
         startActivity(intent);
     }
