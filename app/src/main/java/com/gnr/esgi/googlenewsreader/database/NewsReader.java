@@ -3,6 +3,9 @@ package com.gnr.esgi.googlenewsreader.database;
 import android.os.AsyncTask;
 import com.gnr.esgi.googlenewsreader.model.News;
 import com.gnr.esgi.googlenewsreader.model.Tag;
+import com.gnr.esgi.googlenewsreader.parser.NewsParser;
+import com.gnr.esgi.googlenewsreader.parser.XMLParser;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -58,7 +61,8 @@ public class NewsReader extends AsyncTask<String, String, String> {
                 news.setTitle(parser.getValue(e, KEY_TITLE));
                 news.setContent(parser.getValue(e, KEY_CONTENT));
 
-                newsList.add(news);
+                //Parsing news before add to news list
+                newsList.add(NewsParser.parse(news));
             }
 
             tag.setNews(newsList);

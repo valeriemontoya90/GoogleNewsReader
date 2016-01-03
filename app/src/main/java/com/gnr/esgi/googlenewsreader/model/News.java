@@ -19,10 +19,10 @@ public class News implements Parcelable {
     private Boolean _read;
 
     public News() {
-        _id = 1;
-        _title = "Titre n° ";
+        _id = 0;
+        _title = new String();
         _date = new Date();
-        _content = "aaaaaaaaa";
+        _content = new String();
         _source = new Source();
     }
 
@@ -60,7 +60,7 @@ public class News implements Parcelable {
         @Override
         public News createFromParcel(Parcel in) {
             return new News(in);
-        }
+        }   
 
         @Override
         public News[] newArray(int size) {

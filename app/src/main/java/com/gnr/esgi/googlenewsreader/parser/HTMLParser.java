@@ -1,4 +1,4 @@
-package com.gnr.esgi.googlenewsreader.database;
+package com.gnr.esgi.googlenewsreader.parser;
 
 /**
  * Created by Ismail on 14-12-2015.
@@ -16,7 +16,7 @@ public final class HTMLParser {
                 .trim();
     }
 
-    public String parse(String source) {
+    public static String parse(String source) {
         final int bodyIndex = source.indexOf("<body");
 
         if(bodyIndex > -1)

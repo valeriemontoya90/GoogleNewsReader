@@ -25,7 +25,6 @@
         android:id="@+id/news_title"
         android:layout_alignTop="@+id/thumbnail"
         android:layout_toRightOf="@+id/thumbnail"
-        android:text="News title sample"
         android:textColor="#040404"
         android:typeface="sans"
         android:textSize="15dip"
@@ -40,7 +39,6 @@
         android:textSize="10dip"
         android:layout_marginTop="1dip"
         android:layout_toRightOf="@+id/thumbnail"
-        android:text="Le Parisien"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
@@ -51,7 +49,6 @@
         android:textSize="10dip"
         android:layout_marginTop="1dip"
         android:layout_toRightOf="@+id/thumbnail"
-        android:text="Le Parisien"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
