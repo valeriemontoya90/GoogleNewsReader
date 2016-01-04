@@ -3,15 +3,9 @@ package com.gnr.esgi.googlenewsreader.parser;
 import com.gnr.esgi.googlenewsreader.model.News;
 import com.gnr.esgi.googlenewsreader.model.Source;
 import com.google.gson.internal.LinkedTreeMap;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
-/**
- * Created by Ismail on 04-01-2016.
- */
 public class JsonParser {
     public static List<News> parse(ArrayList<LinkedTreeMap<String, Object>> maps) {
         List<News> listNews = new ArrayList<>();
@@ -27,6 +21,7 @@ public class JsonParser {
             Source source = new Source();
             source.setName((String) map.get("publisher"));
             source.setUrl((String) map.get("unescapedUrl"));
+            news.setSource(source);
 
             listNews.add(news);
         }
