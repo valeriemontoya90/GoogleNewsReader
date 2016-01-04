@@ -57,14 +57,18 @@ public class HomeActivity extends Activity {
         });
     }
 
+    private void applyAdapter() {
+        adapter = new LazyAdapter(this, databaseManager.getAllNews());
+        listview.setAdapter(adapter);
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
 
         listview = (ListView) findViewById(R.id.news_list);
 
-        adapter = new LazyAdapter(this, databaseManager.getAllNews());
-        listview.setAdapter(adapter);
+        applyAdapter();
 
         // Click event on news list item
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -77,6 +81,7 @@ public class HomeActivity extends Activity {
 
     private void refresh() {
         databaseManager = new DatabaseManager();
+
         performSearch();
     }
 
@@ -151,6 +156,8 @@ public class HomeActivity extends Activity {
 
                     if(result != null)
                         databaseManager.setTags(result);
+
+                    applyAdapter();
                 }
             });
         }
