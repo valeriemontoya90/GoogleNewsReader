@@ -17,11 +17,6 @@ public class DatabaseManager {
             _tags.add(new Tag("apple"));
             _tags.add(new Tag("PSG"));
             _tags.add(new Tag("Inde"));
-
-        NewsReader newsReader = new NewsReader(_tags);
-        newsReader.execute();
-
-        _tags = newsReader.getTags();
     }
 
     public List<Tag> getTags() {
