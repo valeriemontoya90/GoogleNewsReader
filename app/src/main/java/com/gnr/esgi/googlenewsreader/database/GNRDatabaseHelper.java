@@ -2,6 +2,7 @@ package com.gnr.esgi.googlenewsreader.database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
@@ -60,7 +61,7 @@ public class GNRDatabaseHelper extends SQLiteOpenHelper {
     ////NEWS//////
     /////////////
 
-    public long addNew(News oneNew) {
+    public long addArticle(News oneNew) {
         ContentValues values = new ContentValues();
         values.put(ArticleContract.ArticleEntry.COLUMN_TITLE, oneNew.getTitle());
         values.put(ArticleContract.ArticleEntry.COLUMN_DATE, "date");
@@ -73,5 +74,24 @@ public class GNRDatabaseHelper extends SQLiteOpenHelper {
         );
 
         return newRowId;
+    }
+
+    public Cursor getAllArticles() {
+        return null;
+    }
+
+    public Cursor getArticles(String[] projection, String selection, String[] selectionArgs, String groupBy, String having, String sort) {
+        return this.getReadableDatabase().query(
+                ArticleContract.ArticleEntry.TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                groupBy,
+                having,
+                sort);
+    }
+
+    public Cursor getArticleById(long rowID) {
+        return getArticles(null, ArticleContract.ArticleEntry._ID + "=?", new String[]{String.valueOf(rowID)}, null, null, null);
     }
 }
