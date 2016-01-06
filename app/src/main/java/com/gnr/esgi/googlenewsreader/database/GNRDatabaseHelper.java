@@ -1,11 +1,13 @@
 package com.gnr.esgi.googlenewsreader.database;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
 import com.gnr.esgi.googlenewsreader.R;
+import com.gnr.esgi.googlenewsreader.model.News;
 
 /**
  * Created by valerie on 06/01/16.
@@ -43,7 +45,7 @@ public class GNRDatabaseHelper extends SQLiteOpenHelper {
                         NewsContract.NewEntry.COLUMN_TITLE + TEXT_TYPE + COMMA_SEPARATOR +
                         NewsContract.NewEntry.COLUMN_DATE + TEXT_TYPE + COMMA_SEPARATOR +
                         NewsContract.NewEntry.COLUMN_CONTENT + TEXT_TYPE + COMMA_SEPARATOR +
-                        NewsContract.NewEntry.COLUMN_SOURCE + TEXT_TYPE + " TEXT_TYPE" + ")";
+                        NewsContract.NewEntry.COLUMN_SOURCE + TEXT_TYPE + ")";
 
         sqLiteDatabase.execSQL(CREATE_TABLE_NEWS);
     }
@@ -53,5 +55,24 @@ public class GNRDatabaseHelper extends SQLiteOpenHelper {
         String DROP_TABLE_NEWS = "DROP TABLE IF EXISTS " + NewsContract.NewEntry.TABLE_NAME;
         sqLiteDatabase.execSQL(DROP_TABLE_NEWS);
         onCreate(sqLiteDatabase);
+    }
+
+    ///////////////
+    ////NEWS//////
+    /////////////
+
+    public long addNew(News oneNew) {
+        ContentValues values = new ContentValues();
+        values.put(NewsContract.NewEntry.COLUMN_TITLE, oneNew.getTitle());
+        values.put(NewsContract.NewEntry.COLUMN_DATE, "date");
+        values.put(NewsContract.NewEntry.COLUMN_CONTENT, oneNew.getContent());
+
+        long newRowId = this.getWritableDatabase().insert(
+                NewsContract.NewEntry.TABLE_NAME,
+                null,
+                values
+        );
+
+        return newRowId;
     }
 }
