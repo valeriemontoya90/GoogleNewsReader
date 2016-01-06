@@ -94,4 +94,33 @@ public class GNRDatabaseHelper extends SQLiteOpenHelper {
     public Cursor getArticleById(long rowID) {
         return getArticles(null, ArticleContract.ArticleEntry._ID + "=?", new String[]{String.valueOf(rowID)}, null, null, null);
     }
+
+    public int deleteAllArticles(){
+        return deleteArticles(null, null);
+    }
+
+    public int deleteArticles(String selection, String[] selectionArgs){
+        return this.getWritableDatabase().delete(
+                ArticleContract.ArticleEntry.TABLE_NAME,
+                selection,
+                selectionArgs);
+    }
+
+    public int deleteAdByIDs(String[] rowIDs){
+        return deleteArticles(ArticleContract.ArticleEntry._ID + " IN (" + makePlaceholders(rowIDs.length) + ")", rowIDs);
+    }
+
+    private String makePlaceholders(int len) {
+        if (len < 1) {
+            // It will lead to an invalid query anyway ..
+            throw new RuntimeException("No placeholders");
+        } else {
+            StringBuilder sb = new StringBuilder(len * 2 - 1);
+            sb.append("?");
+            for (int i = 1; i < len; i++) {
+                sb.append(",?");
+            }
+            return sb.toString();
+        }
+    }
 }
