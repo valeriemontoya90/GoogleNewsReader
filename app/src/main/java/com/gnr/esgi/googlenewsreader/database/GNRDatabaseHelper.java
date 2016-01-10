@@ -30,7 +30,8 @@ public class GNRDatabaseHelper extends SQLiteOpenHelper {
             public static final String COLUMN_TITLE = "article_title";
             public static final String COLUMN_DATE = "article_date";
             public static final String COLUMN_CONTENT = "article_content";
-            public static final String COLUMN_SOURCE = "article_source";
+            public static final String COLUMN_SOURCE_NAME = "article_source_name";
+            public static final String COLUMN_SOURCE_URL = "article_source_url";
         }
     }
 
@@ -46,7 +47,8 @@ public class GNRDatabaseHelper extends SQLiteOpenHelper {
                         ArticleContract.ArticleEntry.COLUMN_TITLE + TEXT_TYPE + COMMA_SEPARATOR +
                         ArticleContract.ArticleEntry.COLUMN_DATE + TEXT_TYPE + COMMA_SEPARATOR +
                         ArticleContract.ArticleEntry.COLUMN_CONTENT + TEXT_TYPE + COMMA_SEPARATOR +
-                        ArticleContract.ArticleEntry.COLUMN_SOURCE + TEXT_TYPE + ")";
+                        ArticleContract.ArticleEntry.COLUMN_SOURCE_NAME + TEXT_TYPE + COMMA_SEPARATOR +
+                        ArticleContract.ArticleEntry.COLUMN_SOURCE_URL + TEXT_TYPE + ")";
 
         sqLiteDatabase.execSQL(CREATE_TABLE_ARTICLES);
     }
@@ -57,8 +59,9 @@ public class GNRDatabaseHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(DROP_TABLE_ARTICLES);
         onCreate(sqLiteDatabase);
     }
+
     ///////////////
-    ////NEWS//////
+    ////ARTICLES//////
     /////////////
 
     public long addArticle(Article article) {
@@ -66,6 +69,8 @@ public class GNRDatabaseHelper extends SQLiteOpenHelper {
         values.put(ArticleContract.ArticleEntry.COLUMN_TITLE, article.getTitle());
         values.put(ArticleContract.ArticleEntry.COLUMN_DATE, "date");
         values.put(ArticleContract.ArticleEntry.COLUMN_CONTENT, article.getContent());
+        values.put(ArticleContract.ArticleEntry.COLUMN_SOURCE_NAME, article.getSourceName());
+        values.put(ArticleContract.ArticleEntry.COLUMN_SOURCE_URL, article.getSourceUrl());
 
         long newRowId = this.getWritableDatabase().insert(
                 ArticleContract.ArticleEntry.TABLE_NAME,

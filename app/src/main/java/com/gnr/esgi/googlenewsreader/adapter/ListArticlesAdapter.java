@@ -65,7 +65,7 @@ public class ListArticlesAdapter extends BaseAdapter {
         // Settings all news in list
         title.setText(article.getTitle());
         date.setText(article.getDate().toString());
-        source.setText(article.getSource().getName());
+        source.setText(article.getSourceName());
 
         if(article.getPicture() != null)
         {

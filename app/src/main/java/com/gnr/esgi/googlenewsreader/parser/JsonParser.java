@@ -4,8 +4,8 @@ import android.util.Log;
 
 import com.gnr.esgi.googlenewsreader.helper.NewsHelper;
 import com.gnr.esgi.googlenewsreader.model.Article;
-import com.gnr.esgi.googlenewsreader.model.Source;
 import com.google.gson.internal.LinkedTreeMap;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,10 +28,8 @@ public class JsonParser {
                         ? (String) picture.get("url")
                         : null);
 
-                Source source = new Source();
-                source.setName((String) map.get(NewsHelper.KEY_SOURCE));
-                source.setUrl((String) map.get(NewsHelper.KEY_LINK));
-                article.setSource(source);
+                article.setSourceName((String) map.get(NewsHelper.KEY_SOURCE));
+                article.setSourceUrl((String) map.get(NewsHelper.KEY_LINK));
 
                 listNews.add(article);
             }

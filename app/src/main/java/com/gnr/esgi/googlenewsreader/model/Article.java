@@ -19,15 +19,13 @@ public class Article implements Parcelable, Serializable {
     private String _content;
     private Date _date;
     private String _picture;
-    private Source _source;
+    private String _sourceName;
+    private String _sourceUrl;
     private Boolean _read;
 
     public Article() {
         _id = 0;
-        _title = new String();
         _date = new Date();
-        _content = new String();
-        _source = new Source();
     }
 
     protected Article(Parcel in) {
@@ -60,6 +58,50 @@ public class Article implements Parcelable, Serializable {
         _content = content;
     }
 
+    public String getPicture() {
+        return _picture;
+    }
+
+    public void setPicture(String picture) {
+        _picture = picture;
+    }
+
+    public Date getDate() {
+        return _date;
+    }
+
+    public void setDate(Date date) {
+        _date = date;
+    }
+
+    public String getSourceName() {
+        return _sourceName;
+    }
+
+    public void setSource(String source) {
+        _sourceName = source;
+    }
+
+    public void setSourceName(String source) {
+        _sourceName = source;
+    }
+
+    public String getSourceUrl() {
+        return _sourceUrl;
+    }
+
+    public void setSourceUrl(String source) {
+        _sourceUrl = source;
+    }
+
+    public Boolean getRead() {
+        return _read;
+    }
+
+    public void setRead(Boolean read) {
+        _read = read;
+    }
+
     public static final Creator<Article> CREATOR = new Creator<Article>() {
         @Override
         public Article createFromParcel(Parcel in) {
@@ -82,37 +124,5 @@ public class Article implements Parcelable, Serializable {
         dest.writeInt(_id);
         dest.writeString(_title);
         dest.writeString(_content);
-    }
-
-    public String getPicture() {
-        return _picture;
-    }
-
-    public void setPicture(String picture) {
-        _picture = picture;
-    }
-
-    public Date getDate() {
-        return _date;
-    }
-
-    public void setDate(Date date) {
-        _date = date;
-    }
-
-    public Source getSource() {
-        return _source;
-    }
-
-    public void setSource(Source source) {
-        _source = source;
-    }
-
-    public Boolean getRead() {
-        return _read;
-    }
-
-    public void setRead(Boolean read) {
-        _read = read;
     }
 }

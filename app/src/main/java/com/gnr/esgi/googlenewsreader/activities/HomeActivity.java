@@ -159,7 +159,7 @@ public class HomeActivity extends Activity {
                 Map<String, Object> response = new HashMap<>();
                 response = (Map<String, Object>) gson.fromJson(reader, response.getClass());
 
-                tag.setNews(JsonParser.parse((ArrayList<LinkedTreeMap<String, Object>>) ((LinkedTreeMap<String, Object>) response.get("responseData")).get("results")));
+                tag.setArticles(JsonParser.parse((ArrayList<LinkedTreeMap<String, Object>>) ((LinkedTreeMap<String, Object>) response.get("responseData")).get("results")));
             }
 
             return params[0];
