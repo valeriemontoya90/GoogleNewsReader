@@ -11,6 +11,11 @@
     tools:context="com.gnr.esgi.googlenewsreader.activities.NewsActivity"
     android:orientation="vertical">
 
+    <ImageView
+        android:id="@+id/news_picture"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <TextView
         android:id="@+id/news_title"
         android:textColor="#040404"
