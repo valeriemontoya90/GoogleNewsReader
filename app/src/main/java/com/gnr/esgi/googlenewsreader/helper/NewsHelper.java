@@ -2,8 +2,6 @@ package com.gnr.esgi.googlenewsreader.helper;
 
 import com.gnr.esgi.googlenewsreader.constants.NewsConstants;
 import com.gnr.esgi.googlenewsreader.model.News;
-import com.gnr.esgi.googlenewsreader.model.Tag;
-
 import java.util.List;
 
 public class NewsHelper {

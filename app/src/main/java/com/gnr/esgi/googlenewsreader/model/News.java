@@ -2,6 +2,8 @@ package com.gnr.esgi.googlenewsreader.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.gnr.esgi.googlenewsreader.constants.NewsConstants;
 import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.Date;
@@ -9,16 +11,22 @@ import java.util.Date;
 public class News implements Parcelable, Serializable {
 
     private Integer _id;
+    private Boolean _read;
 
-    @SerializedName("titleNoFormatting")
+    @SerializedName(NewsConstants.KEY_TITLE)
     private String _title;
 
-    @SerializedName("content")
+    @SerializedName(NewsConstants.KEY_CONTENT)
     private String _content;
+
+    @SerializedName(NewsConstants.KEY_DATE)
     private Date _date;
+
+    @SerializedName(NewsConstants.KEY_PICTURE)
     private String _picture;
+
+    @SerializedName(NewsConstants.KEY_SOURCE)
     private Source _source;
-    private Boolean _read;
 
     public News() {
         _id = 0;
@@ -32,6 +40,7 @@ public class News implements Parcelable, Serializable {
         _id = in.readInt();
         _title = in.readString();
         _content = in.readString();
+        _picture = in.readString();
     }
 
     public Integer getId() {
@@ -80,6 +89,7 @@ public class News implements Parcelable, Serializable {
         dest.writeInt(_id);
         dest.writeString(_title);
         dest.writeString(_content);
+        dest.writeString(_picture);
     }
 
     public String getPicture() {

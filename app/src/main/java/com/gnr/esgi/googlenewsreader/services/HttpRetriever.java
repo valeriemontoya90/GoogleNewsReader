@@ -8,7 +8,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
-
 import com.gnr.esgi.googlenewsreader.io.FlushedInputStream;
 
 public class HttpRetriever

@@ -1,6 +1,5 @@
 package com.gnr.esgi.googlenewsreader.activities;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
@@ -12,7 +11,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Parcelable;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBarActivity;
@@ -22,7 +20,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import com.gnr.esgi.googlenewsreader.R;
 import com.gnr.esgi.googlenewsreader.adapter.ListArticleAdapter;
 import com.gnr.esgi.googlenewsreader.database.DatabaseManager;
@@ -158,7 +155,7 @@ public class HomeActivity extends ActionBarActivity {
         Intent intent = new Intent(this, RefreshService.class);
 
         stopService(intent);
-        
+
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
 
@@ -271,6 +268,4 @@ public class HomeActivity extends ActionBarActivity {
             });
         }
     }
-
-
 }

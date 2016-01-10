@@ -5,8 +5,8 @@ import com.gnr.esgi.googlenewsreader.model.News;
 public class NewsParser {
     public static News parse(News news) {
 
-        news.setTitle(HTMLParser.parse(news.getTitle()));
-        news.setContent(HTMLParser.parse(news.getContent()));
+        news.setTitle(HtmlParser.parse(news.getTitle()));
+        news.setContent(HtmlParser.parse(news.getContent()));
 
         return news;
     }
