@@ -9,6 +9,7 @@ public class NewsHelper {
     public static final String KEY_LINK = "unescapedUrl";
     public static final String KEY_DATE = "publishedDate";
     public static final String KEY_SOURCE = "publisher";
+    public static final String KEY_PICTURE = "image";
 
     public static String getUrl(String tagName) {
         return KEY_API_URL + tagName;

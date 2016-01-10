@@ -46,6 +46,11 @@ public class DatabaseManager {
         return setIndex(escapeDuplicates(newsList));
     }
 
+    public int countLatest() {
+
+        return 99;
+    }
+
     private List<News> setIndex(List<News> newsList) {
         for(int i=0; i<newsList.size(); i++)
             newsList.get(i).setId(i);

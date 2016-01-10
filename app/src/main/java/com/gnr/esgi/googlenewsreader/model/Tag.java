@@ -7,11 +7,13 @@ public class Tag {
     private Integer _id;
     private String _name;
     private List<News> _news;
+    private int _recentCounter;
 
     public Tag(String name) {
         _id = 0;
         _name = name;
         _news = new ArrayList<>();
+        _recentCounter = 0;
     }
 
     public Integer getId() {
@@ -36,5 +38,13 @@ public class Tag {
 
     public void setNews(List<News> news) {
         _news = news;
+    }
+
+    public int getCounter() {
+        return _recentCounter;
+    }
+
+    public void setCounter(int count) {
+        _recentCounter = count;
     }
 }
