@@ -1,10 +1,16 @@
 package com.gnr.esgi.googlenewsreader.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.os.Parcelable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -25,6 +31,7 @@ import com.gnr.esgi.googlenewsreader.listener.CancelTaskOnListener;
 import com.gnr.esgi.googlenewsreader.model.Tag;
 import com.gnr.esgi.googlenewsreader.parser.JsonParser;
 import com.gnr.esgi.googlenewsreader.services.HttpRetriever;
+import com.gnr.esgi.googlenewsreader.services.RefreshService;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import java.io.InputStream;
@@ -41,9 +48,21 @@ public class HomeActivity extends ActionBarActivity {
     ListArticleAdapter adapter;
     DatabaseManager databaseManager;
     ProgressDialog progressDialog;
-    CoordinatorLayout coordinatorLayout;
-    RelativeLayout relativeLayout;
     Toolbar toolbar;
+    RefreshService.RefreshBinder binder;
+    Boolean isRefresh;
+
+    ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            binder = (RefreshService.RefreshBinder) service;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,8 +80,8 @@ public class HomeActivity extends ActionBarActivity {
             public void onClick(View view) {
                 int count = refresh();
 
-                    final Snackbar snackbar = Snackbar.make(view, count + " news was added in total", Snackbar.LENGTH_LONG);
-                    snackbar.setAction("Close", new View.OnClickListener() {
+                    final Snackbar snackbar = Snackbar.make(view, count + R.string.snackbar_addedNews, Snackbar.LENGTH_LONG);
+                    snackbar.setAction(R.string.snackbar_close, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             snackbar.dismiss();
@@ -114,9 +133,8 @@ public class HomeActivity extends ActionBarActivity {
     }
 
     private void showNewsOverview(Integer id) {
-        Intent intent = new Intent(this, DetailArticleActivity.class);
-
-        intent.putExtra("news", (Parcelable) databaseManager.findNewsById(id));
+        Intent intent = new Intent(this, DetailArticleActivity.class)
+            .putExtra("news", (Parcelable) databaseManager.findNewsById(id));
 
         startActivity(intent);
     }
@@ -128,6 +146,57 @@ public class HomeActivity extends ActionBarActivity {
         return true;
     }
 
+    public void launchRefreshService() {
+        Intent intent = new Intent(this, RefreshService.class);
+
+        startService(intent);
+
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    public void stopRefreshService() {
+        Intent intent = new Intent(this, RefreshService.class);
+
+        stopService(intent);
+        
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    public void showRefreshDialog() {
+        final CharSequence[] items = { "Refresh every hour" };
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder
+            .setTitle(R.string.refreshDialog_title)
+            .setCancelable(false)
+            .setMultiChoiceItems(items, null, new DialogInterface.OnMultiChoiceClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                    isRefresh = isChecked;
+                }
+            })
+            .setPositiveButton(R.string.refreshDialog_accept, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if(isRefresh)
+                        launchRefreshService();
+                    else
+                        stopRefreshService();
+
+                    dialog.dismiss();
+                }
+            })
+            .setNegativeButton(R.string.refreshDialog_cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -135,6 +204,7 @@ public class HomeActivity extends ActionBarActivity {
                 // In case of user click on Refresh icon of toolbar
                 // Show alert dialog with option to activate auto refresh
                 // Then add a service with a 1hour refreshing thread
+                showRefreshDialog();
                 return true;
 
             case R.id.action_tags:
