@@ -21,6 +21,7 @@ public class Article implements Parcelable, Serializable {
     private String _picture;
     private String _sourceName;
     private String _sourceUrl;
+    private int _tagId;
     private Boolean _read;
 
     public Article() {
@@ -92,6 +93,14 @@ public class Article implements Parcelable, Serializable {
 
     public void setSourceUrl(String source) {
         _sourceUrl = source;
+    }
+
+    public int getTagId() {
+        return _tagId;
+    }
+
+    public void setTagId(int tagId) {
+        _tagId = tagId;
     }
 
     public Boolean getRead() {

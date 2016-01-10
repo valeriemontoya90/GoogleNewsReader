@@ -32,6 +32,7 @@ public class GNRDatabaseHelper extends SQLiteOpenHelper {
             public static final String COLUMN_CONTENT = "article_content";
             public static final String COLUMN_SOURCE_NAME = "article_source_name";
             public static final String COLUMN_SOURCE_URL = "article_source_url";
+            public static final String COLUMN_TAG_ID = "article_tag_id";
         }
     }
 
@@ -48,7 +49,8 @@ public class GNRDatabaseHelper extends SQLiteOpenHelper {
                         ArticleContract.ArticleEntry.COLUMN_DATE + TEXT_TYPE + COMMA_SEPARATOR +
                         ArticleContract.ArticleEntry.COLUMN_CONTENT + TEXT_TYPE + COMMA_SEPARATOR +
                         ArticleContract.ArticleEntry.COLUMN_SOURCE_NAME + TEXT_TYPE + COMMA_SEPARATOR +
-                        ArticleContract.ArticleEntry.COLUMN_SOURCE_URL + TEXT_TYPE + ")";
+                        ArticleContract.ArticleEntry.COLUMN_SOURCE_URL + TEXT_TYPE + COMMA_SEPARATOR +
+                        ArticleContract.ArticleEntry.COLUMN_TAG_ID + TEXT_TYPE + ")";
 
         sqLiteDatabase.execSQL(CREATE_TABLE_ARTICLES);
     }
@@ -71,6 +73,7 @@ public class GNRDatabaseHelper extends SQLiteOpenHelper {
         values.put(ArticleContract.ArticleEntry.COLUMN_CONTENT, article.getContent());
         values.put(ArticleContract.ArticleEntry.COLUMN_SOURCE_NAME, article.getSourceName());
         values.put(ArticleContract.ArticleEntry.COLUMN_SOURCE_URL, article.getSourceUrl());
+        values.put(ArticleContract.ArticleEntry.COLUMN_TAG_ID, article.getTagId());
 
         long newRowId = this.getWritableDatabase().insert(
                 ArticleContract.ArticleEntry.TABLE_NAME,
