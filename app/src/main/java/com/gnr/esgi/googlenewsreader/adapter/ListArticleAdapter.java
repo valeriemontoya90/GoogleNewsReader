@@ -20,15 +20,15 @@ import java.lang.ref.WeakReference;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class NewsAdapter extends BaseAdapter {
+public class ListArticleAdapter extends BaseAdapter {
 
     private Activity _activity;
     private List<News> _news;
     private static LayoutInflater _inflater = null;
     private HttpRetriever httpRetriever = new HttpRetriever();
 
-    public NewsAdapter(Activity activity,
-                       List<News> news) {
+    public ListArticleAdapter(Activity activity,
+                              List<News> news) {
         _activity = activity;
         _news = news;
         _inflater = (LayoutInflater)_activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

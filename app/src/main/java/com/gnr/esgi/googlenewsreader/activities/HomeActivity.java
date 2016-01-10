@@ -9,6 +9,7 @@ import android.os.Parcelable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
@@ -16,9 +17,8 @@ import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-
 import com.gnr.esgi.googlenewsreader.R;
-import com.gnr.esgi.googlenewsreader.adapter.NewsAdapter;
+import com.gnr.esgi.googlenewsreader.adapter.ListArticleAdapter;
 import com.gnr.esgi.googlenewsreader.database.DatabaseManager;
 import com.gnr.esgi.googlenewsreader.helper.NewsHelper;
 import com.gnr.esgi.googlenewsreader.listener.CancelTaskOnListener;
@@ -27,7 +27,6 @@ import com.gnr.esgi.googlenewsreader.parser.JsonParser;
 import com.gnr.esgi.googlenewsreader.services.HttpRetriever;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
-
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -36,24 +35,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class HomeActivity extends Activity {
+public class HomeActivity extends ActionBarActivity {
 
     ListView listview;
-    NewsAdapter adapter;
+    ListArticleAdapter adapter;
     DatabaseManager databaseManager;
     ProgressDialog progressDialog;
     CoordinatorLayout coordinatorLayout;
     RelativeLayout relativeLayout;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setContentView(R.layout.activity_home);
 
         refresh();
 
-        setContentView(R.layout.activity_home);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.button_refresh);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -75,7 +75,7 @@ public class HomeActivity extends Activity {
     }
 
     private void applyAdapter() {
-        adapter = new NewsAdapter(this, databaseManager.getAllNews());
+        adapter = new ListArticleAdapter(this, databaseManager.getAllNews());
         listview.setAdapter(adapter);
     }
 
@@ -114,7 +114,7 @@ public class HomeActivity extends Activity {
     }
 
     private void showNewsOverview(Integer id) {
-        Intent intent = new Intent(this, NewsActivity.class);
+        Intent intent = new Intent(this, DetailArticleActivity.class);
 
         intent.putExtra("news", (Parcelable) databaseManager.findNewsById(id));
 
@@ -130,17 +130,30 @@ public class HomeActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        switch (item.getItemId()) {
+            case R.id.action_refresh:
+                // In case of user click on Refresh icon of toolbar
+                // Show alert dialog with option to activate auto refresh
+                // Then add a service with a 1hour refreshing thread
+                return true;
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+            case R.id.action_tags:
+                // In case of user click on Tags icon of toolbar
+                // Eg.
+                //Intent intent = new Intent(this, TagListActivity.class);
+                //startActivity(intent);
+                return true;
+
+            case R.id.action_search:
+                // In case of user click on Search icon of toolbar
+                // Eg.
+                //Intent intent = new Intent(this, TagSettingsActivity.class);
+                //startActivity(intent);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     private class NewsSearchTask extends AsyncTask<List<Tag>, Void, List<Tag>> {
@@ -148,7 +161,10 @@ public class HomeActivity extends Activity {
         @Override
         protected List<Tag> doInBackground(List<Tag>... params) {
             for(Tag tag : params[0]) {
-                InputStream source = HttpRetriever.retrieveStream(NewsHelper.getUrl(tag.getName()));
+                InputStream source = HttpRetriever
+                                        .retrieveStream(NewsHelper
+                                                .getUrl(tag
+                                                        .getName()));
 
                 Gson gson = new Gson();
 
@@ -157,7 +173,11 @@ public class HomeActivity extends Activity {
                 Map<String, Object> response = new HashMap<>();
                 response = (Map<String, Object>) gson.fromJson(reader, response.getClass());
 
-                tag.setNews(JsonParser.parse((ArrayList<LinkedTreeMap<String, Object>>) ((LinkedTreeMap<String, Object>) response.get("responseData")).get("results")));
+                tag.setNews(JsonParser.parse((ArrayList<LinkedTreeMap<String, Object>>)
+                                                ((LinkedTreeMap<String, Object>)
+                                                    response
+                                                    .get("responseData"))
+                                                    .get("results")));
             }
 
             return params[0];

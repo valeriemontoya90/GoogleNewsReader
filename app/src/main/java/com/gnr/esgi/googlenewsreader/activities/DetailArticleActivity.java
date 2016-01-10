@@ -6,7 +6,7 @@ import android.widget.TextView;
 import com.gnr.esgi.googlenewsreader.R;
 import com.gnr.esgi.googlenewsreader.model.News;
 
-public class NewsActivity extends AppCompatActivity {
+public class DetailArticleActivity extends AppCompatActivity {
 
     TextView title;
     TextView content;
