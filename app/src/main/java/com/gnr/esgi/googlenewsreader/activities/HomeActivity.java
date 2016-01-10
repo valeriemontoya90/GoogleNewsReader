@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
+import com.gnr.esgi.googlenewsreader.GNRApplication;
 import com.gnr.esgi.googlenewsreader.R;
 import com.gnr.esgi.googlenewsreader.adapter.ListArticlesAdapter;
 import com.gnr.esgi.googlenewsreader.database.DatabaseManager;
@@ -160,6 +161,8 @@ public class HomeActivity extends Activity {
                 response = (Map<String, Object>) gson.fromJson(reader, response.getClass());
 
                 tag.setArticles(JsonParser.parse((ArrayList<LinkedTreeMap<String, Object>>) ((LinkedTreeMap<String, Object>) response.get("responseData")).get("results")));
+
+                saveArticlesInDB(tag);
             }
 
             return params[0];
@@ -184,5 +187,10 @@ public class HomeActivity extends Activity {
         }
     }
 
+    public void saveArticlesInDB(Tag tag) {
+        for (int i=0; i<tag.getArticles().size(); i++) {
+            GNRApplication.getGnrDBHelper().addArticle(tag.getArticles().get(i), tag.getId());
+        }
+    }
 
 }

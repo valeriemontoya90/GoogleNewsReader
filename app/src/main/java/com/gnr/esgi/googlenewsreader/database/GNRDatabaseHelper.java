@@ -6,19 +6,21 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
+import android.util.Log;
 
-import com.gnr.esgi.googlenewsreader.R;
 import com.gnr.esgi.googlenewsreader.model.Article;
 
 /**
  * Created by valerie on 06/01/16.
  */
 public class GNRDatabaseHelper extends SQLiteOpenHelper {
+    public static final int DATABASE_VERSION = 1;
+    public static final String DATABASE_NAME = "googlereadernews.db";
 
     private final static String TAG = GNRDatabaseHelper.class.getSimpleName();
     
     public GNRDatabaseHelper(Context context) {
-        super(context, context.getString(R.string.app_settings_db_name), null, Integer.valueOf("1"));
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     public final class ArticleContract {
@@ -36,6 +38,7 @@ public class GNRDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         String TEXT_TYPE = " TEXT";
         String REAL_TYPE = " REAL";
@@ -50,7 +53,7 @@ public class GNRDatabaseHelper extends SQLiteOpenHelper {
                         ArticleContract.ArticleEntry.COLUMN_CONTENT + TEXT_TYPE + COMMA_SEPARATOR +
                         ArticleContract.ArticleEntry.COLUMN_SOURCE_NAME + TEXT_TYPE + COMMA_SEPARATOR +
                         ArticleContract.ArticleEntry.COLUMN_SOURCE_URL + TEXT_TYPE + COMMA_SEPARATOR +
-                        ArticleContract.ArticleEntry.COLUMN_TAG_ID + TEXT_TYPE + ")";
+                        ArticleContract.ArticleEntry.COLUMN_TAG_ID + REAL_TYPE + ")";
 
         sqLiteDatabase.execSQL(CREATE_TABLE_ARTICLES);
     }
@@ -66,22 +69,28 @@ public class GNRDatabaseHelper extends SQLiteOpenHelper {
     ////ARTICLES//////
     /////////////
 
-    public long addArticle(Article article) {
+    public long addArticle(Article article, int tagId) {
         ContentValues values = new ContentValues();
         values.put(ArticleContract.ArticleEntry.COLUMN_TITLE, article.getTitle());
         values.put(ArticleContract.ArticleEntry.COLUMN_DATE, "date");
         values.put(ArticleContract.ArticleEntry.COLUMN_CONTENT, article.getContent());
         values.put(ArticleContract.ArticleEntry.COLUMN_SOURCE_NAME, article.getSourceName());
         values.put(ArticleContract.ArticleEntry.COLUMN_SOURCE_URL, article.getSourceUrl());
-        values.put(ArticleContract.ArticleEntry.COLUMN_TAG_ID, article.getTagId());
+        values.put(ArticleContract.ArticleEntry.COLUMN_TAG_ID, tagId);
 
-        long newRowId = this.getWritableDatabase().insert(
+        Log.d("DB COLUMN_TITLE", values.get(ArticleContract.ArticleEntry.COLUMN_TITLE).toString());
+        Log.d("DB COLUMN_DATE", values.get(ArticleContract.ArticleEntry.COLUMN_DATE).toString());
+        Log.d("DB COLUMN_CONTENT", values.get(ArticleContract.ArticleEntry.COLUMN_CONTENT).toString());
+        Log.d("DB COLUMN_SOURCE_NAME", values.get(ArticleContract.ArticleEntry.COLUMN_SOURCE_NAME).toString());
+        Log.d("DB COLUMN_SOURCE_URL", values.get(ArticleContract.ArticleEntry.COLUMN_SOURCE_URL).toString());
+        Log.d("DB COLUMN_TAG_ID", values.get(ArticleContract.ArticleEntry.COLUMN_TAG_ID).toString());
+
+        //Log.d("DB ArticleContract", ArticleContract.ArticleEntry.TABLE_NAME);
+        return this.getWritableDatabase().insert(
                 ArticleContract.ArticleEntry.TABLE_NAME,
                 null,
                 values
         );
-
-        return newRowId;
     }
 
     public Cursor getAllArticles() {

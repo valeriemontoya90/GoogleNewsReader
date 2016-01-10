@@ -36,8 +36,8 @@ public class Tag {
         return _articles;
     }
 
-    public void setArticles(List<Article> aNews) {
-        _articles = aNews;
+    public void setArticles(List<Article> articles) {
+        _articles = articles;
     }
 
     public int getCounter() {
