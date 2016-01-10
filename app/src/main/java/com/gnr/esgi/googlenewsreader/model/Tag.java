@@ -13,7 +13,6 @@ public class Tag {
         _id = 0;
         _name = name;
         _news = new ArrayList<>();
-        _recentCounter = 0;
     }
 
     public Integer getId() {

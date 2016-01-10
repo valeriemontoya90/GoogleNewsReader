@@ -1,5 +1,6 @@
 package com.gnr.esgi.googlenewsreader.database;
 
+import com.gnr.esgi.googlenewsreader.helper.NewsHelper;
 import com.gnr.esgi.googlenewsreader.model.News;
 import com.gnr.esgi.googlenewsreader.model.Tag;
 import java.util.ArrayList;
@@ -13,10 +14,7 @@ public class DatabaseManager {
     public DatabaseManager() {
         _tags = new ArrayList<>();
 
-        // FOR TEST
-            _tags.add(new Tag("apple"));
-            _tags.add(new Tag("PSG"));
-            _tags.add(new Tag("Inde"));
+        retrieveTags();
     }
 
     public List<Tag> getTags() {
@@ -24,13 +22,32 @@ public class DatabaseManager {
     }
 
     public void setTags(List<Tag> tags) {
+        for (Tag newTag : tags)
+            for(Tag oldTag : _tags)
+                newTag.setCounter(oldTag.getName().compareTo(newTag.getName()) == 0
+                                    ? NewsHelper.countRecentNews(newTag.getNews(), oldTag.getNews())
+                                    : newTag.getNews().size()
+                                );
+
         _tags = tags;
+    }
+
+    private void retrieveTags() {
+        /*
+            Retrieve tags from SQLLite Database
+            Add each of them to _tags
+         */
+
+        // FOR TEST
+        _tags.add(new Tag("apple"));
+        _tags.add(new Tag("PSG"));
+        _tags.add(new Tag("Inde"));
     }
 
     public List<News> findNewsByTagId(Integer id) {
         List<News> newsList = new ArrayList<>();
 
-        for(Tag _tag : _tags)
+        for (Tag _tag : _tags)
             if(_tag.getId().compareTo(id) == 0)
                 newsList = _tag.getNews();
 
@@ -47,8 +64,16 @@ public class DatabaseManager {
     }
 
     public int countLatest() {
+        int count = 0;
 
-        return 99;
+        for (Tag tag : _tags)
+            count += tag.getCounter();
+
+        return count;
+    }
+
+    public int countLatest(Tag tag) {
+        return tag.getCounter();
     }
 
     private List<News> setIndex(List<News> newsList) {
@@ -73,9 +98,5 @@ public class DatabaseManager {
                 return news;
 
         return null;
-    }
-
-    public void refresh() {
-        new DatabaseManager();
     }
 }

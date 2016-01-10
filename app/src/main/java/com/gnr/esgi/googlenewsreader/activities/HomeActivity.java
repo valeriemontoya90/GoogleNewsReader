@@ -18,7 +18,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import com.gnr.esgi.googlenewsreader.R;
-import com.gnr.esgi.googlenewsreader.adapter.LazyAdapter;
+import com.gnr.esgi.googlenewsreader.adapter.NewsAdapter;
 import com.gnr.esgi.googlenewsreader.database.DatabaseManager;
 import com.gnr.esgi.googlenewsreader.helper.NewsHelper;
 import com.gnr.esgi.googlenewsreader.listener.CancelTaskOnListener;
@@ -39,7 +39,7 @@ import java.util.Map;
 public class HomeActivity extends Activity {
 
     ListView listview;
-    LazyAdapter adapter;
+    NewsAdapter adapter;
     DatabaseManager databaseManager;
     ProgressDialog progressDialog;
     CoordinatorLayout coordinatorLayout;
@@ -61,7 +61,6 @@ public class HomeActivity extends Activity {
             public void onClick(View view) {
                 int count = refresh();
 
-                if(count > 0) {
                     final Snackbar snackbar = Snackbar.make(view, count + " news was added in total", Snackbar.LENGTH_LONG);
                     snackbar.setAction("Close", new View.OnClickListener() {
                         @Override
@@ -71,13 +70,12 @@ public class HomeActivity extends Activity {
                     });
 
                     snackbar.show();
-                }
             }
         });
     }
 
     private void applyAdapter() {
-        adapter = new LazyAdapter(this, databaseManager.getAllNews());
+        adapter = new NewsAdapter(this, databaseManager.getAllNews());
         listview.setAdapter(adapter);
     }
 

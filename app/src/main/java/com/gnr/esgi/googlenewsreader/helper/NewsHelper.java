@@ -1,17 +1,26 @@
 package com.gnr.esgi.googlenewsreader.helper;
 
+import com.gnr.esgi.googlenewsreader.constants.NewsConstants;
+import com.gnr.esgi.googlenewsreader.model.News;
+import com.gnr.esgi.googlenewsreader.model.Tag;
+
+import java.util.List;
+
 public class NewsHelper {
 
-    public static final String KEY_API_URL = "http://ajax.googleapis.com/ajax/services/search/news?v=1.0&q="; //"http://news.google.com/news?output=rss&q=";
-
-    public static final String KEY_TITLE = "titleNoFormatting";
-    public static final String KEY_CONTENT = "content";
-    public static final String KEY_LINK = "unescapedUrl";
-    public static final String KEY_DATE = "publishedDate";
-    public static final String KEY_SOURCE = "publisher";
-    public static final String KEY_PICTURE = "image";
-
     public static String getUrl(String tagName) {
-        return KEY_API_URL + tagName;
+        return NewsConstants.KEY_API_URL + tagName;
     }
+
+    public static int countRecentNews(List<News> recent, List<News> old) {
+        int count = recent.size();
+
+        for (News recentNews : recent)
+            for (News oldNews : old)
+                if(recentNews == oldNews)
+                    count--;
+
+        return count;
+    }
+
 }
