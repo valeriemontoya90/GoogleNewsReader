@@ -4,9 +4,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 import com.gnr.esgi.googlenewsreader.R;
-import com.gnr.esgi.googlenewsreader.model.News;
+import com.gnr.esgi.googlenewsreader.model.Article;
 
-public class NewsActivity extends AppCompatActivity {
+public class DetailArticleActivity extends AppCompatActivity {
 
     TextView title;
     TextView content;
@@ -19,9 +19,9 @@ public class NewsActivity extends AppCompatActivity {
         title = (TextView) findViewById(R.id.news_title);
         content = (TextView) findViewById(R.id.news_content);
 
-        News news = getIntent().getParcelableExtra("news");
+        Article article = getIntent().getParcelableExtra("news");
 
-        title.setText(news.getTitle());
-        content.setText(news.getContent());
+        title.setText(article.getTitle());
+        content.setText(article.getContent());
     }
 }

@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.Date;
 
-public class News implements Parcelable, Serializable {
+public class Article implements Parcelable, Serializable {
 
     private Integer _id;
 
@@ -22,7 +22,7 @@ public class News implements Parcelable, Serializable {
     private Source _source;
     private Boolean _read;
 
-    public News() {
+    public Article() {
         _id = 0;
         _title = new String();
         _date = new Date();
@@ -30,7 +30,7 @@ public class News implements Parcelable, Serializable {
         _source = new Source();
     }
 
-    protected News(Parcel in) {
+    protected Article(Parcel in) {
         _id = in.readInt();
         _title = in.readString();
         _content = in.readString();
@@ -60,15 +60,15 @@ public class News implements Parcelable, Serializable {
         _content = content;
     }
 
-    public static final Creator<News> CREATOR = new Creator<News>() {
+    public static final Creator<Article> CREATOR = new Creator<Article>() {
         @Override
-        public News createFromParcel(Parcel in) {
-            return new News(in);
+        public Article createFromParcel(Parcel in) {
+            return new Article(in);
         }
 
         @Override
-        public News[] newArray(int size) {
-            return new News[size];
+        public Article[] newArray(int size) {
+            return new Article[size];
         }
     };
 

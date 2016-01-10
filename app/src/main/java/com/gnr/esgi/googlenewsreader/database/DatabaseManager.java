@@ -1,6 +1,6 @@
 package com.gnr.esgi.googlenewsreader.database;
 
-import com.gnr.esgi.googlenewsreader.model.News;
+import com.gnr.esgi.googlenewsreader.model.Article;
 import com.gnr.esgi.googlenewsreader.model.Tag;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -27,23 +27,23 @@ public class DatabaseManager {
         _tags = tags;
     }
 
-    public List<News> findNewsByTagId(Integer id) {
-        List<News> newsList = new ArrayList<>();
+    public List<Article> findArticlesByTagId(Integer id) {
+        List<Article> articleList = new ArrayList<>();
 
         for(Tag _tag : _tags)
             if(_tag.getId().compareTo(id) == 0)
-                newsList = _tag.getNews();
+                articleList = _tag.getArticles();
 
-        return newsList;
+        return articleList;
     }
 
-    public List<News> getAllNews() {
-        List<News> newsList = new ArrayList<>();
+    public List<Article> getAllArticles() {
+        List<Article> articleList = new ArrayList<>();
 
         for(Tag tag : _tags)
-            newsList.addAll(tag.getNews());
+            articleList.addAll(tag.getArticles());
 
-        return setIndex(escapeDuplicates(newsList));
+        return setIndex(escapeDuplicates(articleList));
     }
 
     public int countLatest() {
@@ -51,26 +51,26 @@ public class DatabaseManager {
         return 99;
     }
 
-    private List<News> setIndex(List<News> newsList) {
-        for(int i=0; i<newsList.size(); i++)
-            newsList.get(i).setId(i);
+    private List<Article> setIndex(List<Article> articleList) {
+        for(int i=0; i< articleList.size(); i++)
+            articleList.get(i).setId(i);
 
-        return newsList;
+        return articleList;
     }
 
-    private List<News> escapeDuplicates(List<News> newsList) {
-        Set<News> newsSet = new LinkedHashSet<>(newsList);
+    private List<Article> escapeDuplicates(List<Article> articleList) {
+        Set<Article> articleSet = new LinkedHashSet<>(articleList);
 
-        newsList.clear();
-        newsList.addAll(newsSet);
+        articleList.clear();
+        articleList.addAll(articleSet);
 
-        return newsList;
+        return articleList;
     }
 
-    public News findNewsById(Integer id) {
-        for(News news : getAllNews())
-            if(news.getId().compareTo(id) == 0)
-                return news;
+    public Article findArticlesById(Integer id) {
+        for(Article article : getAllArticles())
+            if(article.getId().compareTo(id) == 0)
+                return article;
 
         return null;
     }

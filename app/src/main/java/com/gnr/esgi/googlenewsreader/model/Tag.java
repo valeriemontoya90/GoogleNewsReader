@@ -6,7 +6,7 @@ import java.util.List;
 public class Tag {
     private Integer _id;
     private String _name;
-    private List<News> _news;
+    private List<Article> _news;
     private int _recentCounter;
 
     public Tag(String name) {
@@ -32,12 +32,12 @@ public class Tag {
         _name = name;
     }
 
-    public List<News> getNews() {
+    public List<Article> getArticles() {
         return _news;
     }
 
-    public void setNews(List<News> news) {
-        _news = news;
+    public void setNews(List<Article> aNews) {
+        _news = aNews;
     }
 
     public int getCounter() {

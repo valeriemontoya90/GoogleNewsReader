@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
 import com.gnr.esgi.googlenewsreader.R;
-import com.gnr.esgi.googlenewsreader.model.News;
+import com.gnr.esgi.googlenewsreader.model.Article;
 
 /**
  * Created by valerie on 06/01/16.
@@ -27,10 +27,10 @@ public class GNRDatabaseHelper extends SQLiteOpenHelper {
         public abstract class ArticleEntry implements BaseColumns {
             public static final String TABLE_NAME = "articles";
 
-            public static final String COLUMN_TITLE = "new_title";
-            public static final String COLUMN_DATE = "new_date";
-            public static final String COLUMN_CONTENT = "new_content";
-            public static final String COLUMN_SOURCE = "new_source";
+            public static final String COLUMN_TITLE = "article_title";
+            public static final String COLUMN_DATE = "article_date";
+            public static final String COLUMN_CONTENT = "article_content";
+            public static final String COLUMN_SOURCE = "article_source";
         }
     }
 
@@ -40,7 +40,7 @@ public class GNRDatabaseHelper extends SQLiteOpenHelper {
         String INTEGER_TYPE = " NUMERIC";
         String COMMA_SEPARATOR = ",";
 
-        String CREATE_TABLE_NEWS =
+        String CREATE_TABLE_ARTICLES =
                 "CREATE TABLE " + ArticleContract.ArticleEntry.TABLE_NAME + " (" +
                         ArticleContract.ArticleEntry._ID + INTEGER_TYPE + " PRIMARY_KEY" + COMMA_SEPARATOR +
                         ArticleContract.ArticleEntry.COLUMN_TITLE + TEXT_TYPE + COMMA_SEPARATOR +
@@ -48,24 +48,24 @@ public class GNRDatabaseHelper extends SQLiteOpenHelper {
                         ArticleContract.ArticleEntry.COLUMN_CONTENT + TEXT_TYPE + COMMA_SEPARATOR +
                         ArticleContract.ArticleEntry.COLUMN_SOURCE + TEXT_TYPE + ")";
 
-        sqLiteDatabase.execSQL(CREATE_TABLE_NEWS);
+        sqLiteDatabase.execSQL(CREATE_TABLE_ARTICLES);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
-        String DROP_TABLE_NEWS = "DROP TABLE IF EXISTS " + ArticleContract.ArticleEntry.TABLE_NAME;
-        sqLiteDatabase.execSQL(DROP_TABLE_NEWS);
+        String DROP_TABLE_ARTICLES = "DROP TABLE IF EXISTS " + ArticleContract.ArticleEntry.TABLE_NAME;
+        sqLiteDatabase.execSQL(DROP_TABLE_ARTICLES);
         onCreate(sqLiteDatabase);
     }
     ///////////////
     ////NEWS//////
     /////////////
 
-    public long addArticle(News oneNew) {
+    public long addArticle(Article article) {
         ContentValues values = new ContentValues();
-        values.put(ArticleContract.ArticleEntry.COLUMN_TITLE, oneNew.getTitle());
+        values.put(ArticleContract.ArticleEntry.COLUMN_TITLE, article.getTitle());
         values.put(ArticleContract.ArticleEntry.COLUMN_DATE, "date");
-        values.put(ArticleContract.ArticleEntry.COLUMN_CONTENT, oneNew.getContent());
+        values.put(ArticleContract.ArticleEntry.COLUMN_CONTENT, article.getContent());
 
         long newRowId = this.getWritableDatabase().insert(
                 ArticleContract.ArticleEntry.TABLE_NAME,

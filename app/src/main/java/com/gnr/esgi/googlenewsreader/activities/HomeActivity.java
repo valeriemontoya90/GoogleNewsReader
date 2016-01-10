@@ -10,15 +10,15 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import com.gnr.esgi.googlenewsreader.R;
-import com.gnr.esgi.googlenewsreader.adapter.LazyAdapter;
+import com.gnr.esgi.googlenewsreader.adapter.ListArticlesAdapter;
 import com.gnr.esgi.googlenewsreader.database.DatabaseManager;
 import com.gnr.esgi.googlenewsreader.helper.NewsHelper;
 import com.gnr.esgi.googlenewsreader.listener.CancelTaskOnListener;
@@ -39,7 +39,7 @@ import java.util.Map;
 public class HomeActivity extends Activity {
 
     ListView listview;
-    LazyAdapter adapter;
+    ListArticlesAdapter adapter;
     DatabaseManager databaseManager;
     ProgressDialog progressDialog;
     CoordinatorLayout coordinatorLayout;
@@ -77,7 +77,7 @@ public class HomeActivity extends Activity {
     }
 
     private void applyAdapter() {
-        adapter = new LazyAdapter(this, databaseManager.getAllNews());
+        adapter = new ListArticlesAdapter(this, databaseManager.getAllArticles());
         listview.setAdapter(adapter);
     }
 
@@ -116,9 +116,9 @@ public class HomeActivity extends Activity {
     }
 
     private void showNewsOverview(Integer id) {
-        Intent intent = new Intent(this, NewsActivity.class);
+        Intent intent = new Intent(this, DetailArticleActivity.class);
 
-        intent.putExtra("news", (Parcelable) databaseManager.findNewsById(id));
+        intent.putExtra("news", (Parcelable) databaseManager.findArticlesById(id));
 
         startActivity(intent);
     }

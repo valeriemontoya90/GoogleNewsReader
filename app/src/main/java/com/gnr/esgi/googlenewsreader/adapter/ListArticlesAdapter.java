@@ -13,30 +13,30 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.gnr.esgi.googlenewsreader.R;
 import com.gnr.esgi.googlenewsreader.io.FlushedInputStream;
-import com.gnr.esgi.googlenewsreader.model.News;
+import com.gnr.esgi.googlenewsreader.model.Article;
 import com.gnr.esgi.googlenewsreader.services.HttpRetriever;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class LazyAdapter extends BaseAdapter {
+public class ListArticlesAdapter extends BaseAdapter {
 
     private Activity _activity;
-    private List<News> _news;
+    private List<Article> _articles;
     private static LayoutInflater _inflater = null;
     private HttpRetriever httpRetriever = new HttpRetriever();
 
-    public LazyAdapter(Activity activity,
-                        List<News> news) {
+    public ListArticlesAdapter(Activity activity,
+                               List<Article> articles) {
         _activity = activity;
-        _news = news;
+        _articles = articles;
         _inflater = (LayoutInflater)_activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
     public int getCount() {
-        return _news.size();
+        return _articles.size();
     }
 
     @Override
@@ -60,19 +60,19 @@ public class LazyAdapter extends BaseAdapter {
         TextView source = (TextView) view.findViewById(R.id.news_source);
         ImageView picture = (ImageView) view.findViewById(R.id.news_picture);
 
-        News news = _news.get(position);
+        Article article = _articles.get(position);
 
         // Settings all news in list
-        title.setText(news.getTitle());
-        date.setText(news.getDate().toString());
-        source.setText(news.getSource().getName());
+        title.setText(article.getTitle());
+        date.setText(article.getDate().toString());
+        source.setText(article.getSource().getName());
 
-        if(news.getPicture() != null)
+        if(article.getPicture() != null)
         {
-            Bitmap bitmap = fetchBitmapFromCache(news.getPicture());
+            Bitmap bitmap = fetchBitmapFromCache(article.getPicture());
 
             if(bitmap == null) {
-                new BitmapDownloaderTask(picture).execute(news.getPicture());
+                new BitmapDownloaderTask(picture).execute(article.getPicture());
             }
             else
                 picture.setImageBitmap(bitmap);
