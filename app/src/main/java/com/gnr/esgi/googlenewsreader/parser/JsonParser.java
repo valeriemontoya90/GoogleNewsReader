@@ -26,7 +26,7 @@ public class JsonParser {
                 LinkedTreeMap<String, Object> picture = (LinkedTreeMap<String, Object>) map.get(NewsHelper.KEY_PICTURE);
                 news.setPicture(picture != null
                         ? (String) picture.get("url")
-                        : "");
+                        : null);
 
                 Source source = new Source();
                 source.setName((String) map.get(NewsHelper.KEY_SOURCE));

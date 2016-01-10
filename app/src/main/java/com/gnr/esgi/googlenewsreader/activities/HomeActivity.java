@@ -6,13 +6,17 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+
 import com.gnr.esgi.googlenewsreader.R;
 import com.gnr.esgi.googlenewsreader.adapter.LazyAdapter;
 import com.gnr.esgi.googlenewsreader.database.DatabaseManager;
@@ -38,10 +42,13 @@ public class HomeActivity extends Activity {
     LazyAdapter adapter;
     DatabaseManager databaseManager;
     ProgressDialog progressDialog;
+    CoordinatorLayout coordinatorLayout;
+    RelativeLayout relativeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         refresh();
 
@@ -52,7 +59,19 @@ public class HomeActivity extends Activity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                refresh();
+                int count = refresh();
+
+                if(count > 0) {
+                    final Snackbar snackbar = Snackbar.make(view, count + " news was added in total", Snackbar.LENGTH_LONG);
+                    snackbar.setAction("Close", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            snackbar.dismiss();
+                        }
+                    });
+
+                    snackbar.show();
+                }
             }
         });
     }
@@ -79,19 +98,21 @@ public class HomeActivity extends Activity {
         });
     }
 
-    private void refresh() {
+    private int refresh() {
         databaseManager = new DatabaseManager();
 
-        performSearch();
+        return performSearch();
     }
 
-    private void performSearch() {
+    private int performSearch() {
         progressDialog = ProgressDialog.show(HomeActivity.this,
                 "Please wait...", "Retrieving data...", true, true);
 
         NewsSearchTask task = new NewsSearchTask();
         task.execute(databaseManager.getTags());
         progressDialog.setOnCancelListener(new CancelTaskOnListener(task));
+
+        return databaseManager.countLatest();
     }
 
     private void showNewsOverview(Integer id) {
