@@ -6,13 +6,14 @@ import java.util.List;
 public class Tag {
     private Integer _id;
     private String _name;
-    private List<News> _news;
+    private List<Article> _articles;
     private int _recentCounter;
 
     public Tag(String name) {
         _id = 0;
         _name = name;
-        _news = new ArrayList<>();
+        _articles = new ArrayList<>();
+        _recentCounter = 0;
     }
 
     public Integer getId() {
@@ -31,12 +32,12 @@ public class Tag {
         _name = name;
     }
 
-    public List<News> getNews() {
-        return _news;
+    public List<Article> getArticles() {
+        return _articles;
     }
 
-    public void setNews(List<News> news) {
-        _news = news;
+    public void setArticles(List<Article> articles) {
+        _articles = articles;
     }
 
     public int getCounter() {

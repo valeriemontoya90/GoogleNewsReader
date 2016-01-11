@@ -2,41 +2,41 @@ package com.gnr.esgi.googlenewsreader.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.gnr.esgi.googlenewsreader.constants.NewsConstants;
+import com.gnr.esgi.googlenewsreader.constants.ArticleConstants;
 import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.Date;
 
-public class News implements Parcelable, Serializable {
+public class Article implements Parcelable, Serializable {
 
     private Integer _id;
     private Boolean _read;
 
-    @SerializedName(NewsConstants.KEY_TITLE)
+    @SerializedName(ArticleConstants.KEY_TITLE)
     private String _title;
 
-    @SerializedName(NewsConstants.KEY_CONTENT)
+    @SerializedName(ArticleConstants.KEY_CONTENT)
     private String _content;
 
-    @SerializedName(NewsConstants.KEY_DATE)
+    @SerializedName(ArticleConstants.KEY_DATE)
     private Date _date;
 
-    @SerializedName(NewsConstants.KEY_PICTURE)
+    @SerializedName(ArticleConstants.KEY_PICTURE)
     private String _picture;
 
-    @SerializedName(NewsConstants.KEY_SOURCE)
+    @SerializedName(ArticleConstants.KEY_SOURCE)
     private Source _source;
 
-    public News() {
+    private String _sourceName;
+    private String _sourceUrl;
+    private int _tagId;
+
+    public Article() {
         _id = 0;
-        _title = new String();
         _date = new Date();
-        _content = new String();
-        _source = new Source();
     }
 
-    protected News(Parcel in) {
+    protected Article(Parcel in) {
         _id = in.readInt();
         _title = in.readString();
         _content = in.readString();
@@ -67,15 +67,15 @@ public class News implements Parcelable, Serializable {
         _content = content;
     }
 
-    public static final Creator<News> CREATOR = new Creator<News>() {
+    public static final Creator<Article> CREATOR = new Creator<Article>() {
         @Override
-        public News createFromParcel(Parcel in) {
-            return new News(in);
+        public Article createFromParcel(Parcel in) {
+            return new Article(in);
         }
 
         @Override
-        public News[] newArray(int size) {
-            return new News[size];
+        public Article[] newArray(int size) {
+            return new Article[size];
         }
     };
 
@@ -114,6 +114,30 @@ public class News implements Parcelable, Serializable {
 
     public void setSource(Source source) {
         _source = source;
+    }
+
+    public String getSourceName() {
+        return _sourceName;
+    }
+
+    public void setSourceName(String source) {
+        _sourceName = source;
+    }
+
+    public String getSourceUrl() {
+        return _sourceUrl;
+    }
+
+    public void setSourceUrl(String source) {
+        _sourceUrl = source;
+    }
+
+    public int getTagId() {
+        return _tagId;
+    }
+
+    public void setTagId(int tagId) {
+        _tagId = tagId;
     }
 
     public Boolean getRead() {

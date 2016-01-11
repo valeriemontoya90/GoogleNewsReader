@@ -15,15 +15,15 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import com.gnr.esgi.googlenewsreader.R;
-import com.gnr.esgi.googlenewsreader.adapter.ListArticleAdapter;
-import com.gnr.esgi.googlenewsreader.database.DatabaseManager;
-import com.gnr.esgi.googlenewsreader.helper.NewsHelper;
+import com.gnr.esgi.googlenewsreader.GNRApplication;
+import com.gnr.esgi.googlenewsreader.adapter.ListArticlesAdapter;
+import com.gnr.esgi.googlenewsreader.helper.ArticleHelper;
 import com.gnr.esgi.googlenewsreader.listener.CancelTaskOnListener;
 import com.gnr.esgi.googlenewsreader.model.Tag;
 import com.gnr.esgi.googlenewsreader.model.User;
@@ -42,11 +42,11 @@ import java.util.Map;
 
 public class HomeActivity extends ActionBarActivity {
 
-    User user;
+    //User user;
     Boolean isRefresh;
 
     ListView listview;
-    ListArticleAdapter adapter;
+    ListArticlesAdapter adapter;
     ProgressDialog progressDialog;
     Toolbar toolbar;
     RefreshService.RefreshBinder binder;
@@ -68,7 +68,7 @@ public class HomeActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        user = new User();
+        //user = new User();
         refresh();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -94,7 +94,8 @@ public class HomeActivity extends ActionBarActivity {
     }
 
     private void applyAdapter() {
-        adapter = new ListArticleAdapter(this, user.getData().getAllNews());
+        adapter = new ListArticlesAdapter(this, GNRApplication.getUser().getData().getAllArticles());
+
         listview.setAdapter(adapter);
     }
 
@@ -116,7 +117,7 @@ public class HomeActivity extends ActionBarActivity {
     }
 
     private int refresh() {
-        user.refreshData();
+        GNRApplication.getUser().refreshData();
 
         return performSearch();
     }
@@ -126,15 +127,15 @@ public class HomeActivity extends ActionBarActivity {
                 "Please wait...", "Retrieving data...", true, true);
 
         NewsSearchTask task = new NewsSearchTask();
-        task.execute(user.getData().getTags());
+        task.execute(GNRApplication.getUser().getData().getTags());
         progressDialog.setOnCancelListener(new CancelTaskOnListener(task));
 
-        return user.getData().countLatest();
+        return GNRApplication.getUser().getData().countLatest();
     }
 
     private void showNewsOverview(Integer id) {
         Intent intent = new Intent(this, DetailArticleActivity.class)
-            .putExtra("news", (Parcelable) user.getData().findNewsById(id));
+            .putExtra("news", (Parcelable) GNRApplication.getUser().getData().findArticleById(id));
 
         startActivity(intent);
     }
@@ -232,7 +233,7 @@ public class HomeActivity extends ActionBarActivity {
         protected List<Tag> doInBackground(List<Tag>... params) {
             for(Tag tag : params[0]) {
                 InputStream source = HttpRetriever
-                                        .retrieveStream(NewsHelper
+                                        .retrieveStream(ArticleHelper
                                                 .getUrl(tag
                                                         .getName()));
 
@@ -243,11 +244,15 @@ public class HomeActivity extends ActionBarActivity {
                 Map<String, Object> response = new HashMap<>();
                 response = (Map<String, Object>) gson.fromJson(reader, response.getClass());
 
-                tag.setNews(JsonParser.parse((ArrayList<LinkedTreeMap<String, Object>>)
-                                                ((LinkedTreeMap<String, Object>)
-                                                    response
-                                                    .get("responseData"))
-                                                    .get("results")));
+                tag.setArticles(JsonParser.parse((ArrayList<LinkedTreeMap<String, Object>>)
+                        ((LinkedTreeMap<String, Object>)
+                                response
+                                        .get("responseData"))
+                                .get("results")));
+
+                tag.setArticles(JsonParser.parse((ArrayList<LinkedTreeMap<String, Object>>) ((LinkedTreeMap<String, Object>) response.get("responseData")).get("results")));
+
+                saveArticlesInDB(tag);
             }
 
             return params[0];
@@ -264,11 +269,17 @@ public class HomeActivity extends ActionBarActivity {
                     }
 
                     if(result != null)
-                        user.getData().setTags(result);
+                        GNRApplication.getUser().getData().setTags(result);
 
                     applyAdapter();
                 }
             });
+        }
+    }
+
+    public void saveArticlesInDB(Tag tag) {
+        for (int i=0; i<tag.getArticles().size(); i++) {
+            GNRApplication.getGnrDBHelper().addArticle(tag.getArticles().get(i), tag.getId());
         }
     }
 }
