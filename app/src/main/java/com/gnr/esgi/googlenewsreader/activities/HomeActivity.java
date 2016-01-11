@@ -26,6 +26,7 @@ import com.gnr.esgi.googlenewsreader.database.DatabaseManager;
 import com.gnr.esgi.googlenewsreader.helper.NewsHelper;
 import com.gnr.esgi.googlenewsreader.listener.CancelTaskOnListener;
 import com.gnr.esgi.googlenewsreader.model.Tag;
+import com.gnr.esgi.googlenewsreader.model.User;
 import com.gnr.esgi.googlenewsreader.parser.JsonParser;
 import com.gnr.esgi.googlenewsreader.services.HttpRetriever;
 import com.gnr.esgi.googlenewsreader.services.RefreshService;
@@ -41,13 +42,14 @@ import java.util.Map;
 
 public class HomeActivity extends ActionBarActivity {
 
+    User user;
+    Boolean isRefresh;
+
     ListView listview;
     ListArticleAdapter adapter;
-    DatabaseManager databaseManager;
     ProgressDialog progressDialog;
     Toolbar toolbar;
     RefreshService.RefreshBinder binder;
-    Boolean isRefresh;
 
     ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -66,6 +68,7 @@ public class HomeActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        user = new User();
         refresh();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -91,7 +94,7 @@ public class HomeActivity extends ActionBarActivity {
     }
 
     private void applyAdapter() {
-        adapter = new ListArticleAdapter(this, databaseManager.getAllNews());
+        adapter = new ListArticleAdapter(this, user.getData().getAllNews());
         listview.setAdapter(adapter);
     }
 
@@ -113,7 +116,7 @@ public class HomeActivity extends ActionBarActivity {
     }
 
     private int refresh() {
-        databaseManager = new DatabaseManager();
+        user.refreshData();
 
         return performSearch();
     }
@@ -123,15 +126,15 @@ public class HomeActivity extends ActionBarActivity {
                 "Please wait...", "Retrieving data...", true, true);
 
         NewsSearchTask task = new NewsSearchTask();
-        task.execute(databaseManager.getTags());
+        task.execute(user.getData().getTags());
         progressDialog.setOnCancelListener(new CancelTaskOnListener(task));
 
-        return databaseManager.countLatest();
+        return user.getData().countLatest();
     }
 
     private void showNewsOverview(Integer id) {
         Intent intent = new Intent(this, DetailArticleActivity.class)
-            .putExtra("news", (Parcelable) databaseManager.findNewsById(id));
+            .putExtra("news", (Parcelable) user.getData().findNewsById(id));
 
         startActivity(intent);
     }
@@ -261,7 +264,7 @@ public class HomeActivity extends ActionBarActivity {
                     }
 
                     if(result != null)
-                        databaseManager.setTags(result);
+                        user.getData().setTags(result);
 
                     applyAdapter();
                 }

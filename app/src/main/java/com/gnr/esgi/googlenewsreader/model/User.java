@@ -14,11 +14,23 @@ public class User {
         _autoUpdate = autoUpdate;
     }
 
+    public void enableAutoUpdate() {
+        setAutoUpdate(true);
+    }
+
+    public void disableAutoUpdate(Boolean autoUpdate) {
+        setAutoUpdate(false);
+    }
+
     public DatabaseManager getData() {
         return  _data;
     }
 
     public void setData(DatabaseManager data) {
         _data = data;
+    }
+
+    public void refreshData() {
+        _data = new DatabaseManager();
     }
 }
