@@ -23,10 +23,11 @@ import android.widget.ListView;
 import com.gnr.esgi.googlenewsreader.R;
 import com.gnr.esgi.googlenewsreader.GNRApplication;
 import com.gnr.esgi.googlenewsreader.adapter.ListArticlesAdapter;
+import com.gnr.esgi.googlenewsreader.constants.ArticleConstants;
 import com.gnr.esgi.googlenewsreader.helper.ArticleHelper;
 import com.gnr.esgi.googlenewsreader.listener.CancelTaskOnListener;
+import com.gnr.esgi.googlenewsreader.model.Article;
 import com.gnr.esgi.googlenewsreader.model.Tag;
-import com.gnr.esgi.googlenewsreader.model.User;
 import com.gnr.esgi.googlenewsreader.parser.JsonParser;
 import com.gnr.esgi.googlenewsreader.services.HttpRetriever;
 import com.gnr.esgi.googlenewsreader.services.RefreshService;
@@ -42,7 +43,6 @@ import java.util.Map;
 
 public class HomeActivity extends ActionBarActivity {
 
-    //User user;
     Boolean isRefresh;
 
     ListView listview;
@@ -68,7 +68,6 @@ public class HomeActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        //user = new User();
         refresh();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -94,7 +93,11 @@ public class HomeActivity extends ActionBarActivity {
     }
 
     private void applyAdapter() {
-        adapter = new ListArticlesAdapter(this, GNRApplication.getUser().getData().getAllArticles());
+        adapter = new ListArticlesAdapter(this,
+                        GNRApplication
+                            .getUser()
+                            .getData()
+                            .getAllArticles());
 
         listview.setAdapter(adapter);
     }
@@ -126,16 +129,21 @@ public class HomeActivity extends ActionBarActivity {
         progressDialog = ProgressDialog.show(HomeActivity.this,
                 "Please wait...", "Retrieving data...", true, true);
 
-        NewsSearchTask task = new NewsSearchTask();
-        task.execute(GNRApplication.getUser().getData().getTags());
-        progressDialog.setOnCancelListener(new CancelTaskOnListener(task));
+        progressDialog.setOnCancelListener(
+                new CancelTaskOnListener(
+                        new ArticlesSearchTask()
+                                .execute(GNRApplication
+                                        .getUser()
+                                        .getData()
+                                        .getTags())));
 
         return GNRApplication.getUser().getData().countLatest();
     }
 
     private void showNewsOverview(Integer id) {
         Intent intent = new Intent(this, DetailArticleActivity.class)
-            .putExtra("news", (Parcelable) GNRApplication.getUser().getData().findArticleById(id));
+            //.putExtra(ArticleConstants.KEY_ARTICLE, (Parcelable) GNRApplication.getUser().getData().findArticleById(id))
+                .putExtra(ArticleConstants.KEY_ID, id);
 
         startActivity(intent);
     }
@@ -227,7 +235,7 @@ public class HomeActivity extends ActionBarActivity {
         }
     }
 
-    private class NewsSearchTask extends AsyncTask<List<Tag>, Void, List<Tag>> {
+    private class ArticlesSearchTask extends AsyncTask<List<Tag>, Void, List<Tag>> {
 
         @Override
         protected List<Tag> doInBackground(List<Tag>... params) {

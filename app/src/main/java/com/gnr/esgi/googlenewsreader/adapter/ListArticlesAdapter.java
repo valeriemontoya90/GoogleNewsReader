@@ -14,7 +14,9 @@ import android.widget.TextView;
 import com.gnr.esgi.googlenewsreader.R;
 import com.gnr.esgi.googlenewsreader.io.FlushedInputStream;
 import com.gnr.esgi.googlenewsreader.model.Article;
+import com.gnr.esgi.googlenewsreader.model.Picture;
 import com.gnr.esgi.googlenewsreader.services.HttpRetriever;
+
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.util.LinkedHashMap;
@@ -51,8 +53,8 @@ public class ListArticlesAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View view = convertView == null ?
-                        _inflater.inflate(R.layout.list_row, null)
+        View view = convertView == null
+                        ? _inflater.inflate(R.layout.list_row, null)
                         : convertView;
 
         TextView title = (TextView) view.findViewById(R.id.news_title);
@@ -65,20 +67,25 @@ public class ListArticlesAdapter extends BaseAdapter {
         // Settings all news in list
         title.setText(article.getTitle());
         date.setText(article.getDate().toString());
-        source.setText(article.getSourceName());
+        source.setText(article.getSource().getName());
 
-        if(article.getPicture() != null)
+        if(article.getPicture() != null
+                && article.getPicture().getUrl() != null)
         {
-            Bitmap bitmap = fetchBitmapFromCache(article.getPicture());
+            Bitmap bitmap = fetchBitmapFromCache(article.getPicture().getUrl());
 
             if(bitmap == null) {
-                new BitmapDownloaderTask(picture).execute(article.getPicture());
+                new BitmapDownloaderTask(picture).execute(article.getPicture().getUrl());
             }
             else
-                picture.setImageBitmap(bitmap);
+                article.getPicture().setBitmap(bitmap);
         }
         else
-            picture.setImageBitmap(null);
+        {
+            article.setPicture(new Picture());
+        }
+
+        picture.setImageBitmap(article.getPicture().getBitmap());
 
         return view;
     }

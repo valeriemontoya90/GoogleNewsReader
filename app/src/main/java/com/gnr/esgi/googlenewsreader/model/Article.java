@@ -22,7 +22,8 @@ public class Article implements Parcelable, Serializable {
     private Date _date;
 
     @SerializedName(ArticleConstants.KEY_PICTURE)
-    private String _picture;
+    //private String _picture;
+    private Picture _picture;
 
     @SerializedName(ArticleConstants.KEY_SOURCE)
     private Source _source;
@@ -40,7 +41,7 @@ public class Article implements Parcelable, Serializable {
         _id = in.readInt();
         _title = in.readString();
         _content = in.readString();
-        _picture = in.readString();
+        //_picture = in.readString();
     }
 
     public Integer getId() {
@@ -89,14 +90,14 @@ public class Article implements Parcelable, Serializable {
         dest.writeInt(_id);
         dest.writeString(_title);
         dest.writeString(_content);
-        dest.writeString(_picture);
+        //dest.writeString(_picture);
     }
 
-    public String getPicture() {
+    public Picture getPicture() {
         return _picture;
     }
 
-    public void setPicture(String picture) {
+    public void setPicture(Picture picture) {
         _picture = picture;
     }
 
