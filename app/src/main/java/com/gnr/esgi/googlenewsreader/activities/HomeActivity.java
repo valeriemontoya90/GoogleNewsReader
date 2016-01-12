@@ -10,7 +10,6 @@ import android.content.ServiceConnection;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBarActivity;
@@ -26,7 +25,6 @@ import com.gnr.esgi.googlenewsreader.adapter.ListArticlesAdapter;
 import com.gnr.esgi.googlenewsreader.constants.ArticleConstants;
 import com.gnr.esgi.googlenewsreader.helper.ArticleHelper;
 import com.gnr.esgi.googlenewsreader.listener.CancelTaskOnListener;
-import com.gnr.esgi.googlenewsreader.model.Article;
 import com.gnr.esgi.googlenewsreader.model.Tag;
 import com.gnr.esgi.googlenewsreader.parser.JsonParser;
 import com.gnr.esgi.googlenewsreader.services.HttpRetriever;
@@ -287,7 +285,7 @@ public class HomeActivity extends ActionBarActivity {
 
     public void saveArticlesInDB(Tag tag) {
         for (int i=0; i<tag.getArticles().size(); i++) {
-            GNRApplication.getGnrDBHelper().addArticle(tag.getArticles().get(i), tag.getId());
+            GNRApplication.getGnrDBHelper().addArticle(tag.getArticles().get(i));
         }
     }
 }
