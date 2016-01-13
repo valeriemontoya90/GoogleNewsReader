@@ -251,12 +251,10 @@ public class HomeActivity extends ActionBarActivity {
                 response = (Map<String, Object>) gson.fromJson(reader, response.getClass());
 
                 tag.setArticles(JsonParser.parse((ArrayList<LinkedTreeMap<String, Object>>)
-                        ((LinkedTreeMap<String, Object>)
-                                response
-                                        .get("responseData"))
-                                .get("results")));
-
-                tag.setArticles(JsonParser.parse((ArrayList<LinkedTreeMap<String, Object>>) ((LinkedTreeMap<String, Object>) response.get("responseData")).get("results")));
+                                                    ((LinkedTreeMap<String, Object>)
+                                                            response
+                                                            .get("responseData"))
+                                                            .get("results")));
 
                 saveArticlesInDB(tag);
             }

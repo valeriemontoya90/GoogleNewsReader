@@ -28,8 +28,6 @@ public class Article implements Parcelable, Serializable {
     @SerializedName(ArticleConstants.KEY_SOURCE)
     private Source _source;
 
-    private String _sourceName;
-    private String _sourceUrl;
     private int _tagId;
 
     public Article() {
@@ -115,22 +113,6 @@ public class Article implements Parcelable, Serializable {
 
     public void setSource(Source source) {
         _source = source;
-    }
-
-    public String getSourceName() {
-        return _sourceName;
-    }
-
-    public void setSourceName(String source) {
-        _sourceName = source;
-    }
-
-    public String getSourceUrl() {
-        return _sourceUrl;
-    }
-
-    public void setSourceUrl(String source) {
-        _sourceUrl = source;
     }
 
     public int getTagId() {
