@@ -1,10 +1,8 @@
 package com.gnr.esgi.googlenewsreader.services;
 
 import java.io.*;
-import org.apache.http.HttpStatus;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
@@ -12,26 +10,20 @@ import com.gnr.esgi.googlenewsreader.io.FlushedInputStream;
 
 public class HttpRetriever
 {
-    public static InputStream retrieveStream(String url) {
-        DefaultHttpClient client = new DefaultHttpClient();
-        HttpGet getRequest = new HttpGet(url);
+    public static InputStream retrieveStream(String str) {
+        try{
+            URL url = new URL(str);
+            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+            connection.setRequestProperty("User-Agent", "");
+            connection.setRequestMethod("GET");
+            connection.setDoInput(true);
+            connection.connect();
 
-        try {
-            HttpResponse getResponse = client.execute(getRequest);
-            final int statusCode = getResponse.getStatusLine().getStatusCode();
+            return connection.getInputStream();
 
-            if(statusCode != HttpStatus.SC_OK) {
-                Log.w("HttpRetriever",
-                        "Error " + statusCode + " for URL " + url);
-                return null;
-            }
-
-            return getResponse.getEntity().getContent();
-        }
-        catch(IOException e) {
-            getRequest.abort();
+        } catch (IOException e) {
             Log.w("HttpRetriever",
-                    "Error for URL " + url, e);
+                    "Error for URL " + str, e);
         }
 
         return null;
@@ -41,7 +33,7 @@ public class HttpRetriever
         InputStream inputStream = null;
 
         try {
-            inputStream = retrieveStream(url);
+            //inputStream = retrieveStream(url);
             final Bitmap bitmap = BitmapFactory.decodeStream(new FlushedInputStream(inputStream));
 
             return bitmap;

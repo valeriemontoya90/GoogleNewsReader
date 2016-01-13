@@ -2,7 +2,6 @@ package com.gnr.esgi.googlenewsreader.parser;
 
 import android.util.Log;
 import com.gnr.esgi.googlenewsreader.constants.ArticleConstants;
-import com.gnr.esgi.googlenewsreader.helper.ArticleHelper;
 import com.gnr.esgi.googlenewsreader.model.Picture;
 import com.gnr.esgi.googlenewsreader.model.Source;
 import com.gnr.esgi.googlenewsreader.model.Article;

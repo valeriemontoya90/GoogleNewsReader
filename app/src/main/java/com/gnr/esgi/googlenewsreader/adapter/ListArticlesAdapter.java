@@ -2,24 +2,17 @@ package com.gnr.esgi.googlenewsreader.adapter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.gnr.esgi.googlenewsreader.GNRApplication;
 import com.gnr.esgi.googlenewsreader.R;
-import com.gnr.esgi.googlenewsreader.io.FlushedInputStream;
 import com.gnr.esgi.googlenewsreader.model.Article;
-import com.gnr.esgi.googlenewsreader.model.Picture;
 import com.gnr.esgi.googlenewsreader.services.HttpRetriever;
-
-import java.io.InputStream;
-import java.lang.ref.WeakReference;
-import java.util.LinkedHashMap;
+import com.squareup.picasso.Picasso;
 import java.util.List;
 
 public class ListArticlesAdapter extends BaseAdapter {
@@ -71,78 +64,8 @@ public class ListArticlesAdapter extends BaseAdapter {
 
         if(article.getPicture() != null
                 && article.getPicture().getUrl() != null)
-        {
-            Bitmap bitmap = fetchBitmapFromCache(article.getPicture().getUrl());
-
-            if(bitmap == null) {
-                new BitmapDownloaderTask(picture).execute(article.getPicture().getUrl());
-            }
-            else
-                article.getPicture().setBitmap(bitmap);
-        }
-        else
-        {
-            article.setPicture(new Picture());
-        }
-
-        picture.setImageBitmap(article.getPicture().getBitmap());
+            Picasso.with(GNRApplication.getAppContext()).load(article.getPicture().getUrl()).into(picture);
 
         return view;
-    }
-
-    private LinkedHashMap<String, Bitmap> bitmapCache = new LinkedHashMap<String, Bitmap>();
-
-    private void addBitmapToCache(String url, Bitmap bitmap) {
-        if (bitmap != null) {
-            synchronized (bitmapCache) {
-                bitmapCache.put(url, bitmap);
-            }
-        }
-    }
-
-    private Bitmap fetchBitmapFromCache(String url){
-        synchronized (bitmapCache) {
-            final Bitmap bitmap = bitmapCache.get(url);
-            if (bitmap != null) {
-                // Bitmap found in cache
-                // Move element to first position, so that it is removed last
-                bitmapCache.remove(url);
-                bitmapCache.put(url, bitmap);
-                return bitmap;
-            }
-        }
-        return null;
-    }
-
-    private class BitmapDownloaderTask extends AsyncTask<String, Void, Bitmap> {
-
-        private String url;
-        private final WeakReference<ImageView> imageViewReference;
-
-        public BitmapDownloaderTask(ImageView imageView){
-            imageViewReference = new WeakReference<ImageView>(imageView);
-        }
-
-        @Override
-        protected Bitmap doInBackground(String... strings) {
-            url = strings[0];
-            InputStream inputStream = httpRetriever.retrieveStream(url);
-            if(inputStream == null)
-                return null;
-            return BitmapFactory.decodeStream(new FlushedInputStream(inputStream));
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            if(isCancelled())
-                bitmap = null;
-            addBitmapToCache(url, bitmap);
-            if(imageViewReference != null){
-                ImageView imageView = imageViewReference.get();
-                if(imageView != null){
-                    imageView.setImageBitmap(bitmap);
-                }
-            }
-        }
     }
 }

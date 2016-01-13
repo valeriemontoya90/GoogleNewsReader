@@ -8,6 +8,7 @@ import com.gnr.esgi.googlenewsreader.GNRApplication;
 import com.gnr.esgi.googlenewsreader.R;
 import com.gnr.esgi.googlenewsreader.constants.ArticleConstants;
 import com.gnr.esgi.googlenewsreader.model.Article;
+import com.squareup.picasso.Picasso;
 
 public class DetailArticleActivity extends AppCompatActivity {
 
@@ -30,7 +31,12 @@ public class DetailArticleActivity extends AppCompatActivity {
         title.setText(article.getTitle());
         content.setText(article.getContent());
         if(article.getPicture() != null
-            && article.getPicture().getBitmap() != null)
-            picture.setImageBitmap(article.getPicture().getBitmap());
+            && article.getPicture().getUrl() != null)
+            Picasso
+                .with(this)
+                .load(article.getPicture().getUrl())
+                .resize(300, 200)
+                .centerCrop()
+                .into(picture);
     }
 }
