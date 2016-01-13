@@ -12,6 +12,11 @@ public final class HtmlParser {
                 .trim();
     }
 
+    public static String escapeSpace(String source) {
+        return source
+                .replaceAll(" ", "+"); //Or by %20 for space in URL
+    }
+
     public static String parse(String source) {
         final int bodyIndex = source.indexOf("<body");
 
