@@ -117,22 +117,6 @@ public class Article implements Parcelable, Serializable {
         _source = source;
     }
 
-    public String getSourceName() {
-        return _sourceName;
-    }
-
-    public void setSourceName(String source) {
-        _sourceName = source;
-    }
-
-    public String getSourceUrl() {
-        return _sourceUrl;
-    }
-
-    public void setSourceUrl(String source) {
-        _sourceUrl = source;
-    }
-
     public int getTagId() {
         return _tagId;
     }

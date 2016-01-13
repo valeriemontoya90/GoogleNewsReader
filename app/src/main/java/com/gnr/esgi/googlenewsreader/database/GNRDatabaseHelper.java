@@ -84,7 +84,6 @@ public class GNRDatabaseHelper extends SQLiteOpenHelper {
         Log.d("DB COLUMN_SOURCE_URL", values.get(ArticleContract.ArticleEntry.COLUMN_SOURCE_URL).toString());
         Log.d("DB COLUMN_TAG_ID", values.get(ArticleContract.ArticleEntry.COLUMN_TAG_ID).toString());
 
-        //Log.d("DB ArticleContract", ArticleContract.ArticleEntry.TABLE_NAME);
         return this.getWritableDatabase().insert(
                 ArticleContract.ArticleEntry.TABLE_NAME,
                 null,

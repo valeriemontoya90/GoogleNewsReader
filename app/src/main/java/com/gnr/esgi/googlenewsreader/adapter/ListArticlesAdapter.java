@@ -54,7 +54,7 @@ public class ListArticlesAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView == null
-                        ? _inflater.inflate(R.layout.list_row, null)
+                        ? _inflater.inflate(R.layout.item_article, null)
                         : convertView;
 
         TextView title = (TextView) view.findViewById(R.id.news_title);
