@@ -9,7 +9,7 @@ import com.gnr.esgi.googlenewsreader.io.FlushedInputStream;
 import com.gnr.esgi.googlenewsreader.model.Article;
 import com.gnr.esgi.googlenewsreader.model.Picture;
 import com.gnr.esgi.googlenewsreader.model.Tag;
-import com.gnr.esgi.googlenewsreader.services.HttpRetriever;
+import com.gnr.esgi.googlenewsreader.api.HttpRetriever;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

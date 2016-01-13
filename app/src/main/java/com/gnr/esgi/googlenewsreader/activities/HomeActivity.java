@@ -27,7 +27,7 @@ import com.gnr.esgi.googlenewsreader.helper.ArticleHelper;
 import com.gnr.esgi.googlenewsreader.listener.CancelTaskOnListener;
 import com.gnr.esgi.googlenewsreader.model.Tag;
 import com.gnr.esgi.googlenewsreader.parser.JsonParser;
-import com.gnr.esgi.googlenewsreader.services.HttpRetriever;
+import com.gnr.esgi.googlenewsreader.api.HttpRetriever;
 import com.gnr.esgi.googlenewsreader.services.RefreshService;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;

@@ -1,4 +1,4 @@
-package com.gnr.esgi.googlenewsreader.services;
+package com.gnr.esgi.googlenewsreader.api;
 
 import java.io.*;
 import java.net.HttpURLConnection;

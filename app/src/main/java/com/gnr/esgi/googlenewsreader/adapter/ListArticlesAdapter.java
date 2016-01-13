@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.gnr.esgi.googlenewsreader.GNRApplication;
 import com.gnr.esgi.googlenewsreader.R;
 import com.gnr.esgi.googlenewsreader.model.Article;
-import com.gnr.esgi.googlenewsreader.services.HttpRetriever;
 import com.squareup.picasso.Picasso;
 import java.util.List;
 
@@ -20,7 +19,6 @@ public class ListArticlesAdapter extends BaseAdapter {
     private Activity _activity;
     private List<Article> _articles;
     private static LayoutInflater _inflater = null;
-    private HttpRetriever httpRetriever = new HttpRetriever();
 
     public ListArticlesAdapter(Activity activity,
                                List<Article> articles) {
@@ -36,7 +34,7 @@ public class ListArticlesAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return position;
+        return _articles.get(position);
     }
 
     @Override
@@ -55,7 +53,7 @@ public class ListArticlesAdapter extends BaseAdapter {
         TextView source = (TextView) view.findViewById(R.id.news_source);
         ImageView picture = (ImageView) view.findViewById(R.id.news_picture);
 
-        Article article = _articles.get(position);
+        Article article = (Article) getItem(position);
 
         // Settings all news in list
         title.setText(article.getTitle());
