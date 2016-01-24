@@ -70,22 +70,22 @@ public class ListArticlesAdapter extends BaseAdapter {
         source.setText(article.getSource().getName());
 
         if(article.getPicture() != null
-                && article.getPicture().getUrl() != null)
+                && article.getPicture().getPictureUrl() != null)
         {
-            Bitmap bitmap = fetchBitmapFromCache(article.getPicture().getUrl());
+            Bitmap bitmap = fetchBitmapFromCache(article.getPicture().getPictureUrl());
 
             if(bitmap == null) {
-                new BitmapDownloaderTask(picture).execute(article.getPicture().getUrl());
+                new BitmapDownloaderTask(picture).execute(article.getPicture().getPictureUrl());
             }
             else
-                article.getPicture().setBitmap(bitmap);
+                article.getPicture().setPictureBitmap(bitmap);
         }
         else
         {
             article.setPicture(new Picture());
         }
 
-        picture.setImageBitmap(article.getPicture().getBitmap());
+        picture.setImageBitmap(article.getPicture().getPictureBitmap());
 
         return view;
     }

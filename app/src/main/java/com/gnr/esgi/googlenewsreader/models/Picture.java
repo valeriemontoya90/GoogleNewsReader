@@ -3,29 +3,30 @@ package com.gnr.esgi.googlenewsreader.models;
 import android.graphics.Bitmap;
 
 public class Picture {
-    private String _url;
-    private Bitmap _bitmap;
+
+    private String pictureUrl;
+    private Bitmap pictureBitmap;
 
     public Picture() {
     }
 
     public Picture(String url) {
-        _url = url;
+        pictureUrl = url;
+    }
+    
+    public String getPictureUrl() {
+        return pictureUrl;
     }
 
-    public String getUrl() {
-        return _url;
+    public void setPictureUrl(String url) {
+        pictureUrl = url;
     }
 
-    public void setUrl(String url) {
-        _url = url;
+    public Bitmap getPictureBitmap() {
+        return pictureBitmap;
     }
 
-    public Bitmap getBitmap() {
-        return _bitmap;
-    }
-
-    public void setBitmap(Bitmap bitmap) {
-        _bitmap = bitmap;
+    public void setPictureBitmap(Bitmap bitmap) {
+        pictureBitmap = bitmap;
     }
 }

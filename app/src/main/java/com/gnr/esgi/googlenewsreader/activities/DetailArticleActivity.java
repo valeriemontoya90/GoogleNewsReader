@@ -30,7 +30,7 @@ public class DetailArticleActivity extends AppCompatActivity {
         title.setText(article.getTitle());
         content.setText(article.getContent());
         if(article.getPicture() != null
-            && article.getPicture().getBitmap() != null)
-            picture.setImageBitmap(article.getPicture().getBitmap());
+            && article.getPicture().getPictureBitmap() != null)
+            picture.setImageBitmap(article.getPicture().getPictureBitmap());
     }
 }

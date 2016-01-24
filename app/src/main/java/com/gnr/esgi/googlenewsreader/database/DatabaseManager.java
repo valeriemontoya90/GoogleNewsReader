@@ -43,15 +43,15 @@ public class DatabaseManager {
 
             for(Article article : newTag.getArticles()) {
                 if(article.getPicture() != null
-                    && article.getPicture().getUrl() != null)
+                    && article.getPicture().getPictureUrl() != null)
                 {
-                    Bitmap bitmap = fetchBitmapFromCache(article.getPicture().getUrl());
+                    Bitmap bitmap = fetchBitmapFromCache(article.getPicture().getPictureUrl());
 
                     if(bitmap == null) {
-                        new BitmapDownloaderTask(null).execute(article.getPicture().getUrl());
+                        new BitmapDownloaderTask(null).execute(article.getPicture().getPictureUrl());
                     }
                     else
-                        article.getPicture().setBitmap(bitmap);
+                        article.getPicture().setPictureBitmap(bitmap);
                 }
                 else
                 {
