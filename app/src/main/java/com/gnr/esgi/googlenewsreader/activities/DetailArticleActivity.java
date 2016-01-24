@@ -29,8 +29,8 @@ public class DetailArticleActivity extends AppCompatActivity {
 
         title.setText(article.getTitle());
         content.setText(article.getContent());
-        if (article.getPicture() != null && article.getPicture().getPictureBitmap() != null) {
+        /*if (article.getPicture() != null && article.getPicture().getPictureBitmap() != null) {
             picture.setImageBitmap(article.getPicture().getPictureBitmap());
-        }
+        }*/
     }
 }
