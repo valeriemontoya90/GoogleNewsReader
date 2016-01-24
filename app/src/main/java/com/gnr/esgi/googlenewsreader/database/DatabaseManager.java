@@ -1,19 +1,11 @@
 package com.gnr.esgi.googlenewsreader.database;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
-import android.widget.ImageView;
 import com.gnr.esgi.googlenewsreader.helper.ArticleHelper;
-import com.gnr.esgi.googlenewsreader.io.FlushedInputStream;
 import com.gnr.esgi.googlenewsreader.models.Article;
-import com.gnr.esgi.googlenewsreader.models.Picture;
 import com.gnr.esgi.googlenewsreader.models.Tag;
 import com.gnr.esgi.googlenewsreader.services.HttpRetriever;
-import java.io.InputStream;
-import java.lang.ref.WeakReference;
+
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -41,23 +33,18 @@ public class DatabaseManager {
                                 : newTag.getArticlesList().size()
                 );
 
-            for(Article article : newTag.getArticlesList()) {
-                if(article.getPicture() != null
-                    && article.getPicture().getPictureUrl() != null)
-                {
-                    Bitmap bitmap = fetchBitmapFromCache(article.getPicture().getPictureUrl());
+            /*for(Article article : newTag.getArticlesList()) {
+                if(article.getPicture() != null && article.getPicture().getPictureUrl() != null) {
+                    //Bitmap bitmap = fetchBitmapFromCache(article.getPicture().getPictureUrl());
 
-                    if(bitmap == null) {
-                        new BitmapDownloaderTask(null).execute(article.getPicture().getPictureUrl());
-                    }
-                    else
-                        article.getPicture().setPictureBitmap(bitmap);
+                    //if(bitmap == null) {
+                        //new BitmapDownloaderTask(null).execute(article.getPicture().getPictureUrl());
+                    //} else
+                    //    article.getPicture().setPictureBitmap(bitmap);
+                } else {
+                    //article.setPicture(new Picture());
                 }
-                else
-                {
-                    article.setPicture(new Picture());
-                }
-            }
+            }*/
         }
 
         _tags = tags;
@@ -131,6 +118,7 @@ public class DatabaseManager {
         return null;
     }
 
+    /*
     private LinkedHashMap<String, Bitmap> bitmapCache = new LinkedHashMap<String, Bitmap>();
 
     private void addBitmapToCache(String url, Bitmap bitmap) {
@@ -154,8 +142,7 @@ public class DatabaseManager {
         }
         return null;
     }
-
-    private class BitmapDownloaderTask extends AsyncTask<String, Void, Bitmap> {
+private class BitmapDownloaderTask extends AsyncTask<String, Void, Bitmap> {
 
         private String url;
         private final WeakReference<ImageView> imageViewReference;
@@ -185,5 +172,5 @@ public class DatabaseManager {
                 }
             }
         }
-    }
+    }*/
 }

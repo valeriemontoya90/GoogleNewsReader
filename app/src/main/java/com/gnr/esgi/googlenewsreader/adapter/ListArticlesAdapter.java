@@ -10,22 +10,25 @@ import android.widget.TextView;
 
 import com.gnr.esgi.googlenewsreader.R;
 import com.gnr.esgi.googlenewsreader.models.Article;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
 public class ListArticlesAdapter extends BaseAdapter {
 
-    private Context context;
-    private List<Article> arrayListArticles;
+    private Context mContext;
+    private List<Article> mListArticles;
+    private ImageLoader mImageLoader;
 
     public ListArticlesAdapter(Context context, List<Article> articles) {
-        this.context = context;
-        this.arrayListArticles = articles;
+        this.mContext = context;
+        this.mListArticles = articles;
+        //this.mImageLoader = ;
     }
 
     @Override
     public int getCount() {
-        return arrayListArticles.size();
+        return mListArticles.size();
     }
 
     @Override
@@ -41,23 +44,26 @@ public class ListArticlesAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
-        if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_article, parent, false);
 
+        if (convertView == null) {
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.item_article, parent, false);
             viewHolder = new ViewHolder();
             viewHolder.title = (TextView) convertView.findViewById(R.id.news_title);
             viewHolder.createdAt = (TextView) convertView.findViewById(R.id.news_date);
             viewHolder.source = (TextView) convertView.findViewById(R.id.news_source);
-            viewHolder.picture = (ImageView) convertView.findViewById(R.id.news_picture);
-
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        Article articleSelected = arrayListArticles.get(position);
+
+        Article articleSelected = mListArticles.get(position);
         viewHolder.title.setText(articleSelected.getTitle());
         viewHolder.createdAt.setText(articleSelected.getCreatedAt().toString());
         viewHolder.source.setText(articleSelected.getSource().getSourceName());
+
+        ImageView picture = (ImageView) convertView.findViewById(R.id.news_picture);
+        ImageLoader.getInstance().displayImage(articleSelected.getPicture().getPictureUrl(), picture);
+
         //viewHolder.picture.setImageResource();
         return convertView;
     }
@@ -70,7 +76,7 @@ public class ListArticlesAdapter extends BaseAdapter {
     }
 
     public void swapItems(List<Article> items) {
-        this.arrayListArticles = items;
+        this.mListArticles = items;
         notifyDataSetChanged();
     }
 }

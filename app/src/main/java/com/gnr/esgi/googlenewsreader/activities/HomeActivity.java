@@ -28,6 +28,8 @@ import com.gnr.esgi.googlenewsreader.services.RefreshService;
 import com.gnr.esgi.googlenewsreader.utils.Constants;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -97,6 +99,9 @@ public class HomeActivity extends ActionBarActivity {
                 showNewsOverview(position);
             }
         });
+
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
+        ImageLoader.getInstance().init(config);
     }
 
     private void showNewsOverview(Integer articleId) {
@@ -234,7 +239,7 @@ public class HomeActivity extends ActionBarActivity {
                                         .get("responseData"))
                                 .get("results")));
 
-                tag.setArticles(JsonParser.parse((ArrayList<LinkedTreeMap<String, Object>>) ((LinkedTreeMap<String, Object>) response.get("responseData")).get("results")));
+                //tag.setArticles(JsonParser.parse((ArrayList<LinkedTreeMap<String, Object>>) ((LinkedTreeMap<String, Object>) response.get("responseData")).get("results")));
 
                 saveArticlesInDB(tag);
             }
