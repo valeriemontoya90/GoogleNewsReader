@@ -9,63 +9,37 @@ import java.util.Date;
 
 public class Article implements Parcelable, Serializable {
 
-    private Integer _id;
-    private Boolean _read;
+    private Integer articleId;
+    private Boolean hasAlreadyReadValue;
 
     @SerializedName(Constants.ARTICLE_KEY_TITLE)
-    private String _title;
+    private String title;
 
     @SerializedName(Constants.ARTICLE_KEY_CONTENT)
-    private String _content;
+    private String content;
 
-    @SerializedName(Constants.ARTICLE_KEY_DATE)
-    private Date _date;
+    @SerializedName(Constants.ARTICLE_KEY_CREATED_AT)
+    private Date createdAt;
 
     @SerializedName(Constants.ARTICLE_KEY_PICTURE)
-    //private String _picture;
-    private Picture _picture;
+    //private String picture;
+    private Picture picture;
 
     @SerializedName(Constants.ARTICLE_KEY_SOURCE)
-    private Source _source;
+    private Source source;
 
-    private String _sourceName;
-    private String _sourceUrl;
-    private int _tagId;
+    private int linkTagId;
 
     public Article() {
-        _id = 0;
-        _date = new Date();
+        articleId = 0;
+        createdAt = new Date();
     }
 
     protected Article(Parcel in) {
-        _id = in.readInt();
-        _title = in.readString();
-        _content = in.readString();
-        //_picture = in.readString();
-    }
-
-    public Integer getId() {
-        return _id;
-    }
-
-    public void setId(Integer id) {
-        _id = id;
-    }
-
-    public String getTitle() {
-        return _title;
-    }
-
-    public void setTitle(String title) {
-        _title = title;
-    }
-
-    public String getContent() {
-        return _content;
-    }
-
-    public void setContent(String content) {
-        _content = content;
+        articleId = in.readInt();
+        title = in.readString();
+        content = in.readString();
+        //picture = in.readString();
     }
 
     public static final Creator<Article> CREATOR = new Creator<Article>() {
@@ -87,49 +61,73 @@ public class Article implements Parcelable, Serializable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(_id);
-        dest.writeString(_title);
-        dest.writeString(_content);
-        //dest.writeString(_picture);
+        dest.writeInt(articleId);
+        dest.writeString(title);
+        dest.writeString(content);
+        //dest.writeString(picture);
+    }
+
+    public Integer getArticleId() {
+        return articleId;
+    }
+
+    public void setArticleId(Integer id) {
+        articleId = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public Picture getPicture() {
-        return _picture;
+        return picture;
     }
 
     public void setPicture(Picture picture) {
-        _picture = picture;
+        this.picture = picture;
     }
 
-    public Date getDate() {
-        return _date;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public void setDate(Date date) {
-        _date = date;
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
     public Source getSource() {
-        return _source;
+        return source;
     }
 
     public void setSource(Source source) {
-        _source = source;
+        this.source = source;
     }
 
-    public int getTagId() {
-        return _tagId;
+    public int getLinkTagId() {
+        return linkTagId;
     }
 
-    public void setTagId(int tagId) {
-        _tagId = tagId;
+    public void setLinkTagId(int tagId) {
+        linkTagId = tagId;
     }
 
-    public Boolean getRead() {
-        return _read;
+    public Boolean getHasAlreadyReadValue() {
+        return hasAlreadyReadValue;
     }
 
-    public void setRead(Boolean read) {
-        _read = read;
+    public void setHasAlreadyReadValue(Boolean read) {
+        hasAlreadyReadValue = read;
     }
 }

@@ -7,7 +7,7 @@ public class Constants {
     public static final String ARTICLE_KEY_TITLE = "titleNoFormatting";
     public static final String ARTICLE_KEY_CONTENT = "content";
     public static final String ARTICLE_KEY_LINK = "unescapedUrl";
-    public static final String ARTICLE_KEY_DATE = "publishedDate";
+    public static final String ARTICLE_KEY_CREATED_AT = "publishedDate";
     public static final String ARTICLE_KEY_SOURCE = "publisher";
     public static final String ARTICLE_KEY_PICTURE = "image";
 }

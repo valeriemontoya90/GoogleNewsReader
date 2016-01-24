@@ -109,7 +109,7 @@ public class DatabaseManager {
 
     private List<Article> setIndex(List<Article> articleList) {
         for(int i=0; i< articleList.size(); i++)
-            articleList.get(i).setId(i);
+            articleList.get(i).setArticleId(i);
 
         return articleList;
     }
@@ -125,7 +125,7 @@ public class DatabaseManager {
 
     public Article findArticleById(Integer id) {
         for(Article article : getAllArticles())
-            if(article.getId().compareTo(id) == 0)
+            if(article.getArticleId().compareTo(id) == 0)
                 return article;
 
         return null;

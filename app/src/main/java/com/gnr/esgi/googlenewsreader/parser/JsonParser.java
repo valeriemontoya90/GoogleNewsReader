@@ -22,7 +22,7 @@ public class JsonParser {
                 article.setContent((String) map.get(Constants.ARTICLE_KEY_CONTENT));
 
                 //Parse date from string to Date
-                //article.setDate((String) map.get(ArticleHelper.ARTICLE_KEY_DATE));
+                //article.setDate((String) map.get(ArticleHelper.ARTICLE_KEY_CREATED_AT));
 
                 LinkedTreeMap<String, Object> pictureUrl = (LinkedTreeMap<String, Object>) map.get(Constants.ARTICLE_KEY_PICTURE);
                 article.setPicture(pictureUrl != null
