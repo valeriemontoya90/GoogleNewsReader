@@ -7,7 +7,7 @@ import java.util.List;
 public class ArticleHelper {
 
     public static String getUrl(String tagName) {
-        return Config.ARTICLE_KEY_API_URL + tagName;
+        return Config.BASE_API_URL + tagName;
     }
 
     public static int countRecentNews(List<Article> recent, List<Article> old) {
