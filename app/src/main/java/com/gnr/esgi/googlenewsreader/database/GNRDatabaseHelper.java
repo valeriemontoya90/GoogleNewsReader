@@ -73,8 +73,8 @@ public class GNRDatabaseHelper extends SQLiteOpenHelper {
         values.put(ArticleContract.ArticleEntry.COLUMN_TITLE, article.getTitle());
         values.put(ArticleContract.ArticleEntry.COLUMN_DATE, article.getDate().toString());
         values.put(ArticleContract.ArticleEntry.COLUMN_CONTENT, article.getContent());
-        values.put(ArticleContract.ArticleEntry.COLUMN_SOURCE_NAME, article.getSource().getName());
-        values.put(ArticleContract.ArticleEntry.COLUMN_SOURCE_URL, article.getSource().getUrl());
+        values.put(ArticleContract.ArticleEntry.COLUMN_SOURCE_NAME, article.getSource().getSourceName());
+        values.put(ArticleContract.ArticleEntry.COLUMN_SOURCE_URL, article.getSource().getSourceUrl());
         values.put(ArticleContract.ArticleEntry.COLUMN_TAG_ID, article.getLinkTagId());
 
         Log.d("DB COLUMN_TITLE", values.get(ArticleContract.ArticleEntry.COLUMN_TITLE).toString());

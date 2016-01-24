@@ -13,7 +13,7 @@ public class Picture {
     public Picture(String url) {
         pictureUrl = url;
     }
-    
+
     public String getPictureUrl() {
         return pictureUrl;
     }

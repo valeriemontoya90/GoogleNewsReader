@@ -30,8 +30,8 @@ public class JsonParser {
                                     : new Picture());
 
                 Source source = new Source();
-                source.setName((String) map.get(Constants.ARTICLE_KEY_SOURCE));
-                source.setUrl((String) map.get(Constants.ARTICLE_KEY_LINK));
+                source.setSourceName((String) map.get(Constants.ARTICLE_KEY_SOURCE));
+                source.setSourceUrl((String) map.get(Constants.ARTICLE_KEY_LINK));
                 article.setSource(source);
 
                 listNews.add(ArticleParser.parse(article));
