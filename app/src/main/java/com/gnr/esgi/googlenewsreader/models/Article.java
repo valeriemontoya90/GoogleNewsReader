@@ -2,10 +2,15 @@ package com.gnr.esgi.googlenewsreader.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
+
 import com.gnr.esgi.googlenewsreader.utils.Config;
 import com.google.gson.annotations.SerializedName;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
-import java.util.Date;
 
 public class Article implements Parcelable, Serializable {
 
@@ -19,20 +24,22 @@ public class Article implements Parcelable, Serializable {
     private String content;
 
     @SerializedName(Config.ARTICLE_KEY_CREATED_AT)
-    private Date createdAt;
+    private String createdAt;
 
     @SerializedName(Config.ARTICLE_KEY_PICTURE)
     //private String picture;
     private Picture picture;
+    private String pictureUrl;
 
-    @SerializedName(Config.ARTICLE_KEY_SOURCE)
+    @SerializedName(Config.ARTICLE_KEY_SOURCE_NAME)
     private Source source;
+    private String sourceName;
+    private String sourceUrl;
 
     private int linkTagId;
 
     public Article() {
         articleId = 0;
-        createdAt = new Date();
     }
 
     protected Article(Parcel in) {
@@ -67,6 +74,37 @@ public class Article implements Parcelable, Serializable {
         //dest.writeString(picture);
     }
 
+    public Article(JSONObject jsonArticle){
+        int Id = 0;
+        String jTitle = "";
+        String jContent = "";
+        String jCreatedAt = "";
+        String jSourceUrl = "";
+        String jSourceName = "";
+        String jImageUrl = "";
+
+        try {
+            jTitle = jsonArticle.getString(Config.ARTICLE_KEY_TITLE);
+            jContent = jsonArticle.getString(Config.ARTICLE_KEY_CONTENT);
+            jCreatedAt = jsonArticle.getString(Config.ARTICLE_KEY_CREATED_AT);
+            jSourceName = jsonArticle.getString(Config.ARTICLE_KEY_SOURCE_NAME);
+            jSourceUrl = jsonArticle.getString(Config.ARTICLE_KEY_SOURCE_URL);
+            JSONObject image = jsonArticle.getJSONObject(Config.ARTICLE_KEY_PICTURE);
+            jImageUrl = image.getString(Config.ARTICLE_KEY_PICTURE_URL);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        this.title = jTitle;
+        this.content = jContent;
+        this.createdAt = jCreatedAt;
+        this.sourceUrl = jSourceUrl;
+        this.sourceName = jSourceName;
+        this.pictureUrl = jImageUrl;
+
+        Log.d(Config.LOG_PREFIX, "New Article(JSONObject c):" + this.toString());
+    }
+
     public Integer getArticleId() {
         return articleId;
     }
@@ -99,11 +137,11 @@ public class Article implements Parcelable, Serializable {
         this.picture = picture;
     }
 
-    public Date getCreatedAt() {
+    public String getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -113,6 +151,30 @@ public class Article implements Parcelable, Serializable {
 
     public void setSource(Source source) {
         this.source = source;
+    }
+
+    public String getPictureUrl() {
+        return pictureUrl;
+    }
+
+    public void setPictureUrl(String pictureUrl) {
+        this.pictureUrl = pictureUrl;
+    }
+
+    public String getSourceUrl() {
+        return sourceUrl;
+    }
+
+    public void setSourceUrl(String sourceUrl) {
+        this.sourceUrl = sourceUrl;
+    }
+
+    public String getSourceName() {
+        return sourceName;
+    }
+
+    public void setSourceName(String sourceName) {
+        this.sourceName = sourceName;
     }
 
     public int getLinkTagId() {

@@ -4,45 +4,40 @@ import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.gnr.esgi.googlenewsreader.GNRApplication;
 import com.gnr.esgi.googlenewsreader.R;
+import com.gnr.esgi.googlenewsreader.Webservices.Parser;
+import com.gnr.esgi.googlenewsreader.Webservices.Webservices;
 import com.gnr.esgi.googlenewsreader.adapter.ListArticlesAdapter;
-import com.gnr.esgi.googlenewsreader.helper.ArticleHelper;
-import com.gnr.esgi.googlenewsreader.listener.CancelTaskOnListener;
+import com.gnr.esgi.googlenewsreader.models.Article;
 import com.gnr.esgi.googlenewsreader.models.Tag;
-import com.gnr.esgi.googlenewsreader.parser.JsonParser;
-import com.gnr.esgi.googlenewsreader.services.HttpRetriever;
 import com.gnr.esgi.googlenewsreader.services.RefreshService;
 import com.gnr.esgi.googlenewsreader.utils.Config;
-import com.google.gson.Gson;
-import com.google.gson.internal.LinkedTreeMap;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import org.apache.http.Header;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class HomeActivity extends ActionBarActivity {
 
     Boolean isRefresh;
 
+    ArrayList<Article> aaarticlesList = new ArrayList<>();
     ListView listviewArticles;
     ListArticlesAdapter listArticlesAdapter;
     ProgressDialog progressDialog;
@@ -66,7 +61,7 @@ public class HomeActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        refresh();
+        //refresh();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -90,8 +85,11 @@ public class HomeActivity extends ActionBarActivity {
             }
         });
 
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
+        ImageLoader.getInstance().init(config);
+
         listviewArticles = (ListView) findViewById(R.id.news_list);
-        listArticlesAdapter = new ListArticlesAdapter(getApplicationContext(), GNRApplication.getUser().getData().getAllArticles());
+        listArticlesAdapter = new ListArticlesAdapter(getApplicationContext(), aaarticlesList);
         listviewArticles.setAdapter(listArticlesAdapter);
         listviewArticles.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -100,8 +98,37 @@ public class HomeActivity extends ActionBarActivity {
             }
         });
 
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
-        ImageLoader.getInstance().init(config);
+        callWebServices();
+
+    }
+
+    private void callWebServices() {
+        ArrayList<Tag> tags = new ArrayList<>();
+        // FOR TEST
+        tags.add(new Tag("apple"));
+        tags.add(new Tag("PSG"));
+        tags.add(new Tag("Inde"));
+
+        for (Tag tag : tags) {
+            Webservices.getArticlesByTag(tag.getTagName(), new AsyncHttpResponseHandler() {
+                @Override
+                public void onSuccess(int i, Header[] headers, byte[] bytes) {
+                    Log.i(Config.LOG_PREFIX, "Webservice Response : " + new String(bytes));
+
+                    List<Article> parsedArticles = Parser.parseResultPage(new String(bytes));
+
+                    aaarticlesList.addAll(parsedArticles);
+                    //listArticlesAdapter.swapItems(parsedArticles);
+                    listArticlesAdapter.notifyDataSetChanged();
+
+                }
+
+                @Override
+                public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
+                    Log.e(Config.LOG_PREFIX, "Webservice Failed Response :" + new String(bytes));
+                }
+            });
+        }
     }
 
     private void showNewsOverview(Integer articleId) {
@@ -109,6 +136,7 @@ public class HomeActivity extends ActionBarActivity {
         startActivity(intent);
     }
 
+/*
     private int refresh() {
         GNRApplication.getUser().refreshData();
         return performSearch();
@@ -117,17 +145,10 @@ public class HomeActivity extends ActionBarActivity {
     private int performSearch() {
         progressDialog = ProgressDialog.show(HomeActivity.this, "Please wait...", "Retrieving data...", true, true);
 
-        progressDialog.setOnCancelListener(
-                new CancelTaskOnListener(
-                        new ArticlesSearchTask()
-                                .execute(GNRApplication
-                                        .getUser()
-                                        .getData()
-                                        .getTags())));
+        progressDialog.setOnCancelListener(new CancelTaskOnListener(new ArticlesSearchTask().execute()));
 
         return GNRApplication.getUser().getData().countLatest();
     }
-/*
     public void launchRefreshService() {
         Intent intent = new Intent(this, RefreshService.class);
 
@@ -216,61 +237,9 @@ public class HomeActivity extends ActionBarActivity {
         }
     }
 
-    private class ArticlesSearchTask extends AsyncTask<List<Tag>, Void, List<Tag>> {
-
-        @Override
-        protected List<Tag> doInBackground(List<Tag>... params) {
-            for(Tag tag : params[0]) {
-                InputStream source = HttpRetriever
-                                        .retrieveStream(ArticleHelper
-                                                .getUrl(tag
-                                                        .getTagName()));
-
-                Gson gson = new Gson();
-
-                Reader reader = new InputStreamReader(source);
-
-                Map<String, Object> response = new HashMap<>();
-                response = (Map<String, Object>) gson.fromJson(reader, response.getClass());
-
-                tag.setArticles(JsonParser.parse((ArrayList<LinkedTreeMap<String, Object>>)
-                        ((LinkedTreeMap<String, Object>)
-                                response
-                                        .get("responseData"))
-                                .get("results")));
-
-                //tag.setArticles(JsonParser.parse((ArrayList<LinkedTreeMap<String, Object>>) ((LinkedTreeMap<String, Object>) response.get("responseData")).get("results")));
-
-                saveArticlesInDB(tag);
-            }
-
-            return params[0];
-        }
-
-        @Override
-        protected void onPostExecute(final List<Tag> result) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if(progressDialog != null) {
-                        progressDialog.dismiss();
-                        progressDialog = null;
-                    }
-
-                    if(result != null) {
-                        GNRApplication.getUser().getData().setTags(result);
-                    }
-
-                    listArticlesAdapter.swapItems(GNRApplication.getUser().getData().getAllArticles());
-                    listArticlesAdapter.notifyDataSetChanged();
-                }
-            });
-        }
-    }
-
-    public void saveArticlesInDB(Tag tag) {
+    /*public void saveArticlesInDB(Tag tag) {
         for (int i=0; i<tag.getArticlesList().size(); i++) {
             GNRApplication.getGnrDBHelper().addArticle(tag.getArticlesList().get(i));
         }
-    }
+    }*/
 }

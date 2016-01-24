@@ -1,6 +1,7 @@
 package com.gnr.esgi.googlenewsreader.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,8 @@ import android.widget.TextView;
 import com.gnr.esgi.googlenewsreader.R;
 import com.gnr.esgi.googlenewsreader.models.Article;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.util.List;
 
@@ -43,7 +46,7 @@ public class ListArticlesAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder;
+        final ViewHolder viewHolder;
 
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.item_article, parent, false);
@@ -51,24 +54,43 @@ public class ListArticlesAdapter extends BaseAdapter {
             viewHolder.title = (TextView) convertView.findViewById(R.id.news_title);
             viewHolder.createdAt = (TextView) convertView.findViewById(R.id.news_date);
             viewHolder.source = (TextView) convertView.findViewById(R.id.news_source);
+            viewHolder.picture = (ImageView) convertView.findViewById(R.id.news_picture);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-
+        viewHolder.picture.setVisibility(View.INVISIBLE);
         Article articleSelected = mListArticles.get(position);
         viewHolder.title.setText(articleSelected.getTitle());
-        viewHolder.createdAt.setText(articleSelected.getCreatedAt().toString());
-        viewHolder.source.setText(articleSelected.getSource().getSourceName());
+        viewHolder.createdAt.setText(articleSelected.getCreatedAt());
+        viewHolder.source.setText(articleSelected.getSourceUrl());
 
-        ImageView picture = (ImageView) convertView.findViewById(R.id.news_picture);
-        ImageLoader.getInstance().displayImage(articleSelected.getPicture().getPictureUrl(), picture);
+        ImageLoader.getInstance().displayImage(articleSelected.getPictureUrl(), viewHolder.picture, new ImageLoadingListener() {
+            @Override
+            public void onLoadingStarted(String s, View view) {
 
-        //viewHolder.picture.setImageResource();
+            }
+
+            @Override
+            public void onLoadingFailed(String s, View view, FailReason failReason) {
+
+            }
+
+            @Override
+            public void onLoadingComplete(String s, View view, Bitmap bitmap) {
+                viewHolder.picture.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onLoadingCancelled(String s, View view) {
+
+            }
+        });
+
         return convertView;
     }
 
-    private static class ViewHolder {
+    private class ViewHolder {
         TextView title;
         TextView createdAt;
         TextView source;

@@ -7,10 +7,11 @@ public class Config {
     public static final String ARTICLE_KEY_ID = "id";
     public static final String ARTICLE_KEY_TITLE = "titleNoFormatting";
     public static final String ARTICLE_KEY_CONTENT = "content";
-    public static final String ARTICLE_KEY_LINK = "unescapedUrl";
     public static final String ARTICLE_KEY_CREATED_AT = "publishedDate";
-    public static final String ARTICLE_KEY_SOURCE = "publisher";
+    public static final String ARTICLE_KEY_SOURCE_NAME = "publisher";
+    public static final String ARTICLE_KEY_SOURCE_URL = "unescapedUrl";
     public static final String ARTICLE_KEY_PICTURE = "image";
+    public static final String ARTICLE_KEY_PICTURE_URL = "url";
 
     public static final boolean DISPLAY_LOG = true;
     public static final String LOG_PREFIX = "Webservices";
