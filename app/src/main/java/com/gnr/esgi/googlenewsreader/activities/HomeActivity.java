@@ -91,11 +91,7 @@ public class HomeActivity extends ActionBarActivity {
     }
 
     private void applyAdapter() {
-        adapter = new ListArticlesAdapter(this,
-                        GNRApplication
-                            .getUser()
-                            .getData()
-                            .getAllArticles());
+        adapter = new ListArticlesAdapter(getApplicationContext(), GNRApplication.getUser().getData().getAllArticles());
 
         listview.setAdapter(adapter);
     }
