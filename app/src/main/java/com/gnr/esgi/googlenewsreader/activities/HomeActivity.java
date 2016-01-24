@@ -1,17 +1,13 @@
 package com.gnr.esgi.googlenewsreader.activities;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -19,18 +15,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import com.gnr.esgi.googlenewsreader.R;
+
 import com.gnr.esgi.googlenewsreader.GNRApplication;
+import com.gnr.esgi.googlenewsreader.R;
 import com.gnr.esgi.googlenewsreader.adapter.ListArticlesAdapter;
-import com.gnr.esgi.googlenewsreader.utils.Constants;
 import com.gnr.esgi.googlenewsreader.helper.ArticleHelper;
 import com.gnr.esgi.googlenewsreader.listener.CancelTaskOnListener;
 import com.gnr.esgi.googlenewsreader.models.Tag;
 import com.gnr.esgi.googlenewsreader.parser.JsonParser;
 import com.gnr.esgi.googlenewsreader.services.HttpRetriever;
 import com.gnr.esgi.googlenewsreader.services.RefreshService;
+import com.gnr.esgi.googlenewsreader.utils.Constants;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -43,8 +41,8 @@ public class HomeActivity extends ActionBarActivity {
 
     Boolean isRefresh;
 
-    ListView listview;
-    ListArticlesAdapter adapter;
+    ListView listviewArticles;
+    ListArticlesAdapter listArticlesAdapter;
     ProgressDialog progressDialog;
     Toolbar toolbar;
     RefreshService.RefreshBinder binder;
@@ -75,37 +73,25 @@ public class HomeActivity extends ActionBarActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int count = refresh();
+                /*int count = refresh();
 
-                    final Snackbar snackbar = Snackbar.make(view, count + R.string.snackbar_addedNews, Snackbar.LENGTH_LONG);
-                    snackbar.setAction(R.string.snackbar_close, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            snackbar.dismiss();
-                        }
-                    });
+                final Snackbar snackbar = Snackbar.make(view, count + R.string.snackbar_addedNews, Snackbar.LENGTH_LONG);
+                snackbar.setAction(R.string.snackbar_close, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        snackbar.dismiss();
+                    }
+                });
 
-                    snackbar.show();
+                snackbar.show();
+                */
             }
         });
-    }
 
-    private void applyAdapter() {
-        adapter = new ListArticlesAdapter(getApplicationContext(), GNRApplication.getUser().getData().getAllArticles());
-
-        listview.setAdapter(adapter);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        listview = (ListView) findViewById(R.id.news_list);
-
-        applyAdapter();
-
-        // Click event on news list item
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listviewArticles = (ListView) findViewById(R.id.news_list);
+        listArticlesAdapter = new ListArticlesAdapter(getApplicationContext(), GNRApplication.getUser().getData().getAllArticles());
+        listviewArticles.setAdapter(listArticlesAdapter);
+        listviewArticles.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 showNewsOverview(position);
@@ -113,15 +99,18 @@ public class HomeActivity extends ActionBarActivity {
         });
     }
 
+    private void showNewsOverview(Integer articleId) {
+        Intent intent = new Intent(this, DetailArticleActivity.class).putExtra(Constants.ARTICLE_KEY_ID, articleId);
+        startActivity(intent);
+    }
+
     private int refresh() {
         GNRApplication.getUser().refreshData();
-
         return performSearch();
     }
 
     private int performSearch() {
-        progressDialog = ProgressDialog.show(HomeActivity.this,
-                "Please wait...", "Retrieving data...", true, true);
+        progressDialog = ProgressDialog.show(HomeActivity.this, "Please wait...", "Retrieving data...", true, true);
 
         progressDialog.setOnCancelListener(
                 new CancelTaskOnListener(
@@ -133,22 +122,7 @@ public class HomeActivity extends ActionBarActivity {
 
         return GNRApplication.getUser().getData().countLatest();
     }
-
-    private void showNewsOverview(Integer id) {
-        Intent intent = new Intent(this, DetailArticleActivity.class)
-            //.putExtra(ArticleConstants.ARTICLE_KEY_CATEGORY, (Parcelable) GNRApplication.getUser().getData().findArticleById(id))
-                .putExtra(Constants.ARTICLE_KEY_ID, id);
-
-        startActivity(intent);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_home, menu);
-        return true;
-    }
-
+/*
     public void launchRefreshService() {
         Intent intent = new Intent(this, RefreshService.class);
 
@@ -199,6 +173,14 @@ public class HomeActivity extends ActionBarActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+    */
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_home, menu);
+        return true;
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -207,7 +189,7 @@ public class HomeActivity extends ActionBarActivity {
                 // In case of user click on Refresh icon of toolbar
                 // Show alert dialog with option to activate auto refresh
                 // Then add a service with a 1hour refreshing thread
-                showRefreshDialog();
+                //showRefreshDialog();
                 return true;
 
             case R.id.action_tags:
@@ -270,10 +252,12 @@ public class HomeActivity extends ActionBarActivity {
                         progressDialog = null;
                     }
 
-                    if(result != null)
+                    if(result != null) {
                         GNRApplication.getUser().getData().setTags(result);
+                    }
 
-                    applyAdapter();
+                    listArticlesAdapter.swapItems(GNRApplication.getUser().getData().getAllArticles());
+                    listArticlesAdapter.notifyDataSetChanged();
                 }
             });
         }

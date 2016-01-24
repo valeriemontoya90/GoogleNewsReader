@@ -68,4 +68,9 @@ public class ListArticlesAdapter extends BaseAdapter {
         TextView source;
         ImageView picture;
     }
+
+    public void swapItems(List<Article> items) {
+        this.arrayListArticles = items;
+        notifyDataSetChanged();
+    }
 }
