@@ -25,7 +25,7 @@ public class DetailArticleActivity extends AppCompatActivity {
         picture = (ImageView) findViewById(R.id.news_picture);
 
         // Get news from user's database by given id from main view
-        Article article = GNRApplication.getUser().getData().findArticleById(getIntent().getIntExtra(Constants.KEY_ID, 0));
+        Article article = GNRApplication.getUser().getData().findArticleById(getIntent().getIntExtra(Constants.ARTICLE_KEY_ID, 0));
 
         title.setText(article.getTitle());
         content.setText(article.getContent());

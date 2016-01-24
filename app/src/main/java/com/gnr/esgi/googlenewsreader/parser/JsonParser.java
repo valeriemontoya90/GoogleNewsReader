@@ -18,20 +18,20 @@ public class JsonParser {
             for(LinkedTreeMap<String, Object> map : maps) {
                 Article article = new Article();
 
-                article.setTitle((String) map.get(Constants.KEY_TITLE));
-                article.setContent((String) map.get(Constants.KEY_CONTENT));
+                article.setTitle((String) map.get(Constants.ARTICLE_KEY_TITLE));
+                article.setContent((String) map.get(Constants.ARTICLE_KEY_CONTENT));
 
                 //Parse date from string to Date
-                //article.setDate((String) map.get(ArticleHelper.KEY_DATE));
+                //article.setDate((String) map.get(ArticleHelper.ARTICLE_KEY_DATE));
 
-                LinkedTreeMap<String, Object> pictureUrl = (LinkedTreeMap<String, Object>) map.get(Constants.KEY_PICTURE);
+                LinkedTreeMap<String, Object> pictureUrl = (LinkedTreeMap<String, Object>) map.get(Constants.ARTICLE_KEY_PICTURE);
                 article.setPicture(pictureUrl != null
                                     ? new Picture((String) pictureUrl.get("url"))
                                     : new Picture());
 
                 Source source = new Source();
-                source.setName((String) map.get(Constants.KEY_SOURCE));
-                source.setUrl((String) map.get(Constants.KEY_LINK));
+                source.setName((String) map.get(Constants.ARTICLE_KEY_SOURCE));
+                source.setUrl((String) map.get(Constants.ARTICLE_KEY_LINK));
                 article.setSource(source);
 
                 listNews.add(ArticleParser.parse(article));

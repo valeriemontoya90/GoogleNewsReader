@@ -140,8 +140,8 @@ public class HomeActivity extends ActionBarActivity {
 
     private void showNewsOverview(Integer id) {
         Intent intent = new Intent(this, DetailArticleActivity.class)
-            //.putExtra(ArticleConstants.KEY_ARTICLE, (Parcelable) GNRApplication.getUser().getData().findArticleById(id))
-                .putExtra(Constants.KEY_ID, id);
+            //.putExtra(ArticleConstants.ARTICLE_KEY_CATEGORY, (Parcelable) GNRApplication.getUser().getData().findArticleById(id))
+                .putExtra(Constants.ARTICLE_KEY_ID, id);
 
         startActivity(intent);
     }

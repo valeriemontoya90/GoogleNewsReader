@@ -12,20 +12,20 @@ public class Article implements Parcelable, Serializable {
     private Integer _id;
     private Boolean _read;
 
-    @SerializedName(Constants.KEY_TITLE)
+    @SerializedName(Constants.ARTICLE_KEY_TITLE)
     private String _title;
 
-    @SerializedName(Constants.KEY_CONTENT)
+    @SerializedName(Constants.ARTICLE_KEY_CONTENT)
     private String _content;
 
-    @SerializedName(Constants.KEY_DATE)
+    @SerializedName(Constants.ARTICLE_KEY_DATE)
     private Date _date;
 
-    @SerializedName(Constants.KEY_PICTURE)
+    @SerializedName(Constants.ARTICLE_KEY_PICTURE)
     //private String _picture;
     private Picture _picture;
 
-    @SerializedName(Constants.KEY_SOURCE)
+    @SerializedName(Constants.ARTICLE_KEY_SOURCE)
     private Source _source;
 
     private String _sourceName;
