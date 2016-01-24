@@ -1,4 +1,4 @@
-package com.gnr.esgi.googlenewsreader.model;
+package com.gnr.esgi.googlenewsreader.models;
 
 import com.gnr.esgi.googlenewsreader.database.DatabaseManager;
 

@@ -1,4 +1,4 @@
-package com.gnr.esgi.googlenewsreader.model;
+package com.gnr.esgi.googlenewsreader.models;
 
 import java.util.ArrayList;
 import java.util.List;

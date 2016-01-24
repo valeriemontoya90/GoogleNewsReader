@@ -7,7 +7,7 @@ import android.widget.TextView;
 import com.gnr.esgi.googlenewsreader.GNRApplication;
 import com.gnr.esgi.googlenewsreader.R;
 import com.gnr.esgi.googlenewsreader.utils.Constants;
-import com.gnr.esgi.googlenewsreader.model.Article;
+import com.gnr.esgi.googlenewsreader.models.Article;
 
 public class DetailArticleActivity extends AppCompatActivity {
 

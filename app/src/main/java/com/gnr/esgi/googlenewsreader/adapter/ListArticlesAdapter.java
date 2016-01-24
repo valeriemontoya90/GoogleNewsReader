@@ -13,8 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.gnr.esgi.googlenewsreader.R;
 import com.gnr.esgi.googlenewsreader.io.FlushedInputStream;
-import com.gnr.esgi.googlenewsreader.model.Article;
-import com.gnr.esgi.googlenewsreader.model.Picture;
+import com.gnr.esgi.googlenewsreader.models.Article;
+import com.gnr.esgi.googlenewsreader.models.Picture;
 import com.gnr.esgi.googlenewsreader.services.HttpRetriever;
 
 import java.io.InputStream;

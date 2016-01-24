@@ -2,9 +2,9 @@ package com.gnr.esgi.googlenewsreader.parser;
 
 import android.util.Log;
 import com.gnr.esgi.googlenewsreader.utils.Constants;
-import com.gnr.esgi.googlenewsreader.model.Picture;
-import com.gnr.esgi.googlenewsreader.model.Source;
-import com.gnr.esgi.googlenewsreader.model.Article;
+import com.gnr.esgi.googlenewsreader.models.Picture;
+import com.gnr.esgi.googlenewsreader.models.Source;
+import com.gnr.esgi.googlenewsreader.models.Article;
 import com.google.gson.internal.LinkedTreeMap;
 
 import java.util.ArrayList;
