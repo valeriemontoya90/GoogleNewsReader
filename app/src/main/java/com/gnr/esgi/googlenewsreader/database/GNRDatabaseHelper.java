@@ -71,7 +71,7 @@ public class GNRDatabaseHelper extends SQLiteOpenHelper {
     public long addArticle(Article article) {
         ContentValues values = new ContentValues();
         values.put(ArticleContract.ArticleEntry.COLUMN_TITLE, article.getTitle());
-        values.put(ArticleContract.ArticleEntry.COLUMN_DATE, article.getDate().toString());
+        values.put(ArticleContract.ArticleEntry.COLUMN_DATE, article.getCreatedAt().toString());
         values.put(ArticleContract.ArticleEntry.COLUMN_CONTENT, article.getContent());
         values.put(ArticleContract.ArticleEntry.COLUMN_SOURCE_NAME, article.getSource().getSourceName());
         values.put(ArticleContract.ArticleEntry.COLUMN_SOURCE_URL, article.getSource().getSourceUrl());
