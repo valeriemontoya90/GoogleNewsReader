@@ -2,7 +2,7 @@ package com.gnr.esgi.googlenewsreader.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import com.gnr.esgi.googlenewsreader.utils.Constants;
+import com.gnr.esgi.googlenewsreader.utils.Config;
 import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.Date;
@@ -12,20 +12,20 @@ public class Article implements Parcelable, Serializable {
     private Integer articleId;
     private Boolean hasAlreadyReadValue;
 
-    @SerializedName(Constants.ARTICLE_KEY_TITLE)
+    @SerializedName(Config.ARTICLE_KEY_TITLE)
     private String title;
 
-    @SerializedName(Constants.ARTICLE_KEY_CONTENT)
+    @SerializedName(Config.ARTICLE_KEY_CONTENT)
     private String content;
 
-    @SerializedName(Constants.ARTICLE_KEY_CREATED_AT)
+    @SerializedName(Config.ARTICLE_KEY_CREATED_AT)
     private Date createdAt;
 
-    @SerializedName(Constants.ARTICLE_KEY_PICTURE)
+    @SerializedName(Config.ARTICLE_KEY_PICTURE)
     //private String picture;
     private Picture picture;
 
-    @SerializedName(Constants.ARTICLE_KEY_SOURCE)
+    @SerializedName(Config.ARTICLE_KEY_SOURCE)
     private Source source;
 
     private int linkTagId;

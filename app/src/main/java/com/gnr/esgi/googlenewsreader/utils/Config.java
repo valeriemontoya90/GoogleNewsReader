@@ -1,6 +1,6 @@
 package com.gnr.esgi.googlenewsreader.utils;
 
-public class Constants {
+public class Config {
     public static final String ARTICLE_KEY_API_URL = "http://ajax.googleapis.com/ajax/services/search/news?v=1.0&q="; //"http://news.google.com/news?output=rss&q=";
 
     public static final String ARTICLE_KEY_ID = "id";

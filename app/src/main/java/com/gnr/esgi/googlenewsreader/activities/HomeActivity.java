@@ -25,7 +25,7 @@ import com.gnr.esgi.googlenewsreader.models.Tag;
 import com.gnr.esgi.googlenewsreader.parser.JsonParser;
 import com.gnr.esgi.googlenewsreader.services.HttpRetriever;
 import com.gnr.esgi.googlenewsreader.services.RefreshService;
-import com.gnr.esgi.googlenewsreader.utils.Constants;
+import com.gnr.esgi.googlenewsreader.utils.Config;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -105,7 +105,7 @@ public class HomeActivity extends ActionBarActivity {
     }
 
     private void showNewsOverview(Integer articleId) {
-        Intent intent = new Intent(this, DetailArticleActivity.class).putExtra(Constants.ARTICLE_KEY_ID, articleId);
+        Intent intent = new Intent(this, DetailArticleActivity.class).putExtra(Config.ARTICLE_KEY_ID, articleId);
         startActivity(intent);
     }
 
