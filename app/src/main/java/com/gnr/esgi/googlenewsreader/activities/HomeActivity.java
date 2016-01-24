@@ -241,7 +241,7 @@ public class HomeActivity extends ActionBarActivity {
                 InputStream source = HttpRetriever
                                         .retrieveStream(ArticleHelper
                                                 .getUrl(tag
-                                                        .getName()));
+                                                        .getTagName()));
 
                 Gson gson = new Gson();
 
@@ -284,8 +284,8 @@ public class HomeActivity extends ActionBarActivity {
     }
 
     public void saveArticlesInDB(Tag tag) {
-        for (int i=0; i<tag.getArticles().size(); i++) {
-            GNRApplication.getGnrDBHelper().addArticle(tag.getArticles().get(i));
+        for (int i=0; i<tag.getArticlesList().size(); i++) {
+            GNRApplication.getGnrDBHelper().addArticle(tag.getArticlesList().get(i));
         }
     }
 }

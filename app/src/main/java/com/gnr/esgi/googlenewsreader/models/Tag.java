@@ -4,47 +4,47 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Tag {
-    private Integer _id;
-    private String _name;
-    private List<Article> _articles;
-    private int _recentCounter;
+    private Integer tagId;
+    private String tagName;
+    private List<Article> articlesList;
+    private int currentCounter;
 
     public Tag(String name) {
-        _id = 0;
-        _name = name;
-        _articles = new ArrayList<>();
-        _recentCounter = 0;
+        tagId = 0;
+        tagName = name;
+        articlesList = new ArrayList<>();
+        currentCounter = 0;
     }
 
-    public Integer getId() {
-        return _id;
+    public Integer getTagId() {
+        return tagId;
     }
 
-    public void setId(Integer id) {
-        _id = id;
+    public void setTagId(Integer id) {
+        tagId = id;
     }
 
-    public String getName() {
-        return _name;
+    public String getTagName() {
+        return tagName;
     }
 
-    public void setName(String name) {
-        _name = name;
+    public void setTagName(String name) {
+        tagName = name;
     }
 
-    public List<Article> getArticles() {
-        return _articles;
+    public List<Article> getArticlesList() {
+        return articlesList;
     }
 
     public void setArticles(List<Article> articles) {
-        _articles = articles;
+        articlesList = articles;
     }
 
-    public int getCounter() {
-        return _recentCounter;
+    public int getCurrentCounter() {
+        return currentCounter;
     }
 
-    public void setCounter(int count) {
-        _recentCounter = count;
+    public void setCurrentCounter(int count) {
+        currentCounter = count;
     }
 }

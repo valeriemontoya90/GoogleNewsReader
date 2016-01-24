@@ -36,12 +36,12 @@ public class DatabaseManager {
         for (Tag newTag : tags)
         {
             for(Tag oldTag : _tags)
-                newTag.setCounter(oldTag.getName().compareTo(newTag.getName()) == 0
-                                ? ArticleHelper.countRecentNews(newTag.getArticles(), oldTag.getArticles())
-                                : newTag.getArticles().size()
+                newTag.setCurrentCounter(oldTag.getTagName().compareTo(newTag.getTagName()) == 0
+                                ? ArticleHelper.countRecentNews(newTag.getArticlesList(), oldTag.getArticlesList())
+                                : newTag.getArticlesList().size()
                 );
 
-            for(Article article : newTag.getArticles()) {
+            for(Article article : newTag.getArticlesList()) {
                 if(article.getPicture() != null
                     && article.getPicture().getPictureUrl() != null)
                 {
@@ -79,8 +79,8 @@ public class DatabaseManager {
         List<Article> articleList = new ArrayList<>();
 
         for (Tag _tag : _tags)
-            if(_tag.getId().compareTo(id) == 0)
-                articleList = _tag.getArticles();
+            if(_tag.getTagId().compareTo(id) == 0)
+                articleList = _tag.getArticlesList();
 
         return articleList;
     }
@@ -89,7 +89,7 @@ public class DatabaseManager {
         List<Article> articleList = new ArrayList<>();
 
         for(Tag tag : _tags)
-            articleList.addAll(tag.getArticles());
+            articleList.addAll(tag.getArticlesList());
 
         return setIndex(escapeDuplicates(articleList));
     }
@@ -98,13 +98,13 @@ public class DatabaseManager {
         int count = 0;
 
         for (Tag tag : _tags)
-            count += tag.getCounter();
+            count += tag.getCurrentCounter();
 
         return count;
     }
 
     public int countLatest(Tag tag) {
-        return tag.getCounter();
+        return tag.getCurrentCounter();
     }
 
     private List<Article> setIndex(List<Article> articleList) {
