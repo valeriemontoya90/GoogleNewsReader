@@ -22,7 +22,7 @@ import android.widget.ListView;
 import com.gnr.esgi.googlenewsreader.R;
 import com.gnr.esgi.googlenewsreader.GNRApplication;
 import com.gnr.esgi.googlenewsreader.adapter.ListArticlesAdapter;
-import com.gnr.esgi.googlenewsreader.constants.ArticleConstants;
+import com.gnr.esgi.googlenewsreader.utils.Constants;
 import com.gnr.esgi.googlenewsreader.helper.ArticleHelper;
 import com.gnr.esgi.googlenewsreader.listener.CancelTaskOnListener;
 import com.gnr.esgi.googlenewsreader.model.Tag;
@@ -141,7 +141,7 @@ public class HomeActivity extends ActionBarActivity {
     private void showNewsOverview(Integer id) {
         Intent intent = new Intent(this, DetailArticleActivity.class)
             //.putExtra(ArticleConstants.KEY_ARTICLE, (Parcelable) GNRApplication.getUser().getData().findArticleById(id))
-                .putExtra(ArticleConstants.KEY_ID, id);
+                .putExtra(Constants.KEY_ID, id);
 
         startActivity(intent);
     }
