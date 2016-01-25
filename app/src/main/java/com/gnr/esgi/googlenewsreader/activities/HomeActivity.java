@@ -1,9 +1,13 @@
 package com.gnr.esgi.googlenewsreader.activities;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -19,7 +23,7 @@ import com.gnr.esgi.googlenewsreader.Webservices.Webservices;
 import com.gnr.esgi.googlenewsreader.adapter.ListArticlesAdapter;
 import com.gnr.esgi.googlenewsreader.models.Article;
 import com.gnr.esgi.googlenewsreader.models.Tag;
-import com.gnr.esgi.googlenewsreader.services.RefreshService;
+import com.gnr.esgi.googlenewsreader.services.CounterService;
 import com.gnr.esgi.googlenewsreader.utils.Config;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -115,7 +119,7 @@ public class HomeActivity extends ActionBarActivity {
     }
 
     private void initServices() {
-        startService(new Intent(this, RefreshService.class));
+        startService(new Intent(this, CounterService.class));
     }
 
     private void sendDataToDetailArticle(int position) {
@@ -126,6 +130,28 @@ public class HomeActivity extends ActionBarActivity {
         intent.putExtra(Config.ARTICLE_KEY_SOURCE_URL, articlesArrayList.get(position).getSourceUrl());
         intent.putExtra(Config.ARTICLE_KEY_PICTURE_URL, articlesArrayList.get(position).getPictureUrl());
         startActivity(intent);
+    }
+
+    private final BroadcastReceiver counterReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String message = intent.getAction();
+            Log.d(Config.LOG_PREFIX, "homeActivity counterReceiver");
+        }
+    };
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        IntentFilter intentFilterCounterService = new IntentFilter();
+        intentFilterCounterService.addAction(CounterService.DO_A_REFRESH);
+        LocalBroadcastManager.getInstance(this).registerReceiver(counterReceiver, intentFilterCounterService);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(counterReceiver);
     }
 
 /*

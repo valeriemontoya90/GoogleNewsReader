@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class RefreshService extends Service {
+public class CounterService extends Service {
     public static final String DO_A_REFRESH = "DO_A_REFRESH";
     static LocalBroadcastManager broadcaster;
 
@@ -30,7 +30,7 @@ public class RefreshService extends Service {
             public void run() {
                 Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
                 try {
-                    broadcastRemindUpdateApp(DO_A_REFRESH);
+                    broadcastMessageFromCounterService(DO_A_REFRESH);
                     Log.d(Config.LOG_PREFIX, "refresh service RUN ");
                 } catch (Exception e) {
                     Log.d("sync", "error : " + e.getMessage());
@@ -44,15 +44,15 @@ public class RefreshService extends Service {
         return null;
     }
 
-    private void broadcastRemindUpdateApp(final String message) {
-        Log.d(Config.LOG_PREFIX, "broadcastRemindUpdateApp DO_A_REFRESH ");
+    private void broadcastMessageFromCounterService(final String message) {
+        Log.d(Config.LOG_PREFIX, "broadcastMessageFromCounterService DO_A_REFRESH ");
         final Intent intent = new Intent(message);
         broadcaster.sendBroadcast(intent);
     }
 
     @Override
     public void onDestroy() {
-        Log.d(this.getClass().getSimpleName(), "Service stopped");
+
         super.onDestroy();
     }
 }
