@@ -131,8 +131,13 @@ public class HomeActivity extends ActionBarActivity {
         }
     }
 
-    private void showNewsOverview(Integer articleId) {
-        Intent intent = new Intent(this, DetailArticleActivity.class).putExtra(Config.ARTICLE_KEY_ID, articleId);
+    private void showNewsOverview(int position) {
+        Intent intent = new Intent(this, DetailArticleActivity.class);
+        intent.putExtra(Config.ARTICLE_KEY_TITLE, aaarticlesList.get(position).getTitle());
+        intent.putExtra(Config.ARTICLE_KEY_CONTENT, aaarticlesList.get(position).getContent());
+        intent.putExtra(Config.ARTICLE_KEY_SOURCE_NAME, aaarticlesList.get(position).getSourceName());
+        intent.putExtra(Config.ARTICLE_KEY_SOURCE_URL, aaarticlesList.get(position).getSourceUrl());
+        intent.putExtra(Config.ARTICLE_KEY_PICTURE_URL, aaarticlesList.get(position).getPictureUrl());
         startActivity(intent);
     }
 
