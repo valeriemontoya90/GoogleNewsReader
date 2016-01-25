@@ -1,8 +1,10 @@
 package com.gnr.esgi.googlenewsreader.activities;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -36,12 +38,16 @@ import java.util.List;
 
 public class HomeActivity extends ActionBarActivity {
 
-    Boolean isRefresh;
+    public static final String ACTIVATE_AUTO_REFRESH = "activate_auto_refresh";
+    public static final String DESACTIVATE_AUTO_REFRESH = "desactivate_auto_refresh";
+
+    Boolean isRefresh = false;
 
     ArrayList<Article> articlesArrayList = new ArrayList<>();
     ListView listviewArticles;
     ListArticlesAdapter listArticlesAdapter;
     ProgressDialog progressDialog;
+    static LocalBroadcastManager broadcaster;
     Toolbar toolbar;
 
     @Override
@@ -117,7 +123,7 @@ public class HomeActivity extends ActionBarActivity {
     }
 
     private void initServices() {
-        startService(new Intent(this, CounterService.class));
+        broadcaster = LocalBroadcastManager.getInstance(this);
     }
 
     private void sendDataToDetailArticleActivity(int position) {
@@ -130,12 +136,26 @@ public class HomeActivity extends ActionBarActivity {
         startActivity(intent);
     }
 
-    private final BroadcastReceiver counterReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver broadcastReceiverFromHomeActivity = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String message = intent.getAction();
-            Log.d(Config.LOG_PREFIX, "homeActivity counterReceiver");
+            if (message.equals(CounterService.DO_A_REFRESH)) {
+                Log.d(Config.LOG_PREFIX, "broadcastReceiverFromHomeActivity "+CounterService.DO_A_REFRESH);
+            }
+            if (message.equals(ACTIVATE_AUTO_REFRESH)) {
+                Log.d(Config.LOG_PREFIX, "broadcastReceiverFromHomeActivity "+ACTIVATE_AUTO_REFRESH);
+            }
+            if (message.equals(DESACTIVATE_AUTO_REFRESH)) {
+                Log.d(Config.LOG_PREFIX, "broadcastReceiverFromHomeActivity "+DESACTIVATE_AUTO_REFRESH);
+            }
         }
     };
+
+    private void broadcastMessageFromHomeActivity(final String message) {
+        Log.d(Config.LOG_PREFIX, "broadcastMessageFromHomeActivity "+message);
+        final Intent intent = new Intent(message);
+        broadcaster.sendBroadcast(intent);
+    }
 
     @Override
     protected void onStart() {
@@ -143,13 +163,15 @@ public class HomeActivity extends ActionBarActivity {
 
         IntentFilter intentFilterCounterService = new IntentFilter();
         intentFilterCounterService.addAction(CounterService.DO_A_REFRESH);
-        LocalBroadcastManager.getInstance(this).registerReceiver(counterReceiver, intentFilterCounterService);
+        intentFilterCounterService.addAction(ACTIVATE_AUTO_REFRESH);
+        intentFilterCounterService.addAction(DESACTIVATE_AUTO_REFRESH);
+        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiverFromHomeActivity, intentFilterCounterService);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(counterReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiverFromHomeActivity);
     }
 
 /*
@@ -179,6 +201,16 @@ public class HomeActivity extends ActionBarActivity {
         stopService(intent);
 
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+    }*/
+
+    public void launchCounterService() {
+        Log.d(Config.LOG_PREFIX, "launchCounterService startService");
+        startService(new Intent(this, CounterService.class));
+    }
+
+    public void stopCounterService() {
+        Log.d(Config.LOG_PREFIX, "launchCounterService stopCounterService");
+        stopService(new Intent(this, CounterService.class));
     }
 
     public void showRefreshDialog() {
@@ -197,11 +229,11 @@ public class HomeActivity extends ActionBarActivity {
             .setPositiveButton(R.string.refreshDialog_accept, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    if(isRefresh)
-                        launchRefreshService();
-                    else
-                        stopRefreshService();
-
+                    if (isRefresh) {
+                        launchCounterService();
+                    } else {
+                        stopCounterService();
+                    }
                     dialog.dismiss();
                 }
             })
@@ -215,7 +247,6 @@ public class HomeActivity extends ActionBarActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
-    */
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -231,7 +262,7 @@ public class HomeActivity extends ActionBarActivity {
                 // In case of user click on Refresh icon of toolbar
                 // Show alert dialog with option to activate auto refresh
                 // Then add a service with a 1hour refreshing thread
-                //showRefreshDialog();
+                showRefreshDialog();
                 return true;
 
             case R.id.action_tags:
