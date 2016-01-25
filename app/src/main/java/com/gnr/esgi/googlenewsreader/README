@@ -1,0 +1,5 @@
+Remove useless folder like : io, helper and parser
+In services folder :
+- remove HttpRetriever
+- rename RefreshService to "GetDataFromApi"
+In models folder : remove Source and User

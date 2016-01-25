@@ -20,7 +20,7 @@ import android.widget.ListView;
 import com.gnr.esgi.googlenewsreader.R;
 import com.gnr.esgi.googlenewsreader.Webservices.Parser;
 import com.gnr.esgi.googlenewsreader.Webservices.Webservices;
-import com.gnr.esgi.googlenewsreader.adapter.ListArticlesAdapter;
+import com.gnr.esgi.googlenewsreader.adapters.ListArticlesAdapter;
 import com.gnr.esgi.googlenewsreader.models.Article;
 import com.gnr.esgi.googlenewsreader.models.Tag;
 import com.gnr.esgi.googlenewsreader.services.CounterService;
@@ -82,7 +82,7 @@ public class HomeActivity extends ActionBarActivity {
         listviewArticles.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                sendDataToDetailArticle(position);
+                sendDataToDetailArticleActivity(position);
             }
         });
 
@@ -104,10 +104,8 @@ public class HomeActivity extends ActionBarActivity {
                     Log.i(Config.LOG_PREFIX, "Webservice Response : " + new String(bytes));
 
                     List<Article> parsedArticles = Parser.parseResultPage(new String(bytes));
-
                     articlesArrayList.addAll(parsedArticles);
                     listArticlesAdapter.notifyDataSetChanged();
-
                 }
 
                 @Override
@@ -122,7 +120,7 @@ public class HomeActivity extends ActionBarActivity {
         startService(new Intent(this, CounterService.class));
     }
 
-    private void sendDataToDetailArticle(int position) {
+    private void sendDataToDetailArticleActivity(int position) {
         Intent intent = new Intent(this, DetailArticleActivity.class);
         intent.putExtra(Config.ARTICLE_KEY_TITLE, articlesArrayList.get(position).getTitle());
         intent.putExtra(Config.ARTICLE_KEY_CONTENT, articlesArrayList.get(position).getContent());

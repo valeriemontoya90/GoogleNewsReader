@@ -1,4 +1,4 @@
-package com.gnr.esgi.googlenewsreader.adapter;
+package com.gnr.esgi.googlenewsreader.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
