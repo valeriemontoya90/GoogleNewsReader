@@ -1,11 +1,8 @@
 package com.gnr.esgi.googlenewsreader.activities;
 
 import android.app.ProgressDialog;
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -37,24 +34,11 @@ public class HomeActivity extends ActionBarActivity {
 
     Boolean isRefresh;
 
-    ArrayList<Article> aaarticlesList = new ArrayList<>();
+    ArrayList<Article> articlesArrayList = new ArrayList<>();
     ListView listviewArticles;
     ListArticlesAdapter listArticlesAdapter;
     ProgressDialog progressDialog;
     Toolbar toolbar;
-    RefreshService.RefreshBinder binder;
-
-    ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            binder = (RefreshService.RefreshBinder) service;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,17 +73,17 @@ public class HomeActivity extends ActionBarActivity {
         ImageLoader.getInstance().init(config);
 
         listviewArticles = (ListView) findViewById(R.id.news_list);
-        listArticlesAdapter = new ListArticlesAdapter(getApplicationContext(), aaarticlesList);
+        listArticlesAdapter = new ListArticlesAdapter(getApplicationContext(), articlesArrayList);
         listviewArticles.setAdapter(listArticlesAdapter);
         listviewArticles.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                showNewsOverview(position);
+                sendDataToDetailArticle(position);
             }
         });
 
         callWebServices();
-
+        initServices();
     }
 
     private void callWebServices() {
@@ -117,8 +101,7 @@ public class HomeActivity extends ActionBarActivity {
 
                     List<Article> parsedArticles = Parser.parseResultPage(new String(bytes));
 
-                    aaarticlesList.addAll(parsedArticles);
-                    //listArticlesAdapter.swapItems(parsedArticles);
+                    articlesArrayList.addAll(parsedArticles);
                     listArticlesAdapter.notifyDataSetChanged();
 
                 }
@@ -131,13 +114,17 @@ public class HomeActivity extends ActionBarActivity {
         }
     }
 
-    private void showNewsOverview(int position) {
+    private void initServices() {
+        startService(new Intent(this, RefreshService.class));
+    }
+
+    private void sendDataToDetailArticle(int position) {
         Intent intent = new Intent(this, DetailArticleActivity.class);
-        intent.putExtra(Config.ARTICLE_KEY_TITLE, aaarticlesList.get(position).getTitle());
-        intent.putExtra(Config.ARTICLE_KEY_CONTENT, aaarticlesList.get(position).getContent());
-        intent.putExtra(Config.ARTICLE_KEY_SOURCE_NAME, aaarticlesList.get(position).getSourceName());
-        intent.putExtra(Config.ARTICLE_KEY_SOURCE_URL, aaarticlesList.get(position).getSourceUrl());
-        intent.putExtra(Config.ARTICLE_KEY_PICTURE_URL, aaarticlesList.get(position).getPictureUrl());
+        intent.putExtra(Config.ARTICLE_KEY_TITLE, articlesArrayList.get(position).getTitle());
+        intent.putExtra(Config.ARTICLE_KEY_CONTENT, articlesArrayList.get(position).getContent());
+        intent.putExtra(Config.ARTICLE_KEY_SOURCE_NAME, articlesArrayList.get(position).getSourceName());
+        intent.putExtra(Config.ARTICLE_KEY_SOURCE_URL, articlesArrayList.get(position).getSourceUrl());
+        intent.putExtra(Config.ARTICLE_KEY_PICTURE_URL, articlesArrayList.get(position).getPictureUrl());
         startActivity(intent);
     }
 

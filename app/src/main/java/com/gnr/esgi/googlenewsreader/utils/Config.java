@@ -14,5 +14,6 @@ public class Config {
     public static final String ARTICLE_KEY_PICTURE_URL = "url";
 
     public static final boolean DISPLAY_LOG = true;
-    public static final String LOG_PREFIX = "Webservices";
+    public static final String LOG_PREFIX = "refresh";
+    public static final int GET_ARTICLES_FROM_API = 20;
 }

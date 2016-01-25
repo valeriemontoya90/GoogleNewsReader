@@ -2,62 +2,57 @@ package com.gnr.esgi.googlenewsreader.services;
 
 import android.app.Service;
 import android.content.Intent;
-import android.os.Binder;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.gnr.esgi.googlenewsreader.utils.Config;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 public class RefreshService extends Service {
+    public static final String DO_A_REFRESH = "DO_A_REFRESH";
+    static LocalBroadcastManager broadcaster;
 
-    RefreshBinder binder;
-
-    public class RefreshBinder extends Binder {
-        public RefreshService getService() {
-            return RefreshService.this;
-        }
+    @Override
+    public void onCreate(){
+        super.onCreate();
+        Log.d(this.getClass().getSimpleName(), "Service started");
+        broadcaster = LocalBroadcastManager.getInstance(this);
     }
 
-    @Nullable
+    @Override
+    public void onStart(Intent intent, int startid) {
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+        scheduler.scheduleWithFixedDelay(new Runnable() {
+            public void run() {
+                Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+                try {
+                    broadcastRemindUpdateApp(DO_A_REFRESH);
+                    Log.d(Config.LOG_PREFIX, "refresh service RUN ");
+                } catch (Exception e) {
+                    Log.d("sync", "error : " + e.getMessage());
+                }
+            }
+        }, 0, Config.GET_ARTICLES_FROM_API, TimeUnit.SECONDS);
+    }
+
     @Override
     public IBinder onBind(Intent intent) {
-        if(binder == null)
-            binder = new RefreshBinder();
-
-        return binder;
+        return null;
     }
 
-    @Override
-    public void onCreate() {
-        Log.d(this.getClass().getSimpleName(), "Service started");
-        super.onCreate();
+    private void broadcastRemindUpdateApp(final String message) {
+        Log.d(Config.LOG_PREFIX, "broadcastRemindUpdateApp DO_A_REFRESH ");
+        final Intent intent = new Intent(message);
+        broadcaster.sendBroadcast(intent);
     }
 
     @Override
     public void onDestroy() {
         Log.d(this.getClass().getSimpleName(), "Service stopped");
         super.onDestroy();
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                /*
-                     Get User instance from Extras
-                     Check if autoUpdate is true
-                         Obtain DatabaseManager from User
-                        re instance DatabaseManager each 1hour
-                      */
-                try {
-                    Thread.sleep(600000);
-                }
-                catch (InterruptedException e) {
-                    Log.w(this.getClass().getSimpleName(), "Error while auto refreshing.");
-                }
-            }
-        }).start();
-
-        return super.onStartCommand(intent, flags, startId);
     }
 }
