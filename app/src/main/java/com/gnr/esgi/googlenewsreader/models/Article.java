@@ -17,7 +17,6 @@ public class Article implements Parcelable, Serializable {
     private Integer articleId;
     private Boolean hasAlreadyReadValue;
 
-    @SerializedName(Config.ARTICLE_KEY_TITLE)
     private String title;
 
     @SerializedName(Config.ARTICLE_KEY_CONTENT)
@@ -27,7 +26,6 @@ public class Article implements Parcelable, Serializable {
     private String createdAt;
 
     @SerializedName(Config.ARTICLE_KEY_PICTURE)
-    //private String picture;
     private Picture picture;
     private String pictureUrl;
 
@@ -36,11 +34,7 @@ public class Article implements Parcelable, Serializable {
     private String sourceName;
     private String sourceUrl;
 
-    private int linkTagId;
-
-    public Article() {
-        articleId = 0;
-    }
+    private String linkTagName;
 
     protected Article(Parcel in) {
         articleId = in.readInt();
@@ -71,7 +65,6 @@ public class Article implements Parcelable, Serializable {
         dest.writeInt(articleId);
         dest.writeString(title);
         dest.writeString(content);
-        //dest.writeString(picture);
     }
 
     public Article(JSONObject jsonArticle){
@@ -177,12 +170,12 @@ public class Article implements Parcelable, Serializable {
         this.sourceName = sourceName;
     }
 
-    public int getLinkTagId() {
-        return linkTagId;
+    public String getLinkTagName() {
+        return linkTagName;
     }
 
-    public void setLinkTagId(int tagId) {
-        linkTagId = tagId;
+    public void setLinkTagName(String tagName) {
+        linkTagName = tagName;
     }
 
     public Boolean getHasAlreadyReadValue() {

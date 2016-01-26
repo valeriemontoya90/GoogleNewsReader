@@ -14,6 +14,6 @@ public class Config {
     public static final String ARTICLE_KEY_PICTURE_URL = "url";
 
     public static final boolean DISPLAY_LOG = true;
-    public static final String LOG_PREFIX = "CounterService";
-    public static final int GET_ARTICLES_FROM_API = 20;
+    public static final String LOG_PREFIX = "RefreshService";
+    public static final int GET_ARTICLES_FROM_API = 30;
 }

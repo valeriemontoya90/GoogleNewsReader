@@ -23,7 +23,7 @@
         </activity>
         <activity android:name=".activities.DetailArticleActivity" >
         </activity>
-        <service android:name=".services.CounterService"/>
+        <service android:name=".services.RefreshService"/>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

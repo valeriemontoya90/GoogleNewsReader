@@ -20,28 +20,23 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.gnr.esgi.googlenewsreader.R;
-import com.gnr.esgi.googlenewsreader.Webservices.Parser;
-import com.gnr.esgi.googlenewsreader.Webservices.Webservices;
 import com.gnr.esgi.googlenewsreader.adapters.ListArticlesAdapter;
 import com.gnr.esgi.googlenewsreader.models.Article;
 import com.gnr.esgi.googlenewsreader.models.Tag;
-import com.gnr.esgi.googlenewsreader.services.CounterService;
+import com.gnr.esgi.googlenewsreader.services.RefreshService;
 import com.gnr.esgi.googlenewsreader.utils.Config;
-import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
-import org.apache.http.Header;
-
 import java.util.ArrayList;
-import java.util.List;
 
 public class HomeActivity extends ActionBarActivity {
 
     public static final String ACTIVATE_AUTO_REFRESH = "activate_auto_refresh";
     public static final String DESACTIVATE_AUTO_REFRESH = "desactivate_auto_refresh";
-
-    Boolean isRefresh = false;
+    public static final String DISPLAY_NEW_ARTICLES = "display_new_articles";
+    boolean refreshRightNow = false;
+    boolean isRefresh = false;
 
     ArrayList<Article> articlesArrayList = new ArrayList<>();
     ListView listviewArticles;
@@ -54,8 +49,6 @@ public class HomeActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
-        //refresh();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -88,42 +81,49 @@ public class HomeActivity extends ActionBarActivity {
         listviewArticles.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                articlesArrayList.get(position).setHasAlreadyReadValue(true);
                 sendDataToDetailArticleActivity(position);
             }
         });
 
-        callWebServices();
+        initData();
         initServices();
     }
 
-    private void callWebServices() {
-        ArrayList<Tag> tags = new ArrayList<>();
-        // FOR TEST
-        tags.add(new Tag("apple"));
-        tags.add(new Tag("PSG"));
-        tags.add(new Tag("Inde"));
+    private void initData() {
+        ArrayList<Tag> tagArrayList = new ArrayList<>();
+        tagArrayList.add(new Tag("apple"));
+        tagArrayList.add(new Tag("Inde"));
 
-        for (Tag tag : tags) {
-            Webservices.getArticlesByTag(tag.getTagName(), new AsyncHttpResponseHandler() {
-                @Override
-                public void onSuccess(int i, Header[] headers, byte[] bytes) {
-                    Log.i(Config.LOG_PREFIX, "Webservice Response : " + new String(bytes));
-
-                    List<Article> parsedArticles = Parser.parseResultPage(new String(bytes));
-                    articlesArrayList.addAll(parsedArticles);
-                    listArticlesAdapter.notifyDataSetChanged();
-                }
-
-                @Override
-                public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
-                    Log.e(Config.LOG_PREFIX, "Webservice Failed Response :" + new String(bytes));
-                }
-            });
+        for (int i=0; i<tagArrayList.size(); i++) {
+            articlesArrayList = getArticlesByTagNameFromDataBase(tagArrayList.get(i));
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    private void refreshListView() {
+        ArrayList<Tag> tagArrayList = new ArrayList<>();
+        tagArrayList.add(new Tag("apple"));
+        tagArrayList.add(new Tag("Inde"));
+        for (int i=0; i<tagArrayList.size(); i++) {
+            articlesArrayList.addAll(getArticlesByTagNameFromDataBase(tagArrayList.get(i)));
+        }
+        listArticlesAdapter.notifyDataSetChanged();
+    }
+
+    private ArrayList<Article> getArticlesByTagNameFromDataBase(Tag tag) {
+        ArrayList<Article> articlesByTagNameArrayList = new ArrayList<>();
+        //articlesByTagNameArrayList = GNRApplication.getGnrDBHelper().getArticlesByTagNameWhereReadyIsFalse(tag.getTagName());
+        return articlesByTagNameArrayList;
     }
 
     private void initServices() {
         broadcaster = LocalBroadcastManager.getInstance(this);
+        launchRefreshService();
     }
 
     private void sendDataToDetailArticleActivity(int position) {
@@ -139,8 +139,14 @@ public class HomeActivity extends ActionBarActivity {
     private final BroadcastReceiver broadcastReceiverFromHomeActivity = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String message = intent.getAction();
-            if (message.equals(CounterService.DO_A_REFRESH)) {
-                Log.d(Config.LOG_PREFIX, "broadcastReceiverFromHomeActivity "+CounterService.DO_A_REFRESH);
+            if (message.equals(RefreshService.NEW_ARTICLES_ARE_READY)) {
+                Log.d(Config.LOG_PREFIX, "receiveBroadcastMessageFromHomeActivity " + RefreshService.NEW_ARTICLES_ARE_READY);
+                refreshListView();
+                displaySnackbar();
+            }
+            if (message.equals(DISPLAY_NEW_ARTICLES)) {
+                Log.d(Config.LOG_PREFIX, "broadcastReceiverFromHomeActivity " + DISPLAY_NEW_ARTICLES);
+                initData();
             }
             if (message.equals(ACTIVATE_AUTO_REFRESH)) {
                 Log.d(Config.LOG_PREFIX, "broadcastReceiverFromHomeActivity "+ACTIVATE_AUTO_REFRESH);
@@ -150,6 +156,20 @@ public class HomeActivity extends ActionBarActivity {
             }
         }
     };
+
+    private void displaySnackbar() {
+        /*final Snackbar snackbar = Snackbar.make(view, count + R.string.snackbar_addedNews, Snackbar.LENGTH_LONG);
+        snackbar.setAction(R.string.snackbar_close, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //make a button with "display new articles"
+                broadcastMessageFromHomeActivity(DISPLAY_NEW_ARTICLES);
+                snackbar.dismiss();
+            }
+        });
+
+        snackbar.show();*/
+    }
 
     private void broadcastMessageFromHomeActivity(final String message) {
         Log.d(Config.LOG_PREFIX, "broadcastMessageFromHomeActivity "+message);
@@ -161,11 +181,12 @@ public class HomeActivity extends ActionBarActivity {
     protected void onStart() {
         super.onStart();
 
-        IntentFilter intentFilterCounterService = new IntentFilter();
-        intentFilterCounterService.addAction(CounterService.DO_A_REFRESH);
-        intentFilterCounterService.addAction(ACTIVATE_AUTO_REFRESH);
-        intentFilterCounterService.addAction(DESACTIVATE_AUTO_REFRESH);
-        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiverFromHomeActivity, intentFilterCounterService);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(RefreshService.NEW_ARTICLES_ARE_READY);
+        //intentFilter.addAction(DISPLAY_NEW_ARTICLES);
+        //intentFilter.addAction(ACTIVATE_AUTO_REFRESH);
+        //intentFilter.addAction(DESACTIVATE_AUTO_REFRESH);
+        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiverFromHomeActivity, intentFilter);
     }
 
     @Override
@@ -174,43 +195,14 @@ public class HomeActivity extends ActionBarActivity {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiverFromHomeActivity);
     }
 
-/*
-    private int refresh() {
-        GNRApplication.getUser().refreshData();
-        return performSearch();
-    }
-
-    private int performSearch() {
-        progressDialog = ProgressDialog.show(HomeActivity.this, "Please wait...", "Retrieving data...", true, true);
-
-        progressDialog.setOnCancelListener(new CancelTaskOnListener(new ArticlesSearchTask().execute()));
-
-        return GNRApplication.getUser().getData().countLatest();
-    }
     public void launchRefreshService() {
-        Intent intent = new Intent(this, RefreshService.class);
-
-        startService(intent);
-
-        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+        Log.d(Config.LOG_PREFIX, "launchRefreshService startService");
+        startService(new Intent(this, RefreshService.class));
     }
 
     public void stopRefreshService() {
-        Intent intent = new Intent(this, RefreshService.class);
-
-        stopService(intent);
-
-        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-    }*/
-
-    public void launchCounterService() {
-        Log.d(Config.LOG_PREFIX, "launchCounterService startService");
-        startService(new Intent(this, CounterService.class));
-    }
-
-    public void stopCounterService() {
-        Log.d(Config.LOG_PREFIX, "launchCounterService stopCounterService");
-        stopService(new Intent(this, CounterService.class));
+        Log.d(Config.LOG_PREFIX, "launchRefreshService stopRefreshService");
+        stopService(new Intent(this, RefreshService.class));
     }
 
     public void showRefreshDialog() {
@@ -230,9 +222,9 @@ public class HomeActivity extends ActionBarActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     if (isRefresh) {
-                        launchCounterService();
+                        launchRefreshService();
                     } else {
-                        stopCounterService();
+                        stopRefreshService();
                     }
                     dialog.dismiss();
                 }
@@ -283,10 +275,4 @@ public class HomeActivity extends ActionBarActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
-    /*public void saveArticlesInDB(Tag tag) {
-        for (int i=0; i<tag.getArticlesList().size(); i++) {
-            GNRApplication.getGnrDBHelper().addArticle(tag.getArticlesList().get(i));
-        }
-    }*/
 }
