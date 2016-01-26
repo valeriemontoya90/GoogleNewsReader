@@ -144,10 +144,10 @@ public class HomeActivity extends ActionBarActivity {
                 refreshListView();
                 displaySnackbar();
             }
-            if (message.equals(DISPLAY_NEW_ARTICLES)) {
+            /*if (message.equals(DISPLAY_NEW_ARTICLES)) {
                 Log.d(Config.LOG_PREFIX, "broadcastReceiverFromHomeActivity " + DISPLAY_NEW_ARTICLES);
                 initData();
-            }
+            }*/
             if (message.equals(ACTIVATE_AUTO_REFRESH)) {
                 Log.d(Config.LOG_PREFIX, "broadcastReceiverFromHomeActivity "+ACTIVATE_AUTO_REFRESH);
             }
