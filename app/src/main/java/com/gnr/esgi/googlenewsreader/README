@@ -12,7 +12,6 @@ In models folder :
 - remove Source
 - remove User
 - remove Picture
-and maybe Tag
 
 In database folder :
 - DatabaseManager
