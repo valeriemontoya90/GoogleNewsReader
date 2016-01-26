@@ -15,7 +15,7 @@ and maybe Tag
 In database folder :
 - DatabaseManager
 
-In Article.class : no need  
+In Article.class : no need
 - implements Parcelable, Serializable
 - @SerializedName(Config.ARTICLE_KEY_CONTENT)
 - protected Article(Parcel in) {

@@ -7,8 +7,8 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.gnr.esgi.googlenewsreader.GNRApplication;
-import com.gnr.esgi.googlenewsreader.Webservices.Parser;
-import com.gnr.esgi.googlenewsreader.Webservices.Webservices;
+import com.gnr.esgi.googlenewsreader.webservices.Parser;
+import com.gnr.esgi.googlenewsreader.webservices.Webservices;
 import com.gnr.esgi.googlenewsreader.models.Article;
 import com.gnr.esgi.googlenewsreader.models.Tag;
 import com.gnr.esgi.googlenewsreader.utils.Config;

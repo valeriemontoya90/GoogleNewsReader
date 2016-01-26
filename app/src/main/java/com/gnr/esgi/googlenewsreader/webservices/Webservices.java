@@ -1,4 +1,4 @@
-package com.gnr.esgi.googlenewsreader.Webservices;
+package com.gnr.esgi.googlenewsreader.webservices;
 
 import android.util.Log;
 

@@ -1,4 +1,4 @@
-package com.gnr.esgi.googlenewsreader.Webservices;
+package com.gnr.esgi.googlenewsreader.webservices;
 
 import com.gnr.esgi.googlenewsreader.models.Article;
 
