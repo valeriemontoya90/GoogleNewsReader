@@ -1,3 +1,5 @@
+For DISPLAY_NEW_ARTICLES state it's depend if we "ask" user authorisation to change listview data
+
 Remove useless folder like :
 - io
 - helper
