@@ -4,7 +4,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.gnr.esgi.googlenewsreader.database.GNRDatabaseHelper;
-import com.gnr.esgi.googlenewsreader.model.User;
+import com.gnr.esgi.googlenewsreader.models.User;
 
 /**
  * Created by valerie on 10/01/16.

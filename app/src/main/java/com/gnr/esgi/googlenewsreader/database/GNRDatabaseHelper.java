@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 import android.util.Log;
-import com.gnr.esgi.googlenewsreader.model.Article;
+import com.gnr.esgi.googlenewsreader.models.Article;
 
 /**
  * Created by valerie on 06/01/16.
@@ -33,7 +33,7 @@ public class GNRDatabaseHelper extends SQLiteOpenHelper {
             public static final String COLUMN_CONTENT = "article_content";
             public static final String COLUMN_SOURCE_NAME = "article_source_name";
             public static final String COLUMN_SOURCE_URL = "article_source_url";
-            public static final String COLUMN_TAG_ID = "article_tag_id";
+            public static final String COLUMN_TAG_NAME = "article_tag_name";
         }
     }
 
@@ -52,7 +52,7 @@ public class GNRDatabaseHelper extends SQLiteOpenHelper {
                         ArticleContract.ArticleEntry.COLUMN_CONTENT + TEXT_TYPE + COMMA_SEPARATOR +
                         ArticleContract.ArticleEntry.COLUMN_SOURCE_NAME + TEXT_TYPE + COMMA_SEPARATOR +
                         ArticleContract.ArticleEntry.COLUMN_SOURCE_URL + TEXT_TYPE + COMMA_SEPARATOR +
-                        ArticleContract.ArticleEntry.COLUMN_TAG_ID + REAL_TYPE + ")";
+                        ArticleContract.ArticleEntry.COLUMN_TAG_NAME + TEXT_TYPE + ")";
 
         sqLiteDatabase.execSQL(CREATE_TABLE_ARTICLES);
     }
@@ -71,20 +71,19 @@ public class GNRDatabaseHelper extends SQLiteOpenHelper {
     public long addArticle(Article article) {
         ContentValues values = new ContentValues();
         values.put(ArticleContract.ArticleEntry.COLUMN_TITLE, article.getTitle());
-        values.put(ArticleContract.ArticleEntry.COLUMN_DATE, article.getDate().toString());
+        values.put(ArticleContract.ArticleEntry.COLUMN_DATE, article.getCreatedAt());
         values.put(ArticleContract.ArticleEntry.COLUMN_CONTENT, article.getContent());
-        values.put(ArticleContract.ArticleEntry.COLUMN_SOURCE_NAME, article.getSource().getName());
-        values.put(ArticleContract.ArticleEntry.COLUMN_SOURCE_URL, article.getSource().getUrl());
-        values.put(ArticleContract.ArticleEntry.COLUMN_TAG_ID, article.getTagId());
+        values.put(ArticleContract.ArticleEntry.COLUMN_SOURCE_NAME, article.getSourceName());
+        values.put(ArticleContract.ArticleEntry.COLUMN_SOURCE_URL, article.getSourceUrl());
+        values.put(ArticleContract.ArticleEntry.COLUMN_TAG_NAME, article.getLinkTagName());
 
         Log.d("DB COLUMN_TITLE", values.get(ArticleContract.ArticleEntry.COLUMN_TITLE).toString());
         Log.d("DB COLUMN_DATE", values.get(ArticleContract.ArticleEntry.COLUMN_DATE).toString());
         Log.d("DB COLUMN_CONTENT", values.get(ArticleContract.ArticleEntry.COLUMN_CONTENT).toString());
         Log.d("DB COLUMN_SOURCE_NAME", values.get(ArticleContract.ArticleEntry.COLUMN_SOURCE_NAME).toString());
         Log.d("DB COLUMN_SOURCE_URL", values.get(ArticleContract.ArticleEntry.COLUMN_SOURCE_URL).toString());
-        Log.d("DB COLUMN_TAG_ID", values.get(ArticleContract.ArticleEntry.COLUMN_TAG_ID).toString());
+        Log.d("DB COLUMN_TAG_NAME", values.get(ArticleContract.ArticleEntry.COLUMN_TAG_NAME).toString());
 
-        //Log.d("DB ArticleContract", ArticleContract.ArticleEntry.TABLE_NAME);
         return this.getWritableDatabase().insert(
                 ArticleContract.ArticleEntry.TABLE_NAME,
                 null,
@@ -109,6 +108,14 @@ public class GNRDatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor getArticleById(long rowID) {
         return getArticles(null, ArticleContract.ArticleEntry._ID + "=?", new String[]{String.valueOf(rowID)}, null, null, null);
+    }
+
+    public Cursor getArticlesByTagName(String tagName) {
+        return getArticles(null, ArticleContract.ArticleEntry.COLUMN_TAG_NAME + "=?", new String[]{String.valueOf(tagName)}, null, null, null);
+    }
+
+    public Cursor getArticlesByTagNameWhereReadyIsFalse(String tagName) {
+        return getArticles(null, ArticleContract.ArticleEntry.COLUMN_TAG_NAME + "=?", new String[]{String.valueOf(tagName)}, null, null, null);
     }
 
     public int deleteAllArticles(){
