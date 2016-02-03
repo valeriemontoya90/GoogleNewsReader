@@ -3,14 +3,12 @@ package com.gnr.esgi.googlenewsreader.api;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.util.Log;
-import com.gnr.esgi.googlenewsreader.io.FlushedInputStream;
+import com.gnr.esgi.googlenewsreader.utils.Config;
 
 public class HttpRetriever
 {
-    public static InputStream retrieveStream(String str) {
+    public static String retrieveStream(String str) {
         try{
             URL url = new URL(str);
             HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -19,29 +17,24 @@ public class HttpRetriever
             connection.setDoInput(true);
             connection.connect();
 
-            return connection.getInputStream();
+            switch (connection.getResponseCode()) {
+                case 200:
+                case 201:
+                    BufferedReader br = new BufferedReader(new InputStreamReader((connection.getInputStream())));
+                    StringBuilder sb = new StringBuilder();
+                    String line;
 
+                    while((line = br.readLine()) != null)
+                        sb.append(line + "\n");
+
+                    br.close();
+                    return sb.toString();
+            }
         } catch (IOException e) {
-            Log.w("HttpRetriever",
-                    "Error for URL " + str, e);
+            if(Config.DISPLAY_LOG)
+                Log.w("HttpRetriever", "Error for URL " + str, e);
         }
 
         return null;
-    }
-
-    public Bitmap retrieveBitmap(String url) throws Exception {
-        InputStream inputStream = null;
-
-        try {
-            //inputStream = retrieveStream(url);
-            final Bitmap bitmap = BitmapFactory.decodeStream(new FlushedInputStream(inputStream));
-
-            return bitmap;
-        }
-        finally {
-            if(inputStream != null) {
-                inputStream.close();
-            }
-        }
     }
 }

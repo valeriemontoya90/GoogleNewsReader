@@ -1,42 +1,49 @@
 package com.gnr.esgi.googlenewsreader.activities;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.gnr.esgi.googlenewsreader.GNRApplication;
 import com.gnr.esgi.googlenewsreader.R;
 import com.gnr.esgi.googlenewsreader.constants.ArticleConstants;
-import com.gnr.esgi.googlenewsreader.model.Article;
-import com.squareup.picasso.Picasso;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class DetailArticleActivity extends AppCompatActivity {
 
-    TextView title;
-    TextView content;
-    ImageView picture;
+    TextView titleDetailArticle;
+    TextView contentDetailArticle;
+    ImageView pictureDetailArticle;
+
+    private ImageLoader mImageLoader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_news);
+        setContentView(R.layout.activity_detail_article);
 
-        title = (TextView) findViewById(R.id.news_title);
-        content = (TextView) findViewById(R.id.news_content);
-        picture = (ImageView) findViewById(R.id.news_picture);
+        titleDetailArticle = (TextView) findViewById(R.id.detail_article_title);
+        contentDetailArticle = (TextView) findViewById(R.id.detail_article_content);
+        pictureDetailArticle = (ImageView) findViewById(R.id.detail_article_picture);
 
-        // Get news from user's database by given id from main view
-        Article article = GNRApplication.getUser().getData().findArticleById(getIntent().getIntExtra(ArticleConstants.KEY_ID, 0));
+        mImageLoader = ImageLoader.getInstance();
+    }
 
-        title.setText(article.getTitle());
-        content.setText(article.getContent());
-        if(article.getPicture() != null
-            && article.getPicture().getUrl() != null)
-            Picasso
-                .with(this)
-                .load(article.getPicture().getUrl())
-                .resize(300, 200)
-                .centerCrop()
-                .into(picture);
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        Intent intent = getIntent();
+        String title = intent.getStringExtra(ArticleConstants.ARTICLE_KEY_TITLE);
+        String content = intent.getStringExtra(ArticleConstants.ARTICLE_KEY_CONTENT);
+        String urlPicture = intent.getStringExtra(ArticleConstants.ARTICLE_KEY_PICTURE_URL);
+
+        showDetailArticle(title, content, urlPicture);
+    }
+
+    public void showDetailArticle(String title, String content, String urlpicture) {
+        mImageLoader.displayImage(urlpicture, pictureDetailArticle);
+        titleDetailArticle.setText(title);
+        contentDetailArticle.setText(content);
     }
 }

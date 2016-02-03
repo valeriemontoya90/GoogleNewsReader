@@ -1,36 +1,44 @@
 package com.gnr.esgi.googlenewsreader.models;
 
+import android.content.SharedPreferences;
 import com.gnr.esgi.googlenewsreader.database.DatabaseManager;
 
 public class User {
-    private Boolean _autoUpdate;
-    private DatabaseManager _data;
+    private SharedPreferences settings;
+    private DatabaseManager data;
+
+    public User() {
+        data = new DatabaseManager();
+    }
+
+    public SharedPreferences getSettings() {
+        return settings;
+    }
+
+    public void setSettings(SharedPreferences sharedPreferences) {
+        settings = sharedPreferences;
+    }
 
     public Boolean getAutoUpdate() {
-        return  _autoUpdate;
+        return settings.getBoolean("autoRefresh", false);
     }
 
     public void setAutoUpdate(Boolean autoUpdate) {
-        _autoUpdate = autoUpdate;
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean("autoRefresh", autoUpdate);
+
+        editor.commit();
     }
 
     public void enableAutoUpdate() {
         setAutoUpdate(true);
     }
 
-    public void disableAutoUpdate(Boolean autoUpdate) {
+    public void disableAutoUpdate() {
         setAutoUpdate(false);
     }
 
     public DatabaseManager getData() {
-        return  _data;
-    }
-
-    public void setData(DatabaseManager data) {
-        _data = data;
-    }
-
-    public void refreshData() {
-        _data = new DatabaseManager();
+        return  data;
     }
 }

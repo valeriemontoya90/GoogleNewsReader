@@ -8,12 +8,12 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.gnr.esgi.googlenewsreader.R;
 import com.gnr.esgi.googlenewsreader.models.Article;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -21,12 +21,10 @@ public class ListArticlesAdapter extends BaseAdapter {
 
     private Context mContext;
     private List<Article> mListArticles;
-    private ImageLoader mImageLoader;
 
     public ListArticlesAdapter(Context context, List<Article> articles) {
         this.mContext = context;
         this.mListArticles = articles;
-        //this.mImageLoader = ;
     }
 
     @Override
@@ -64,6 +62,8 @@ public class ListArticlesAdapter extends BaseAdapter {
         viewHolder.title.setText(articleSelected.getTitle());
         viewHolder.createdAt.setText(articleSelected.getCreatedAt());
         viewHolder.source.setText(articleSelected.getSourceUrl());
+
+        Picasso.with(mContext).load(articleSelected.getPictureUrl()).into(viewHolder.picture);
 
         ImageLoader.getInstance().displayImage(articleSelected.getPictureUrl(), viewHolder.picture, new ImageLoadingListener() {
             @Override

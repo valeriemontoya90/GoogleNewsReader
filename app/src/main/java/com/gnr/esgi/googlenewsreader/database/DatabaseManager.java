@@ -1,9 +1,8 @@
 package com.gnr.esgi.googlenewsreader.database;
 
 import com.gnr.esgi.googlenewsreader.helper.ArticleHelper;
-import com.gnr.esgi.googlenewsreader.model.Article;
-import com.gnr.esgi.googlenewsreader.model.Tag;
-import com.gnr.esgi.googlenewsreader.api.HttpRetriever;
+import com.gnr.esgi.googlenewsreader.models.Article;
+import com.gnr.esgi.googlenewsreader.models.Tag;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -26,9 +25,9 @@ public class DatabaseManager {
         for (Tag newTag : tags)
         {
             for(Tag oldTag : _tags)
-                newTag.setCounter(oldTag.getName().compareTo(newTag.getName()) == 0
-                                ? ArticleHelper.countRecentNews(newTag.getArticles(), oldTag.getArticles())
-                                : newTag.getArticles().size()
+                newTag.setCurrentCounter(oldTag.getTagName().compareTo(newTag.getTagName()) == 0
+                                ? ArticleHelper.countRecentNews(newTag.getArticlesList(), oldTag.getArticlesList())
+                                : newTag.getArticlesList().size()
                 );
         }
 
@@ -39,6 +38,8 @@ public class DatabaseManager {
         /*
             Retrieve tags from SQLLite Database
             Add each of them to _tags
+
+            Or use sharedPreferences
          */
 
         // FOR TEST
@@ -51,8 +52,8 @@ public class DatabaseManager {
         List<Article> articleList = new ArrayList<>();
 
         for (Tag _tag : _tags)
-            if(_tag.getId().compareTo(id) == 0)
-                articleList = _tag.getArticles();
+            if(_tag.getTagId().compareTo(id) == 0)
+                articleList = _tag.getArticlesList();
 
         return articleList;
     }
@@ -61,7 +62,7 @@ public class DatabaseManager {
         List<Article> articleList = new ArrayList<>();
 
         for(Tag tag : _tags)
-            articleList.addAll(tag.getArticles());
+            articleList.addAll(tag.getArticlesList());
 
         return setIndex(escapeDuplicates(articleList));
     }
@@ -70,18 +71,18 @@ public class DatabaseManager {
         int count = 0;
 
         for (Tag tag : _tags)
-            count += tag.getCounter();
+            count += tag.getCurrentCounter();
 
         return count;
     }
 
     public int countLatest(Tag tag) {
-        return tag.getCounter();
+        return tag.getCurrentCounter();
     }
 
     private List<Article> setIndex(List<Article> articleList) {
         for(int i=0; i< articleList.size(); i++)
-            articleList.get(i).setId(i);
+            articleList.get(i).setArticleId(i);
 
         return articleList;
     }
@@ -97,7 +98,7 @@ public class DatabaseManager {
 
     public Article findArticleById(Integer id) {
         for(Article article : getAllArticles())
-            if(article.getId().compareTo(id) == 0)
+            if(article.getArticleId().compareTo(id) == 0)
                 return article;
 
         return null;

@@ -2,8 +2,6 @@ package com.gnr.esgi.googlenewsreader.parser;
 
 import com.gnr.esgi.googlenewsreader.models.Article;
 
-import org.apache.http.impl.client.DefaultHttpClient;
-
 public class ArticleParser {
     public static Article parse(Article article) {
 
