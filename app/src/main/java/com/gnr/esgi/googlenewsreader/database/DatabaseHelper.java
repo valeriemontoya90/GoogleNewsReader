@@ -50,8 +50,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(DatabaseConstants.ArticleEntry.COLUMN_TITLE, article.getTitle());
         values.put(DatabaseConstants.ArticleEntry.COLUMN_DATE, article.getCreatedAt());
         values.put(DatabaseConstants.ArticleEntry.COLUMN_CONTENT, article.getContent());
-        values.put(DatabaseConstants.ArticleEntry.COLUMN_SOURCE_NAME, article.getSourceName());
-        values.put(DatabaseConstants.ArticleEntry.COLUMN_SOURCE_URL, article.getSourceUrl());
+        values.put(DatabaseConstants.ArticleEntry.COLUMN_SOURCE_NAME, article.getSource().getSourceName());
+        values.put(DatabaseConstants.ArticleEntry.COLUMN_SOURCE_URL, article.getSource().getSourceUrl());
         values.put(DatabaseConstants.ArticleEntry.COLUMN_TAG_NAME, article.getLinkTagName());
 
         Log.d("DB COLUMN_TITLE", values.get(DatabaseConstants.ArticleEntry.COLUMN_TITLE).toString());

@@ -40,9 +40,19 @@ public class ArticleHelper {
         }
     }
 
-    public static void saveArticleInDataBase(Tag tag) {
+    public static void saveArticleInDataBase(Article article, Tag tag) {
         if(Config.DISPLAY_LOG)
             Log.d(Config.LOG_PREFIX, "saveArticleInDataBase");
+
+            article.setLinkTagName(tag.getTagName());
+            article.setHasAlreadyReadValue(false);
+
+            GNRApplication.getDbHelper().addArticle(article);
+    }
+
+    public static void saveArticlesListInDataBase(Tag tag) {
+        if(Config.DISPLAY_LOG)
+            Log.d(Config.LOG_PREFIX, "saveArticlesListInDataBase");
 
         for (Article article : tag.getArticlesList()) {
             article.setLinkTagName(tag.getTagName());

@@ -16,8 +16,6 @@ public class Article {
     private String createdAt;
     private String pictureUrl;
     private Source source;
-    private String sourceName;
-    private String sourceUrl;
     private String linkTagName;
 
     public Article(JSONObject jsonArticle){
@@ -25,8 +23,10 @@ public class Article {
             title = jsonArticle.getString(ArticleConstants.ARTICLE_KEY_TITLE);
             content = jsonArticle.getString(ArticleConstants.ARTICLE_KEY_CONTENT);
             createdAt = jsonArticle.getString(ArticleConstants.ARTICLE_KEY_CREATED_AT);
-            sourceName = jsonArticle.getString(ArticleConstants.ARTICLE_KEY_SOURCE_NAME);
-            sourceUrl = jsonArticle.getString(ArticleConstants.ARTICLE_KEY_SOURCE_URL);
+
+            source = new Source();
+            source.setSourceName(jsonArticle.getString(ArticleConstants.ARTICLE_KEY_SOURCE_NAME));
+            source.setSourceUrl(jsonArticle.getString(ArticleConstants.ARTICLE_KEY_SOURCE_URL));
 
             if(jsonArticle.has(ArticleConstants.ARTICLE_KEY_PICTURE))
             {
@@ -89,22 +89,6 @@ public class Article {
 
     public void setPictureUrl(String pictureUrl) {
         this.pictureUrl = pictureUrl;
-    }
-
-    public String getSourceUrl() {
-        return sourceUrl;
-    }
-
-    public void setSourceUrl(String sourceUrl) {
-        this.sourceUrl = sourceUrl;
-    }
-
-    public String getSourceName() {
-        return sourceName;
-    }
-
-    public void setSourceName(String sourceName) {
-        this.sourceName = sourceName;
     }
 
     public String getLinkTagName() {

@@ -61,7 +61,7 @@ public class ListArticlesAdapter extends BaseAdapter {
         Article articleSelected = mListArticles.get(position);
         viewHolder.title.setText(articleSelected.getTitle());
         viewHolder.createdAt.setText(articleSelected.getCreatedAt());
-        viewHolder.source.setText(articleSelected.getSourceUrl());
+        viewHolder.source.setText(articleSelected.getSource().getSourceName());
 
         Picasso.with(mContext).load(articleSelected.getPictureUrl()).into(viewHolder.picture);
 

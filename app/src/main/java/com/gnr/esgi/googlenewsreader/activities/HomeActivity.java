@@ -147,8 +147,8 @@ public class HomeActivity extends ActionBarActivity {
         Intent intent = new Intent(this, DetailArticleActivity.class);
         intent.putExtra(ArticleConstants.ARTICLE_KEY_TITLE, articlesArrayList.get(position).getTitle());
         intent.putExtra(ArticleConstants.ARTICLE_KEY_CONTENT, articlesArrayList.get(position).getContent());
-        intent.putExtra(ArticleConstants.ARTICLE_KEY_SOURCE_NAME, articlesArrayList.get(position).getSourceName());
-        intent.putExtra(ArticleConstants.ARTICLE_KEY_SOURCE_URL, articlesArrayList.get(position).getSourceUrl());
+        intent.putExtra(ArticleConstants.ARTICLE_KEY_SOURCE_NAME, articlesArrayList.get(position).getSource().getSourceName());
+        intent.putExtra(ArticleConstants.ARTICLE_KEY_SOURCE_URL, articlesArrayList.get(position).getSource().getSourceUrl());
         intent.putExtra(ArticleConstants.ARTICLE_KEY_PICTURE_URL, articlesArrayList.get(position).getPictureUrl());
 
         startActivity(intent);
