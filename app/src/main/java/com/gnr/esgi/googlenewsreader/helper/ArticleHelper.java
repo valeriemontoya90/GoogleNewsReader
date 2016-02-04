@@ -3,19 +3,44 @@ package com.gnr.esgi.googlenewsreader.helper;
 import android.util.Log;
 
 import com.gnr.esgi.googlenewsreader.GNRApplication;
+import com.gnr.esgi.googlenewsreader.constants.APIConstants;
 import com.gnr.esgi.googlenewsreader.constants.ArticleConstants;
 import com.gnr.esgi.googlenewsreader.models.Article;
 import com.gnr.esgi.googlenewsreader.models.Tag;
 import com.gnr.esgi.googlenewsreader.parser.HtmlParser;
 import com.gnr.esgi.googlenewsreader.utils.Config;
+import com.gnr.esgi.googlenewsreader.utils.URLBuilder;
 import com.gnr.esgi.googlenewsreader.webservices.ArticleSearchTask;
 
 import java.util.List;
 
 public class ArticleHelper {
 
+    public static String getUrl() {
+        URLBuilder builder = buildUrl();
+
+        // If no tag is found, show headlines news
+        builder.addParameter(APIConstants.PARAMETER_TOPIC, Config.API_TOPIC);
+
+        return builder.getUrl();
+    }
+
     public static String getUrl(String tagName) {
-        return HtmlParser.escapeSpace(ArticleConstants.BASE_API_URL + tagName);
+        URLBuilder builder = buildUrl();
+
+        builder.addParameter(APIConstants.PARAMETER_TAG, tagName);
+
+        return builder.getUrl();
+    }
+
+    private static URLBuilder buildUrl() {
+        URLBuilder builder = new URLBuilder(APIConstants.BASE_URL);
+
+        builder.addParameter(APIConstants.PARAMETER_VERSION, Config.API_VERSION);
+        builder.addParameter(APIConstants.PARAMETER_ORDER, Config.API_ORDER);
+        builder.addParameter(APIConstants.PARAMETER_RESULTS, Config.API_RESULTS);
+
+        return builder;
     }
 
     public static int countRecentNews(List<Article> recent, List<Article> old) {
