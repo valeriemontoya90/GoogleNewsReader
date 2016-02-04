@@ -16,19 +16,33 @@ import java.util.List;
 
 public class ArticleHelper {
 
+    // Get headlines of first page
     public static String getUrl() {
+        return getUrl(0);
+    }
+
+    // Get headlines of specific page
+    public static String getUrl(Integer page) {
         URLBuilder builder = buildUrl();
 
         // If no tag is found, show headlines news
         builder.addParameter(APIConstants.PARAMETER_TOPIC, Config.API_TOPIC);
+        builder.addParameter(APIConstants.PARAMETER_START, page);
 
         return builder.getUrl();
     }
 
+    // Get news from tag of first page
     public static String getUrl(String tagName) {
+        return getUrl(tagName, 0);
+    }
+
+    // Get news from tag of specific page
+    public static String getUrl(String tagName, Integer page) {
         URLBuilder builder = buildUrl();
 
         builder.addParameter(APIConstants.PARAMETER_TAG, tagName);
+        builder.addParameter(APIConstants.PARAMETER_START, page);
 
         return builder.getUrl();
     }

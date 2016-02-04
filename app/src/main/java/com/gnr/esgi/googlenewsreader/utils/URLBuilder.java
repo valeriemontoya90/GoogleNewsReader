@@ -13,12 +13,12 @@ public class URLBuilder {
         return url;
     }
 
-    public void addParameter(String key, String value) {
+    public void addParameter(String key, Object value) {
         StringBuilder builder = new StringBuilder();
 
         builder.append(key);
         builder.append("=");
-        builder.append(value);
+        builder.append(value.toString());
         builder.append("&");
 
         url = builder.toString();

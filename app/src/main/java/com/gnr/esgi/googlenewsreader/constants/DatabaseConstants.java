@@ -21,4 +21,10 @@ public class DatabaseConstants {
         public static final String COLUMN_SOURCE_URL = "article_source_url";
         public static final String COLUMN_TAG_NAME = "article_tag_name";
     }
+
+    public abstract class TagEntry implements BaseColumns {
+        public static final String TABLE_NAME = "tags";
+
+        public static final String COLUMN_NAME = "tag_name";
+    }
 }
