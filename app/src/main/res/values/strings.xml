@@ -15,5 +15,7 @@
     <string name="refreshDialog_message">Refresh every hour.</string>
     <string name="refreshDialog_accept">ACCEPT</string>
     <string name="refreshDialog_cancel">CANCEL</string>
+    <string name="title_activity_tag">TagActivity</string>
+    <string name="title_activity_tag_settings">TagSettingsActivity</string>
 
 </resources>

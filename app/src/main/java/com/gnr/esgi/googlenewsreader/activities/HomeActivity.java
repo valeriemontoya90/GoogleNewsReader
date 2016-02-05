@@ -1,7 +1,6 @@
 package com.gnr.esgi.googlenewsreader.activities;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -188,6 +186,16 @@ public class HomeActivity extends ActionBarActivity {
         snackbar.show();*/
     }
 
+    public void showTagSettings() {
+        Intent intent = new Intent(this, TagSettingsActivity.class);
+        startActivity(intent);
+    }
+
+    public void showTags() {
+        Intent intent = new Intent(this, TagActivity.class);
+        startActivity(intent);
+    }
+
     private void broadcastMessageFromHomeActivity(final String message) {
         if(Config.DISPLAY_LOG)
             Log.d(Config.LOG_PREFIX, "broadcastMessageFromHomeActivity " + message);
@@ -246,7 +254,6 @@ public class HomeActivity extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_home, menu);
         return true;
     }
@@ -255,24 +262,15 @@ public class HomeActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_refresh:
-                // In case of user click on Refresh icon of toolbar
-                // Show alert dialog with option to activate auto refresh
-                // Then add a service with a 1hour refreshing thread
                 showRefreshDialog();
                 return true;
 
             case R.id.action_tags:
-                // In case of user click on Tags icon of toolbar
-                // Eg.
-                //Intent intent = new Intent(this, TagListActivity.class);
-                //startActivity(intent);
+                showTags();
                 return true;
 
             case R.id.action_search:
-                // In case of user click on Search icon of toolbar
-                // Eg.
-                //Intent intent = new Intent(this, TagSettingsActivity.class);
-                //startActivity(intent);
+                showTagSettings();
                 return true;
 
             default:
