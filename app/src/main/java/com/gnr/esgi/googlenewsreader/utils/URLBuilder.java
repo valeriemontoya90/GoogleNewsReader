@@ -10,11 +10,11 @@ public class URLBuilder {
     }
 
     public String getUrl() {
-        return url;
+        return clean(url);
     }
 
     public void addParameter(String key, Object value) {
-        StringBuilder builder = new StringBuilder();
+        StringBuilder builder = new StringBuilder(url);
 
         builder.append(key);
         builder.append("=");
@@ -22,13 +22,14 @@ public class URLBuilder {
         builder.append("&");
 
         url = builder.toString();
-        clean();
     }
 
-    private void clean() {
+    private String clean(String url) {
         url = HtmlParser.escapeSpace(url);
 
         if(url.endsWith("&"))
             url = url.substring(0, url.lastIndexOf("&"));
+
+        return url;
     }
 }

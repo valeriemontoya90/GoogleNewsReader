@@ -1,5 +1,7 @@
 package com.gnr.esgi.googlenewsreader.parser;
 
+import android.text.Html;
+
 public final class HtmlParser {
     public static final String ELLIPSIS = "&ellip;";
     public static final String TAG_PATTERN = "<[^>]+>";
@@ -23,6 +25,6 @@ public final class HtmlParser {
         if(bodyIndex > -1)
             source = source.substring(bodyIndex);
 
-        return removeTags(source);
+        return removeTags(Html.fromHtml(source).toString());
     }
 }
