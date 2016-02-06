@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.gnr.esgi.googlenewsreader.R;
 import com.gnr.esgi.googlenewsreader.models.Article;
+import com.gnr.esgi.googlenewsreader.utils.DateUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
@@ -54,13 +55,15 @@ public class ListArticlesAdapter extends BaseAdapter {
             viewHolder.source = (TextView) convertView.findViewById(R.id.news_source);
             viewHolder.picture = (ImageView) convertView.findViewById(R.id.news_picture);
             convertView.setTag(viewHolder);
-        } else {
+        }
+        else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
+
         viewHolder.picture.setVisibility(View.INVISIBLE);
         Article articleSelected = mListArticles.get(position);
         viewHolder.title.setText(articleSelected.getTitle());
-        viewHolder.createdAt.setText(articleSelected.getCreatedAt());
+        viewHolder.createdAt.setText(DateUtil.getDuration(articleSelected.getCreatedAt()));
         viewHolder.source.setText(articleSelected.getSource().getSourceName());
 
         Picasso.with(mContext).load(articleSelected.getPictureUrl()).into(viewHolder.picture);

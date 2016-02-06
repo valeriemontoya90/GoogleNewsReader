@@ -21,4 +21,9 @@
 
     <string name="detailArticle_viewOnline">View online</string>
 
+    <string name="hour_ago">1 hour ago</string>
+    <string name="hours_ago"> hours ago</string>
+    <string name="day_ago">1 day ago</string>
+    <string name="days_ago"> days ago</string>
+
 </resources>

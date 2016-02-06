@@ -51,7 +51,8 @@ public class ArticleHelper {
         URLBuilder builder = new URLBuilder(APIConstants.BASE_URL);
 
         builder.addParameter(APIConstants.PARAMETER_VERSION, Config.API_VERSION);
-        builder.addParameter(APIConstants.PARAMETER_ORDER, Config.API_ORDER);
+        builder.addParameter(APIConstants.PARAMETER_EDITION, Config.API_EDITION);
+        //builder.addParameter(APIConstants.PARAMETER_ORDER, Config.API_ORDER);
         builder.addParameter(APIConstants.PARAMETER_RESULTS, Config.API_RESULTS);
 
         return builder;

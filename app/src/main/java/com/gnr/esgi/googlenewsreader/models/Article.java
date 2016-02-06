@@ -3,8 +3,17 @@ package com.gnr.esgi.googlenewsreader.models;
 import android.util.Log;
 import com.gnr.esgi.googlenewsreader.constants.ArticleConstants;
 import com.gnr.esgi.googlenewsreader.utils.Config;
+import com.gnr.esgi.googlenewsreader.utils.DateUtil;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class Article {
 
@@ -22,6 +31,7 @@ public class Article {
         try {
             title = jsonArticle.getString(ArticleConstants.ARTICLE_KEY_TITLE);
             content = jsonArticle.getString(ArticleConstants.ARTICLE_KEY_CONTENT);
+
             createdAt = jsonArticle.getString(ArticleConstants.ARTICLE_KEY_CREATED_AT);
 
             source = new Source();

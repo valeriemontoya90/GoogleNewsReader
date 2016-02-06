@@ -3,23 +3,21 @@ package com.gnr.esgi.googlenewsreader.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
-import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.gnr.esgi.googlenewsreader.R;
 import com.gnr.esgi.googlenewsreader.constants.ArticleConstants;
+import com.gnr.esgi.googlenewsreader.utils.DateUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.squareup.picasso.Picasso;
 
 public class DetailArticleActivity extends AppCompatActivity {
 
-    Toolbar toolbar;
     TextView titleDetailArticle;
     TextView contentDetailArticle;
+    TextView createdAtDetailArticle;
     ImageView pictureDetailArticle;
     TextView sourceDetailArticle;
     TextView viewOnlineDetailArticle;
@@ -36,10 +34,10 @@ public class DetailArticleActivity extends AppCompatActivity {
 
         titleDetailArticle = (TextView) findViewById(R.id.detail_article_title);
         contentDetailArticle = (TextView) findViewById(R.id.detail_article_content);
+        createdAtDetailArticle = (TextView) findViewById(R.id.detail_article_created_at);
         pictureDetailArticle = (ImageView) findViewById(R.id.detail_article_picture);
         sourceDetailArticle = (TextView) findViewById(R.id.detail_article_source_name);
         viewOnlineDetailArticle = (TextView) findViewById(R.id.detail_article_view_online);
-        toolbar = (Toolbar) findViewById(R.id.action_bar);
 
         mImageLoader = ImageLoader.getInstance();
 
@@ -58,6 +56,7 @@ public class DetailArticleActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String title = intent.getStringExtra(ArticleConstants.ARTICLE_KEY_TITLE);
         String content = intent.getStringExtra(ArticleConstants.ARTICLE_KEY_CONTENT);
+        String createdAt = DateUtil.getDuration(intent.getStringExtra(ArticleConstants.ARTICLE_KEY_CREATED_AT));
         String urlPicture = intent.getStringExtra(ArticleConstants.ARTICLE_KEY_PICTURE_URL);
         String sourceName = intent.getStringExtra(ArticleConstants.ARTICLE_KEY_SOURCE_NAME);
         String sourceUrl = intent.getStringExtra(ArticleConstants.ARTICLE_KEY_SOURCE_URL);
@@ -66,13 +65,14 @@ public class DetailArticleActivity extends AppCompatActivity {
         if(sourceUrl.isEmpty())
             viewOnlineDetailArticle.setVisibility(View.INVISIBLE);
 
-        showDetailArticle(title, content, urlPicture, sourceName, sourceUrl);
+        showDetailArticle(title, content, createdAt, urlPicture, sourceName, sourceUrl);
     }
 
-    public void showDetailArticle(String title, String content, String urlpicture, String sourceName, String sourceUrl) {
+    public void showDetailArticle(String title, String content, String createdAt, String urlpicture, String sourceName, String sourceUrl) {
         mImageLoader.displayImage(urlpicture, pictureDetailArticle);
         titleDetailArticle.setText(title);
         contentDetailArticle.setText(content);
+        createdAtDetailArticle.setText(createdAt);
         sourceDetailArticle.setText(sourceName);
 
         Picasso.with(this).load(urlpicture).into(pictureDetailArticle);

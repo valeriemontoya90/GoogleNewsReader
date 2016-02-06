@@ -43,7 +43,7 @@ public class DatabaseManager {
          */
 
         // FOR TEST
-        _tags.add(new Tag("poutine"));
+        _tags.add(new Tag("Kebab"));
         _tags.add(new Tag("PSG"));
         _tags.add(new Tag("Inde"));
     }

@@ -9,6 +9,9 @@ public class Config {
     // Version of Google News API
     public static final String API_VERSION = "1.0";
 
+    // Edition
+    public static final String API_EDITION = "fr";
+
     // Order by date
     public static final String API_ORDER = "d";
 
