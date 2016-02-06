@@ -57,8 +57,8 @@ public class ArticleHelper {
         return builder;
     }
 
-    public static int countRecentNews(List<Article> recent, List<Article> old) {
-        int count = recent.size();
+    public static Integer countRecentNews(List<Article> recent, List<Article> old) {
+        Integer count = recent.size();
 
         for (Article recentNews : recent)
             for (Article oldNews : old)

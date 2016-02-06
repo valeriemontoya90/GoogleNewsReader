@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -17,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import com.gnr.esgi.googlenewsreader.GNRApplication;
 import com.gnr.esgi.googlenewsreader.R;
 import com.gnr.esgi.googlenewsreader.adapters.ListArticlesAdapter;
@@ -38,6 +40,7 @@ public class HomeActivity extends ActionBarActivity {
     public static final String DISPLAY_NEW_ARTICLES = "display_new_articles";
     boolean isRefresh = false;
 
+    RelativeLayout relativeLayout;
     List<Article> articlesArrayList = new ArrayList<>();
     ListView listviewArticles;
     ListArticlesAdapter listArticlesAdapter;
@@ -56,24 +59,11 @@ public class HomeActivity extends ActionBarActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // First refresh articles in database getting new content from internet
-                ArticleHelper.refreshArticles();
-
-                // Then refresh view
-                refreshListView();
-
-                /*int count = refresh();
-                final Snackbar snackbar = Snackbar.make(view, count + R.string.snackbar_addedNews, Snackbar.LENGTH_LONG);
-                snackbar.setAction(R.string.snackbar_close, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        snackbar.dismiss();
-                    }
-                });
-                snackbar.show();
-                */
+                displaySnackbar(refreshListArticles());
             }
         });
+
+        relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout);
 
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
         ImageLoader.getInstance().init(config);
@@ -92,6 +82,19 @@ public class HomeActivity extends ActionBarActivity {
         });
     }
 
+    public Integer refreshListArticles() {
+        // Save old news to compare with latest
+        List<Article> oldArticles = articlesArrayList;
+
+        // First refresh articles in database getting new content from internet
+        ArticleHelper.refreshArticles();
+
+        // Then refresh view
+        refreshListView();
+
+        return ArticleHelper.countRecentNews(articlesArrayList, oldArticles);
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -103,6 +106,7 @@ public class HomeActivity extends ActionBarActivity {
         if(GNRApplication.getUser().getData().getAllArticles().isEmpty())
             ArticleHelper.refreshArticles();
 
+        //ArticleHelper.refreshArticles();
         refreshListView();
     }
 
@@ -121,8 +125,14 @@ public class HomeActivity extends ActionBarActivity {
         listArticlesAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiverFromHomeActivity);
+    }
+
     private void initServices() {
-        //Replace autoUpdate by sharedPreferences
         if(GNRApplication.getUser().getAutoUpdate()) {
             broadcaster = LocalBroadcastManager.getInstance(this);
 
@@ -136,7 +146,6 @@ public class HomeActivity extends ActionBarActivity {
             launchRefreshService();
         }
         else {
-            LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiverFromHomeActivity);
             stopRefreshService();
         }
     }
@@ -158,12 +167,11 @@ public class HomeActivity extends ActionBarActivity {
             if (message.equals(RefreshService.NEW_ARTICLES_ARE_READY)) {
                 Log.d(Config.LOG_PREFIX, "receiveBroadcastMessageFromHomeActivity " + RefreshService.NEW_ARTICLES_ARE_READY);
                 refreshListView();
-                displaySnackbar();
             }
-            /*if (message.equals(DISPLAY_NEW_ARTICLES)) {
+            if (message.equals(DISPLAY_NEW_ARTICLES)) {
                 Log.d(Config.LOG_PREFIX, "broadcastReceiverFromHomeActivity " + DISPLAY_NEW_ARTICLES);
-                initData();
-            }*/
+                displaySnackbar(refreshListArticles());
+            }
             if (message.equals(ACTIVATE_AUTO_REFRESH)) {
                 Log.d(Config.LOG_PREFIX, "broadcastReceiverFromHomeActivity "+ACTIVATE_AUTO_REFRESH);
             }
@@ -173,17 +181,21 @@ public class HomeActivity extends ActionBarActivity {
         }
     };
 
-    private void displaySnackbar() {
-        /*final Snackbar snackbar = Snackbar.make(view, count + R.string.snackbar_addedNews, Snackbar.LENGTH_LONG);
+    private void displaySnackbar(Integer count) {
+        StringBuilder message = new StringBuilder();
+        message.append(count);
+        message.append(R.string.snackbar_addedNews);
+
+        final Snackbar snackbar = Snackbar.make(relativeLayout, message.toString(), Snackbar.LENGTH_LONG);
         snackbar.setAction(R.string.snackbar_close, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //make a button with "display new articles"
                 broadcastMessageFromHomeActivity(DISPLAY_NEW_ARTICLES);
                 snackbar.dismiss();
             }
         });
-        snackbar.show();*/
+
+        snackbar.show();
     }
 
     public void showTagSettings() {
