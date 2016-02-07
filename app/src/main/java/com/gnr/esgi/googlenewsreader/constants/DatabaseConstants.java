@@ -17,9 +17,12 @@ public class DatabaseConstants {
         public static final String COLUMN_TITLE = "article_title";
         public static final String COLUMN_DATE = "article_date";
         public static final String COLUMN_CONTENT = "article_content";
+        public static final String COLUMN_PICTURE_URL = "article_picture_url";
         public static final String COLUMN_SOURCE_NAME = "article_source_name";
         public static final String COLUMN_SOURCE_URL = "article_source_url";
         public static final String COLUMN_TAG_NAME = "article_tag_name";
+        public static final String COLUMN_READ = "article_read";
+        public static final String COLUMN_DELETED = "article_deleted";
     }
 
     public abstract class TagEntry implements BaseColumns {

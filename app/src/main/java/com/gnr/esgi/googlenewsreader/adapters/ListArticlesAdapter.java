@@ -2,6 +2,8 @@ package com.gnr.esgi.googlenewsreader.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,17 +17,18 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.squareup.picasso.Picasso;
-
 import java.util.List;
 
 public class ListArticlesAdapter extends BaseAdapter {
 
     private Context mContext;
     private List<Article> mListArticles;
+    private SparseBooleanArray mSelectedItemsIds;
 
     public ListArticlesAdapter(Context context, List<Article> articles) {
         this.mContext = context;
         this.mListArticles = articles;
+        this.mSelectedItemsIds = new SparseBooleanArray();
     }
 
     @Override
@@ -34,13 +37,22 @@ public class ListArticlesAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
-        return position;
+    public Article getItem(int position) {
+        return mListArticles.get(position);
     }
 
     @Override
     public long getItemId(int position) {
         return position;
+    }
+
+    public void remove(Article article) {
+        mListArticles.remove(article);
+        notifyDataSetChanged();
+    }
+
+    public void removeItem(int position) {
+        mListArticles.remove(position);
     }
 
     @Override
@@ -60,15 +72,22 @@ public class ListArticlesAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        viewHolder.picture.setVisibility(View.INVISIBLE);
+        //viewHolder.picture.setVisibility(View.INVISIBLE);
         Article articleSelected = mListArticles.get(position);
         viewHolder.title.setText(articleSelected.getTitle());
         viewHolder.createdAt.setText(DateUtil.getDuration(articleSelected.getCreatedAt()));
         viewHolder.source.setText(articleSelected.getSource().getSourceName());
 
-        Picasso.with(mContext).load(articleSelected.getPictureUrl()).into(viewHolder.picture);
+        viewHolder.title.setTypeface(
+                null,
+                articleSelected.getRead()
+                        ? Typeface.NORMAL
+                        : Typeface.BOLD
+        );
 
-        ImageLoader.getInstance().displayImage(articleSelected.getPictureUrl(), viewHolder.picture, new ImageLoadingListener() {
+        //Picasso.with(mContext).load(articleSelected.getPictureUrl()).into(viewHolder.picture);
+
+        ImageLoader.getInstance().displayImage(articleSelected.getPicture().getPictureUrl(), viewHolder.picture, new ImageLoadingListener() {
             @Override
             public void onLoadingStarted(String s, View view) {
 
@@ -103,5 +122,33 @@ public class ListArticlesAdapter extends BaseAdapter {
     public void swapItems(List<Article> items) {
         this.mListArticles = items;
         notifyDataSetChanged();
+    }
+
+    public void toggleSelection(int position) {
+        selectView(position, !mSelectedItemsIds.get(position));
+    }
+
+    public void removeSelection() {
+        mSelectedItemsIds = new SparseBooleanArray();
+        notifyDataSetChanged();
+    }
+
+    public void selectView(int position, boolean value) {
+        if(value) {
+            mSelectedItemsIds.put(position, value);
+        }
+        else {
+            mSelectedItemsIds.delete(position);
+        }
+
+        notifyDataSetChanged();
+    }
+
+    public int getSelectedCount() {
+        return mSelectedItemsIds.size();
+    }
+
+    public SparseBooleanArray getSelectedIds() {
+        return mSelectedItemsIds;
     }
 }

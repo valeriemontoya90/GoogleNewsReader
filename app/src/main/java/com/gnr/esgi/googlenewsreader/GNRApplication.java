@@ -8,21 +8,23 @@ import com.gnr.esgi.googlenewsreader.models.User;
 public class GNRApplication extends Application {
 
     private static Context context;
+
     @Override
     public void onCreate() {
         super.onCreate();
 
-        GNRApplication.context = getApplicationContext();
+        context = getApplicationContext();
     }
 
     public static Context getAppContext(){
-        return GNRApplication.context;
+        return context;
     }
 
     ///////////////
     ///USER///
     ///////////////
     private static User user;
+
     public static User getUser() {
         if(user == null)
             user = new User();
@@ -34,10 +36,11 @@ public class GNRApplication extends Application {
     ///DB HELPER///
     ///////////////
     private static DatabaseHelper dbHelper;
+
     public static DatabaseHelper getDbHelper() {
-        if(dbHelper == null){
+        if(dbHelper == null)
             dbHelper = new DatabaseHelper(getAppContext());
-        }
+
         return dbHelper;
     }
 }

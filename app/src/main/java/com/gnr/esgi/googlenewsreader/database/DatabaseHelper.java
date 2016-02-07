@@ -6,10 +6,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-
 import com.gnr.esgi.googlenewsreader.constants.DatabaseConstants;
+import com.gnr.esgi.googlenewsreader.factory.ArticleFactory;
 import com.gnr.esgi.googlenewsreader.models.Article;
 import com.gnr.esgi.googlenewsreader.models.Tag;
+import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private final static String TAG = DatabaseHelper.class.getSimpleName();
@@ -29,6 +30,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         DatabaseConstants.ArticleEntry.COLUMN_CONTENT + DatabaseConstants.TEXT_TYPE + DatabaseConstants.COMMA_SEPARATOR +
                         DatabaseConstants.ArticleEntry.COLUMN_SOURCE_NAME + DatabaseConstants.TEXT_TYPE + DatabaseConstants.COMMA_SEPARATOR +
                         DatabaseConstants.ArticleEntry.COLUMN_SOURCE_URL + DatabaseConstants.TEXT_TYPE + DatabaseConstants.COMMA_SEPARATOR +
+                        DatabaseConstants.ArticleEntry.COLUMN_PICTURE_URL + DatabaseConstants.TEXT_TYPE + DatabaseConstants.COMMA_SEPARATOR +
+                        DatabaseConstants.ArticleEntry.COLUMN_READ + DatabaseConstants.INTEGER_TYPE + DatabaseConstants.COMMA_SEPARATOR +
+                        DatabaseConstants.ArticleEntry.COLUMN_DELETED + DatabaseConstants.INTEGER_TYPE + DatabaseConstants.COMMA_SEPARATOR +
                         DatabaseConstants.ArticleEntry.COLUMN_TAG_NAME + DatabaseConstants.TEXT_TYPE + ")";
 
         sqLiteDatabase.execSQL(CREATE_TABLE_ARTICLES);
@@ -57,10 +61,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public long addArticle(Article article) {
         ContentValues values = new ContentValues();
         values.put(DatabaseConstants.ArticleEntry.COLUMN_TITLE, article.getTitle());
-        values.put(DatabaseConstants.ArticleEntry.COLUMN_DATE, article.getCreatedAt());
         values.put(DatabaseConstants.ArticleEntry.COLUMN_CONTENT, article.getContent());
+        values.put(DatabaseConstants.ArticleEntry.COLUMN_DATE, article.getCreatedAt());
         values.put(DatabaseConstants.ArticleEntry.COLUMN_SOURCE_NAME, article.getSource().getSourceName());
         values.put(DatabaseConstants.ArticleEntry.COLUMN_SOURCE_URL, article.getSource().getSourceUrl());
+        values.put(DatabaseConstants.ArticleEntry.COLUMN_PICTURE_URL, article.getPicture().getPictureUrl());
+        values.put(DatabaseConstants.ArticleEntry.COLUMN_READ, article.getRead());
+        values.put(DatabaseConstants.ArticleEntry.COLUMN_DELETED, article.getDeleted());
         values.put(DatabaseConstants.ArticleEntry.COLUMN_TAG_NAME, article.getLinkTagName());
 
         Log.d("DB COLUMN_TITLE", values.get(DatabaseConstants.ArticleEntry.COLUMN_TITLE).toString());
@@ -70,69 +77,111 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Log.d("DB COLUMN_SOURCE_URL", values.get(DatabaseConstants.ArticleEntry.COLUMN_SOURCE_URL).toString());
         Log.d("DB COLUMN_TAG_NAME", values.get(DatabaseConstants.ArticleEntry.COLUMN_TAG_NAME).toString());
 
+        // Check first if already article with same title from same source exists
+        // in database, else insert
+        return getArticles(article.getTitle(), article.getSource().getSourceName()).size() == 0
+                ? getWritableDatabase()
+                    .insert(
+                            DatabaseConstants.ArticleEntry.TABLE_NAME,
+                            null,
+                            values
+                    )
+                : 0;
+    }
+
+    public List<Article> getArticles() {
+        return ArticleFactory.fromCursor(
+                getReadableDatabase()
+                        .query(
+                                DatabaseConstants.ArticleEntry.TABLE_NAME,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                        )
+        );
+    }
+
+    public List<Article> getArticles(String[] projection, String selection, String[] selectionArgs, String groupBy, String having, String sort) {
+        return ArticleFactory.fromCursor(
+                getReadableDatabase()
+                        .query(
+                                DatabaseConstants.ArticleEntry.TABLE_NAME,
+                                projection,
+                                selection,
+                                selectionArgs,
+                                groupBy,
+                                having,
+                                sort
+                        )
+        );
+    }
+
+    public Article getArticle(long rowID) {
+        return getArticles(
+                null,
+                DatabaseConstants.ArticleEntry._ID + " = ? ",
+                new String[]{String.valueOf(rowID)},
+                null,
+                null,
+                null
+        ).get(0);
+    }
+
+    public List<Article> getArticles(String title, String sourceName) {
+        return getArticles(
+                null,
+                DatabaseConstants.ArticleEntry.COLUMN_TITLE + " LIKE ? "
+                    + " AND " + DatabaseConstants.ArticleEntry.COLUMN_SOURCE_NAME + " LIKE ? ",
+                new String[]{title, sourceName},
+                null,
+                null,
+                null
+        );
+    }
+
+    public List<Article> getArticles(String tagName) {
+        // Get only articles not manually deleted by user
+        return getArticles(
+                null,
+                DatabaseConstants.ArticleEntry.COLUMN_TAG_NAME + " LIKE ? "
+                        + " AND " + DatabaseConstants.ArticleEntry.COLUMN_DELETED + " = 0 ",
+                new String[]{tagName},
+                null,
+                null,
+                null
+        );
+    }
+
+
+    public int updateArticle(Article article) {
+        ContentValues values = new ContentValues();
+        values.put(DatabaseConstants.ArticleEntry.COLUMN_TITLE, article.getTitle());
+        values.put(DatabaseConstants.ArticleEntry.COLUMN_DATE, article.getCreatedAt());
+        values.put(DatabaseConstants.ArticleEntry.COLUMN_CONTENT, article.getContent());
+        values.put(DatabaseConstants.ArticleEntry.COLUMN_SOURCE_NAME, article.getSource().getSourceName());
+        values.put(DatabaseConstants.ArticleEntry.COLUMN_SOURCE_URL, article.getSource().getSourceUrl());
+        values.put(DatabaseConstants.ArticleEntry.COLUMN_PICTURE_URL, article.getPicture().getPictureUrl());
+        values.put(DatabaseConstants.ArticleEntry.COLUMN_READ, article.getRead());
+        values.put(DatabaseConstants.ArticleEntry.COLUMN_DELETED, article.getDeleted());
+        values.put(DatabaseConstants.ArticleEntry.COLUMN_TAG_NAME, article.getLinkTagName());
+
         return getWritableDatabase()
-                .insert(
+                .update(
                         DatabaseConstants.ArticleEntry.TABLE_NAME,
-                        null,
-                        values
-                );
-    }
-
-    public Cursor getAllArticles() {
-        return getReadableDatabase()
-                .query(
-                        DatabaseConstants.ArticleEntry.TABLE_NAME,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null
-                );
-    }
-
-    public Cursor getArticles(String[] projection, String selection, String[] selectionArgs, String groupBy, String having, String sort) {
-        return getReadableDatabase()
-                .query(
-                        DatabaseConstants.ArticleEntry.TABLE_NAME,
-                        projection,
-                        selection,
-                        selectionArgs,
-                        groupBy,
-                        having,
-                        sort
-                );
-    }
-
-    public Cursor getArticle(long rowID) {
-        return getArticles(null, DatabaseConstants.ArticleEntry._ID + "=?", new String[]{String.valueOf(rowID)}, null, null, null);
-    }
-
-    public Cursor getArticles(String tagName) {
-        return getArticles(
-                        null,
-                        DatabaseConstants.ArticleEntry.COLUMN_TAG_NAME + "=?",
-                        new String[]{tagName},
-                        null,
-                        null,
-                        null
-                );
-    }
-
-    public Cursor getReadArticles(String tagName) {
-        return getArticles(
-                        null,
-                        DatabaseConstants.ArticleEntry.COLUMN_TAG_NAME + "=?",
-                        new String[]{tagName},
-                        null,
-                        null,
+                        values,
+                        DatabaseConstants.ArticleEntry._ID + " = " + article.getArticleId(),
                         null
                 );
     }
 
     public int deleteArticles() {
+        // Never delete articles which were manually deleted by users
+        // Will be useful to retrieve only news not already deleted
         return deleteArticles(
-                null,
+                DatabaseConstants.ArticleEntry.COLUMN_DELETED + " = 0 ",
                 null
             );
     }

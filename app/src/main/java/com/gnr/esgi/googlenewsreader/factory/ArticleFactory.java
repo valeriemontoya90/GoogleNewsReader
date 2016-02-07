@@ -1,5 +1,6 @@
 package com.gnr.esgi.googlenewsreader.factory;
 
+import android.database.Cursor;
 import android.util.Log;
 import com.gnr.esgi.googlenewsreader.models.Article;
 import com.gnr.esgi.googlenewsreader.parser.ArticleParser;
@@ -12,8 +13,8 @@ import java.util.List;
 
 public class ArticleFactory {
 
-    public static List<Article> createArticlesList(String response) {
-        ArrayList<Article> parsedArticlesList = new ArrayList<>();
+    public static List<Article> fromJson(String response) {
+        ArrayList<Article> articlesList = new ArrayList<>();
 
         try {
             JSONObject source = new JSONObject(response);
@@ -21,13 +22,22 @@ public class ArticleFactory {
             JSONArray array = source.getJSONObject("responseData").getJSONArray("results");
 
             for (int i=0; i < array.length(); i++)
-                parsedArticlesList.add(ArticleParser.parse(new Article(array.getJSONObject(i))));
+                articlesList.add(ArticleParser.parse(new Article(array.getJSONObject(i))));
 
         } catch (JSONException e) {
             if(Config.DISPLAY_LOG)
                 Log.w("ArticleFactory", e);
         }
 
-        return parsedArticlesList;
+        return articlesList;
+    }
+
+    public static List<Article> fromCursor(Cursor cursor) {
+        ArrayList<Article> articlesList = new ArrayList<>();
+
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext())
+            articlesList.add(new Article(cursor));
+
+        return articlesList;
     }
 }

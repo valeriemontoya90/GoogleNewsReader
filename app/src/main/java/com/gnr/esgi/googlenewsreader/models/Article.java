@@ -1,29 +1,23 @@
 package com.gnr.esgi.googlenewsreader.models;
 
+import android.database.Cursor;
 import android.util.Log;
 import com.gnr.esgi.googlenewsreader.constants.ArticleConstants;
+import com.gnr.esgi.googlenewsreader.constants.DatabaseConstants;
 import com.gnr.esgi.googlenewsreader.utils.Config;
-import com.gnr.esgi.googlenewsreader.utils.DateUtil;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 public class Article {
 
     private Integer articleId;
-    private Boolean hasAlreadyReadValue;
+    private Boolean read;
+    private Boolean deleted;
 
     private String title;
     private String content;
     private String createdAt;
-    private String pictureUrl;
+    private Picture picture;
     private Source source;
     private String linkTagName;
 
@@ -38,11 +32,15 @@ public class Article {
             source.setSourceName(jsonArticle.getString(ArticleConstants.ARTICLE_KEY_SOURCE_NAME));
             source.setSourceUrl(jsonArticle.getString(ArticleConstants.ARTICLE_KEY_SOURCE_URL));
 
+            picture = new Picture();
             if(jsonArticle.has(ArticleConstants.ARTICLE_KEY_PICTURE))
             {
                 JSONObject image = jsonArticle.getJSONObject(ArticleConstants.ARTICLE_KEY_PICTURE);
-                pictureUrl = image.getString(ArticleConstants.ARTICLE_KEY_PICTURE_URL);
+                picture.setPictureUrl(image.getString(ArticleConstants.ARTICLE_KEY_PICTURE_URL));
             }
+
+            read = false;
+            deleted = false;
         }
         catch (JSONException e) {
             if(Config.DISPLAY_LOG)
@@ -51,6 +49,24 @@ public class Article {
 
         if(Config.DISPLAY_LOG)
             Log.d(ArticleConstants.TAG, "New Article(JSONObject c):" + this.toString());
+    }
+
+    public Article(Cursor cursor) {
+        articleId = cursor.getInt(cursor.getColumnIndex(DatabaseConstants.ArticleEntry._ID));
+        title = cursor.getString(cursor.getColumnIndex(DatabaseConstants.ArticleEntry.COLUMN_TITLE));
+        content = cursor.getString(cursor.getColumnIndex(DatabaseConstants.ArticleEntry.COLUMN_CONTENT));
+        createdAt = cursor.getString(cursor.getColumnIndex(DatabaseConstants.ArticleEntry.COLUMN_DATE));
+
+        source = new Source();
+        source.setSourceName(cursor.getString(cursor.getColumnIndex(DatabaseConstants.ArticleEntry.COLUMN_SOURCE_NAME)));
+        source.setSourceUrl(cursor.getString(cursor.getColumnIndex(DatabaseConstants.ArticleEntry.COLUMN_SOURCE_URL)));
+
+        picture = new Picture(cursor.getString(cursor.getColumnIndex(DatabaseConstants.ArticleEntry.COLUMN_PICTURE_URL)));
+
+        read = cursor.getInt(cursor.getColumnIndex(DatabaseConstants.ArticleEntry.COLUMN_READ)) == 1;
+        deleted = cursor.getInt(cursor.getColumnIndex(DatabaseConstants.ArticleEntry.COLUMN_DELETED)) == 1;
+
+        linkTagName = cursor.getString(cursor.getColumnIndex(DatabaseConstants.ArticleEntry.COLUMN_TAG_NAME));
     }
 
     public Integer getArticleId() {
@@ -93,12 +109,12 @@ public class Article {
         this.source = source;
     }
 
-    public String getPictureUrl() {
-        return pictureUrl;
+    public Picture getPicture() {
+        return picture;
     }
 
-    public void setPictureUrl(String pictureUrl) {
-        this.pictureUrl = pictureUrl;
+    public void setPicture(Picture picture) {
+        this.picture = picture;
     }
 
     public String getLinkTagName() {
@@ -109,11 +125,19 @@ public class Article {
         linkTagName = tagName;
     }
 
-    public Boolean getHasAlreadyReadValue() {
-        return hasAlreadyReadValue;
+    public Boolean getRead() {
+        return read;
     }
 
-    public void setHasAlreadyReadValue(Boolean read) {
-        hasAlreadyReadValue = read;
+    public void setRead(Boolean read) {
+        this.read = read;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 }

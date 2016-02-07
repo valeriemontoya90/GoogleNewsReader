@@ -12,6 +12,7 @@
 
     <ListView
         android:id="@+id/news_list"
+        android:choiceMode="multipleChoice"
         android:divider="#c7c7c7"
         android:dividerHeight="1dp"
         android:layout_width="fill_parent"

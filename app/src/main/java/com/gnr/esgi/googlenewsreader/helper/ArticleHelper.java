@@ -1,7 +1,6 @@
 package com.gnr.esgi.googlenewsreader.helper;
 
 import android.util.Log;
-
 import com.gnr.esgi.googlenewsreader.GNRApplication;
 import com.gnr.esgi.googlenewsreader.constants.APIConstants;
 import com.gnr.esgi.googlenewsreader.models.Article;
@@ -10,11 +9,8 @@ import com.gnr.esgi.googlenewsreader.utils.Config;
 import com.gnr.esgi.googlenewsreader.utils.DateUtil;
 import com.gnr.esgi.googlenewsreader.utils.URLBuilder;
 import com.gnr.esgi.googlenewsreader.webservices.ArticleSearchTask;
-
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
 public class ArticleHelper {
@@ -72,6 +68,14 @@ public class ArticleHelper {
         return count;
     }
 
+    public static List<Article> getArticles() {
+        return GNRApplication.getDbHelper().getArticles();
+    }
+
+    public static List<Article> getArticles(Tag tag) {
+        return GNRApplication.getDbHelper().getArticles(tag.getTagName());
+    }
+
     public static void refreshArticles() {
         // Clear database
         GNRApplication.getDbHelper().deleteArticles();
@@ -83,26 +87,19 @@ public class ArticleHelper {
         }
     }
 
-    public static void saveArticleInDataBase(Article article, Tag tag) {
+    public static void saveInDataBase(Article article, Tag tag) {
         if(Config.DISPLAY_LOG)
             Log.d(Config.LOG_PREFIX, "saveArticleInDataBase");
-
-            article.setLinkTagName(tag.getTagName());
-            article.setHasAlreadyReadValue(false);
 
             GNRApplication.getDbHelper().addArticle(article);
     }
 
-    public static void saveArticlesListInDataBase(Tag tag) {
+    public static void saveInDatabase(Tag tag) {
         if(Config.DISPLAY_LOG)
-            Log.d(Config.LOG_PREFIX, "saveArticlesListInDataBase");
+            Log.d(Config.LOG_PREFIX, "saveInDatabase");
 
-        for (Article article : tag.getArticlesList()) {
-            article.setLinkTagName(tag.getTagName());
-            article.setHasAlreadyReadValue(false);
-
+        for (Article article : tag.getArticlesList())
             GNRApplication.getDbHelper().addArticle(article);
-        }
     }
 
     public static void sortByDate(List<Article> articles) {

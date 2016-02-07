@@ -13,9 +13,12 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.SparseBooleanArray;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -46,6 +49,7 @@ public class HomeActivity extends ActionBarActivity {
     ListArticlesAdapter listArticlesAdapter;
     static LocalBroadcastManager broadcaster;
     Toolbar toolbar;
+    FloatingActionButton floatingActionButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +59,8 @@ public class HomeActivity extends ActionBarActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.button_refresh);
-        fab.setOnClickListener(new View.OnClickListener() {
+        floatingActionButton = (FloatingActionButton) findViewById(R.id.button_refresh);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 displaySnackbar(refreshListArticles());
@@ -72,14 +76,105 @@ public class HomeActivity extends ActionBarActivity {
 
         listArticlesAdapter = new ListArticlesAdapter(getApplicationContext(), articlesArrayList);
         listviewArticles.setAdapter(listArticlesAdapter);
+        listviewArticles.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+
+        listviewArticles.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+            @Override
+            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+                // Capture total checked items
+                final int checkedCount = listviewArticles.getCheckedItemCount();
+
+                // Set the CAB title according to total checked items
+                mode.setTitle(checkedCount + " articles selected");
+
+                // Calls toggleSelection method from adapter Class
+                listArticlesAdapter.toggleSelection(position);
+            }
+
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                mode.getMenuInflater().inflate(R.menu.activity_home, menu);
+                floatingActionButton.setImageResource(R.drawable.abc_ic_clear_mtrl_alpha);
+                return true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_article_delete:
+                        // Calls getSelectedIds method from ListViewAdapter Class
+                        SparseBooleanArray selected = listArticlesAdapter.getSelectedIds();
+
+                        // Captures all selected ids with a loop
+                        for (int i = (selected.size() - 1); i >= 0; i--) {
+                            if (selected.valueAt(i)) {
+                                Article selectedItem = listArticlesAdapter.getItem(selected.keyAt(i));
+
+                                // Update database, set deleted true
+                                selectedItem.setDeleted(true);
+                                GNRApplication.getDbHelper().updateArticle(selectedItem);
+
+                                // Remove selected items following the ids
+                                listArticlesAdapter.remove(selectedItem);
+                            }
+                        }
+
+                        // Close CAB
+                        mode.finish();
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+                listArticlesAdapter.removeSelection();
+            }
+        });
 
         listviewArticles.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                articlesArrayList.get(position).setHasAlreadyReadValue(true);
+
+                // Update database, set read true
+                articlesArrayList.get(position).setRead(true);
+                GNRApplication.getDbHelper().updateArticle(articlesArrayList.get(position));
                 sendDataToDetailArticleActivity(position);
             }
         });
+
+        /*listviewArticles.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+                if(view.isSelected() || view.isFocusable() || view.isPressed()) {
+                    view.setBackgroundResource(R.color.link_text_material_light);
+                    view.setSelected(false);
+                    view.setFocusable(false);
+                    view.setPressed(false);
+
+                    floatingActionButton.setImageResource(R.drawable.abc_btn_check_material);
+                }
+                else {
+                    view.setBackgroundResource(R.color.dim_foreground_disabled_material_light);
+                    view.setSelected(true);
+                    view.setFocusable(true);
+                    view.setPressed(true);
+
+                    floatingActionButton.setImageResource(R.drawable.abc_ic_clear_mtrl_alpha);
+                }
+
+                return true;
+            }
+        });*/
+
+
     }
 
     public Integer refreshListArticles() {
@@ -105,7 +200,7 @@ public class HomeActivity extends ActionBarActivity {
 
         if(GNRApplication.getUser().getData().getAllArticles().isEmpty())
             ArticleHelper.refreshArticles();
-        
+
         refreshListView();
     }
 
@@ -119,7 +214,7 @@ public class HomeActivity extends ActionBarActivity {
         articlesArrayList.clear();
 
         for (Tag tag : GNRApplication.getUser().getData().getTags())
-            articlesArrayList.addAll(tag.getArticlesList());
+            articlesArrayList.addAll(ArticleHelper.getArticles(tag));
 
         ArticleHelper.sortByDate(articlesArrayList);
 
@@ -158,7 +253,7 @@ public class HomeActivity extends ActionBarActivity {
         intent.putExtra(ArticleConstants.ARTICLE_KEY_CREATED_AT, articlesArrayList.get(position).getCreatedAt());
         intent.putExtra(ArticleConstants.ARTICLE_KEY_SOURCE_NAME, articlesArrayList.get(position).getSource().getSourceName());
         intent.putExtra(ArticleConstants.ARTICLE_KEY_SOURCE_URL, articlesArrayList.get(position).getSource().getSourceUrl());
-        intent.putExtra(ArticleConstants.ARTICLE_KEY_PICTURE_URL, articlesArrayList.get(position).getPictureUrl());
+        intent.putExtra(ArticleConstants.ARTICLE_KEY_PICTURE_URL, articlesArrayList.get(position).getPicture().getPictureUrl());
 
         startActivity(intent);
     }
@@ -186,7 +281,8 @@ public class HomeActivity extends ActionBarActivity {
     private void displaySnackbar(Integer count) {
         StringBuilder message = new StringBuilder();
         message.append(count);
-        message.append(R.string.snackbar_addedNews);
+        message.append(" ");
+        message.append(getString(R.string.snackbar_addedNews));
 
         final Snackbar snackbar = Snackbar.make(relativeLayout, message.toString(), Snackbar.LENGTH_LONG);
         snackbar.setAction(R.string.snackbar_close, new View.OnClickListener() {
