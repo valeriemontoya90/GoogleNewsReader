@@ -105,8 +105,7 @@ public class HomeActivity extends ActionBarActivity {
 
         if(GNRApplication.getUser().getData().getAllArticles().isEmpty())
             ArticleHelper.refreshArticles();
-
-        //ArticleHelper.refreshArticles();
+        
         refreshListView();
     }
 
@@ -121,6 +120,8 @@ public class HomeActivity extends ActionBarActivity {
 
         for (Tag tag : GNRApplication.getUser().getData().getTags())
             articlesArrayList.addAll(tag.getArticlesList());
+
+        ArticleHelper.sortByDate(articlesArrayList);
 
         listArticlesAdapter.notifyDataSetChanged();
     }

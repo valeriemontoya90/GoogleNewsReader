@@ -4,14 +4,17 @@ import android.util.Log;
 
 import com.gnr.esgi.googlenewsreader.GNRApplication;
 import com.gnr.esgi.googlenewsreader.constants.APIConstants;
-import com.gnr.esgi.googlenewsreader.constants.ArticleConstants;
 import com.gnr.esgi.googlenewsreader.models.Article;
 import com.gnr.esgi.googlenewsreader.models.Tag;
-import com.gnr.esgi.googlenewsreader.parser.HtmlParser;
 import com.gnr.esgi.googlenewsreader.utils.Config;
+import com.gnr.esgi.googlenewsreader.utils.DateUtil;
 import com.gnr.esgi.googlenewsreader.utils.URLBuilder;
 import com.gnr.esgi.googlenewsreader.webservices.ArticleSearchTask;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 public class ArticleHelper {
@@ -100,5 +103,18 @@ public class ArticleHelper {
 
             GNRApplication.getDbHelper().addArticle(article);
         }
+    }
+
+    public static void sortByDate(List<Article> articles) {
+        Collections.sort(articles, new Comparator<Article>() {
+            @Override
+            public int compare(Article article2, Article article1) {
+                return (DateUtil.parse(
+                            article1.getCreatedAt()))
+                        .compareTo(
+                                DateUtil.parse(
+                                        article2.getCreatedAt()));
+            }
+        });
     }
 }
