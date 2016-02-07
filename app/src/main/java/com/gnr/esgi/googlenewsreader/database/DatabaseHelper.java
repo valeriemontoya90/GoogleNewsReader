@@ -24,7 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         String CREATE_TABLE_ARTICLES =
                 "CREATE TABLE " + DatabaseConstants.ArticleEntry.TABLE_NAME + " (" +
-                        DatabaseConstants.ArticleEntry._ID + DatabaseConstants.INTEGER_TYPE + " PRIMARY_KEY" + DatabaseConstants.COMMA_SEPARATOR +
+                        DatabaseConstants.ArticleEntry._ID + DatabaseConstants.INTEGER_TYPE + " PRIMARY KEY" + DatabaseConstants.COMMA_SEPARATOR +
                         DatabaseConstants.ArticleEntry.COLUMN_TITLE + DatabaseConstants.TEXT_TYPE + DatabaseConstants.COMMA_SEPARATOR +
                         DatabaseConstants.ArticleEntry.COLUMN_DATE + DatabaseConstants.TEXT_TYPE + DatabaseConstants.COMMA_SEPARATOR +
                         DatabaseConstants.ArticleEntry.COLUMN_CONTENT + DatabaseConstants.TEXT_TYPE + DatabaseConstants.COMMA_SEPARATOR +
@@ -39,7 +39,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         String CREATE_TABLE_TAGS =
                 "CREATE TABLE " + DatabaseConstants.TagEntry.TABLE_NAME + " (" +
-                        DatabaseConstants.TagEntry._ID + DatabaseConstants.INTEGER_TYPE + " PRIMARY_KEY" + DatabaseConstants.COMMA_SEPARATOR +
+                        DatabaseConstants.TagEntry._ID + DatabaseConstants.INTEGER_TYPE + " PRIMARY KEY" + DatabaseConstants.COMMA_SEPARATOR +
                         DatabaseConstants.TagEntry.COLUMN_NAME + DatabaseConstants.TEXT_TYPE + ")";
 
         sqLiteDatabase.execSQL(CREATE_TABLE_TAGS);
@@ -59,24 +59,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //region Articles
 
     public long addArticle(Article article) {
-        ContentValues values = new ContentValues();
-        values.put(DatabaseConstants.ArticleEntry.COLUMN_TITLE, article.getTitle());
-        values.put(DatabaseConstants.ArticleEntry.COLUMN_CONTENT, article.getContent());
-        values.put(DatabaseConstants.ArticleEntry.COLUMN_DATE, article.getCreatedAt());
-        values.put(DatabaseConstants.ArticleEntry.COLUMN_SOURCE_NAME, article.getSource().getSourceName());
-        values.put(DatabaseConstants.ArticleEntry.COLUMN_SOURCE_URL, article.getSource().getSourceUrl());
-        values.put(DatabaseConstants.ArticleEntry.COLUMN_PICTURE_URL, article.getPicture().getPictureUrl());
-        values.put(DatabaseConstants.ArticleEntry.COLUMN_READ, article.getRead());
-        values.put(DatabaseConstants.ArticleEntry.COLUMN_DELETED, article.getDeleted());
-        values.put(DatabaseConstants.ArticleEntry.COLUMN_TAG_NAME, article.getLinkTagName());
-
-        Log.d("DB COLUMN_TITLE", values.get(DatabaseConstants.ArticleEntry.COLUMN_TITLE).toString());
-        Log.d("DB COLUMN_DATE", values.get(DatabaseConstants.ArticleEntry.COLUMN_DATE).toString());
-        Log.d("DB COLUMN_CONTENT", values.get(DatabaseConstants.ArticleEntry.COLUMN_CONTENT).toString());
-        Log.d("DB COLUMN_SOURCE_NAME", values.get(DatabaseConstants.ArticleEntry.COLUMN_SOURCE_NAME).toString());
-        Log.d("DB COLUMN_SOURCE_URL", values.get(DatabaseConstants.ArticleEntry.COLUMN_SOURCE_URL).toString());
-        Log.d("DB COLUMN_TAG_NAME", values.get(DatabaseConstants.ArticleEntry.COLUMN_TAG_NAME).toString());
-
         // Check first if already article with same title from same source exists
         // in database, else insert
         return getArticles(article.getTitle(), article.getSource().getSourceName()).size() == 0
@@ -84,7 +66,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     .insert(
                             DatabaseConstants.ArticleEntry.TABLE_NAME,
                             null,
-                            values
+                            getContentValues(article)
                     )
                 : 0;
     }
@@ -123,7 +105,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return getArticles(
                 null,
                 DatabaseConstants.ArticleEntry._ID + " = ? ",
-                new String[]{String.valueOf(rowID)},
+                new String[]{ String.valueOf(rowID) },
                 null,
                 null,
                 null
@@ -135,7 +117,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 null,
                 DatabaseConstants.ArticleEntry.COLUMN_TITLE + " LIKE ? "
                     + " AND " + DatabaseConstants.ArticleEntry.COLUMN_SOURCE_NAME + " LIKE ? ",
-                new String[]{title, sourceName},
+                new String[]{ title, sourceName },
                 null,
                 null,
                 null
@@ -148,7 +130,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 null,
                 DatabaseConstants.ArticleEntry.COLUMN_TAG_NAME + " LIKE ? "
                         + " AND " + DatabaseConstants.ArticleEntry.COLUMN_DELETED + " = 0 ",
-                new String[]{tagName},
+                new String[]{ tagName },
                 null,
                 null,
                 null
@@ -157,23 +139,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     public int updateArticle(Article article) {
-        ContentValues values = new ContentValues();
-        values.put(DatabaseConstants.ArticleEntry.COLUMN_TITLE, article.getTitle());
-        values.put(DatabaseConstants.ArticleEntry.COLUMN_DATE, article.getCreatedAt());
-        values.put(DatabaseConstants.ArticleEntry.COLUMN_CONTENT, article.getContent());
-        values.put(DatabaseConstants.ArticleEntry.COLUMN_SOURCE_NAME, article.getSource().getSourceName());
-        values.put(DatabaseConstants.ArticleEntry.COLUMN_SOURCE_URL, article.getSource().getSourceUrl());
-        values.put(DatabaseConstants.ArticleEntry.COLUMN_PICTURE_URL, article.getPicture().getPictureUrl());
-        values.put(DatabaseConstants.ArticleEntry.COLUMN_READ, article.getRead());
-        values.put(DatabaseConstants.ArticleEntry.COLUMN_DELETED, article.getDeleted());
-        values.put(DatabaseConstants.ArticleEntry.COLUMN_TAG_NAME, article.getLinkTagName());
-
         return getWritableDatabase()
                 .update(
                         DatabaseConstants.ArticleEntry.TABLE_NAME,
-                        values,
-                        DatabaseConstants.ArticleEntry._ID + " = " + article.getArticleId(),
-                        null
+                        getContentValues(article),
+                        DatabaseConstants.ArticleEntry._ID + " = ?",
+                        new String[] { String.valueOf(article.getArticleId()) }
                 );
     }
 
@@ -250,7 +221,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return getTags(
                     null,
                     DatabaseConstants.TagEntry._ID + "=?",
-                    new String[]{String.valueOf(rowID)},
+                    new String[]{ String.valueOf(rowID) },
                     null,
                     null,
                     null
@@ -261,7 +232,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return getTags(
                     null,
                     DatabaseConstants.TagEntry.COLUMN_NAME + "=?",
-                    new String[]{name},
+                    new String[]{ name },
                     null,
                     null,
                     null
@@ -292,6 +263,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     //endregion
+
+    private ContentValues getContentValues(Article article) {
+        ContentValues values = new ContentValues();
+
+        values.put(DatabaseConstants.ArticleEntry.COLUMN_TITLE, article.getTitle());
+        values.put(DatabaseConstants.ArticleEntry.COLUMN_DATE, article.getCreatedAt());
+        values.put(DatabaseConstants.ArticleEntry.COLUMN_CONTENT, article.getContent());
+        values.put(DatabaseConstants.ArticleEntry.COLUMN_SOURCE_NAME, article.getSource().getSourceName());
+        values.put(DatabaseConstants.ArticleEntry.COLUMN_SOURCE_URL, article.getSource().getSourceUrl());
+        values.put(DatabaseConstants.ArticleEntry.COLUMN_PICTURE_URL, article.getPicture().getPictureUrl());
+        values.put(DatabaseConstants.ArticleEntry.COLUMN_READ, article.getRead() ? 1 : 0);
+        values.put(DatabaseConstants.ArticleEntry.COLUMN_DELETED, article.getDeleted() ? 1 : 0);
+        values.put(DatabaseConstants.ArticleEntry.COLUMN_TAG_NAME, article.getLinkTagName());
+
+        Log.d("DB COLUMN_TITLE", values.get(DatabaseConstants.ArticleEntry.COLUMN_TITLE).toString());
+        Log.d("DB COLUMN_DATE", values.get(DatabaseConstants.ArticleEntry.COLUMN_DATE).toString());
+        Log.d("DB COLUMN_CONTENT", values.get(DatabaseConstants.ArticleEntry.COLUMN_CONTENT).toString());
+        Log.d("DB COLUMN_SOURCE_NAME", values.get(DatabaseConstants.ArticleEntry.COLUMN_SOURCE_NAME).toString());
+        Log.d("DB COLUMN_SOURCE_URL", values.get(DatabaseConstants.ArticleEntry.COLUMN_SOURCE_URL).toString());
+        Log.d("DB COLUMN_TAG_NAME", values.get(DatabaseConstants.ArticleEntry.COLUMN_TAG_NAME).toString());
+
+        return values;
+    }
 
     private String makePlaceholders(int len) {
         if (len > 0) {

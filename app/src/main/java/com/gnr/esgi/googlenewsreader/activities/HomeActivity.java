@@ -145,6 +145,8 @@ public class HomeActivity extends ActionBarActivity {
                 // Update database, set read true
                 articlesArrayList.get(position).setRead(true);
                 GNRApplication.getDbHelper().updateArticle(articlesArrayList.get(position));
+                listArticlesAdapter.notifyDataSetChanged();
+
                 sendDataToDetailArticleActivity(position);
             }
         });

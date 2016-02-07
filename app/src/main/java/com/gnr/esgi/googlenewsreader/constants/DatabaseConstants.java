@@ -8,7 +8,7 @@ public class DatabaseConstants {
 
     public final static String TEXT_TYPE = " TEXT";
     public final static String REAL_TYPE = " REAL";
-    public final static String INTEGER_TYPE = " NUMERIC";
+    public final static String INTEGER_TYPE = " INTEGER";
     public final static String COMMA_SEPARATOR = ",";
 
     public abstract class ArticleEntry implements BaseColumns {

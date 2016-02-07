@@ -78,7 +78,7 @@ public class ArticleHelper {
 
     public static void refreshArticles() {
         // Clear database
-        GNRApplication.getDbHelper().deleteArticles();
+        //GNRApplication.getDbHelper().deleteArticles();
 
         // Repopulate with fresh online news
         for (final Tag tag : GNRApplication.getUser().getData().getTags()) {

@@ -10,7 +10,7 @@ import org.json.JSONObject;
 
 public class Article {
 
-    private Integer articleId;
+    private Long articleId;
     private Boolean read;
     private Boolean deleted;
 
@@ -52,7 +52,7 @@ public class Article {
     }
 
     public Article(Cursor cursor) {
-        articleId = cursor.getInt(cursor.getColumnIndex(DatabaseConstants.ArticleEntry._ID));
+        articleId = cursor.getLong(cursor.getColumnIndex(DatabaseConstants.ArticleEntry._ID));
         title = cursor.getString(cursor.getColumnIndex(DatabaseConstants.ArticleEntry.COLUMN_TITLE));
         content = cursor.getString(cursor.getColumnIndex(DatabaseConstants.ArticleEntry.COLUMN_CONTENT));
         createdAt = cursor.getString(cursor.getColumnIndex(DatabaseConstants.ArticleEntry.COLUMN_DATE));
@@ -69,11 +69,11 @@ public class Article {
         linkTagName = cursor.getString(cursor.getColumnIndex(DatabaseConstants.ArticleEntry.COLUMN_TAG_NAME));
     }
 
-    public Integer getArticleId() {
+    public Long getArticleId() {
         return articleId;
     }
 
-    public void setArticleId(Integer id) {
+    public void setArticleId(Long id) {
         articleId = id;
     }
 

@@ -85,6 +85,20 @@ public class ListArticlesAdapter extends BaseAdapter {
                         : Typeface.BOLD
         );
 
+        viewHolder.createdAt.setTypeface(
+                null,
+                articleSelected.getRead()
+                        ? Typeface.NORMAL
+                        : Typeface.BOLD
+        );
+
+        viewHolder.source.setTypeface(
+                null,
+                articleSelected.getRead()
+                        ? Typeface.NORMAL
+                        : Typeface.BOLD
+        );
+
         //Picasso.with(mContext).load(articleSelected.getPictureUrl()).into(viewHolder.picture);
 
         ImageLoader.getInstance().displayImage(articleSelected.getPicture().getPictureUrl(), viewHolder.picture, new ImageLoadingListener() {

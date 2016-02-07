@@ -64,7 +64,7 @@ public class DatabaseManager {
         for(Tag tag : _tags)
             articleList.addAll(tag.getArticlesList());
 
-        return setIndex(escapeDuplicates(articleList));
+        return escapeDuplicates(articleList);
     }
 
     public int countLatest() {
@@ -80,13 +80,6 @@ public class DatabaseManager {
         return tag.getCurrentCounter();
     }
 
-    private List<Article> setIndex(List<Article> articleList) {
-        for(int i=0; i< articleList.size(); i++)
-            articleList.get(i).setArticleId(i);
-
-        return articleList;
-    }
-
     private List<Article> escapeDuplicates(List<Article> articleList) {
         Set<Article> articleSet = new LinkedHashSet<>(articleList);
 
@@ -94,13 +87,5 @@ public class DatabaseManager {
         articleList.addAll(articleSet);
 
         return articleList;
-    }
-
-    public Article findArticleById(Integer id) {
-        for(Article article : getAllArticles())
-            if(article.getArticleId().compareTo(id) == 0)
-                return article;
-
-        return null;
     }
 }
