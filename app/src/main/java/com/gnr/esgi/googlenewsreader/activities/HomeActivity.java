@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
@@ -27,6 +28,7 @@ import com.gnr.esgi.googlenewsreader.R;
 import com.gnr.esgi.googlenewsreader.adapters.ListArticlesAdapter;
 import com.gnr.esgi.googlenewsreader.constants.ArticleConstants;
 import com.gnr.esgi.googlenewsreader.helper.ArticleHelper;
+import com.gnr.esgi.googlenewsreader.listener.ArticlesMultiChoiceModeListener;
 import com.gnr.esgi.googlenewsreader.models.Article;
 import com.gnr.esgi.googlenewsreader.models.Tag;
 import com.gnr.esgi.googlenewsreader.services.RefreshService;
@@ -48,6 +50,7 @@ public class HomeActivity extends ActionBarActivity {
     ListView listviewArticles;
     ListArticlesAdapter listArticlesAdapter;
     static LocalBroadcastManager broadcaster;
+    AppBarLayout appBar;
     Toolbar toolbar;
     FloatingActionButton floatingActionButton;
 
@@ -56,6 +59,8 @@ public class HomeActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout);
+        appBar = (AppBarLayout) findViewById(R.id.app_bar);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -67,8 +72,6 @@ public class HomeActivity extends ActionBarActivity {
             }
         });
 
-        relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout);
-
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
         ImageLoader.getInstance().init(config);
 
@@ -78,65 +81,15 @@ public class HomeActivity extends ActionBarActivity {
         listviewArticles.setAdapter(listArticlesAdapter);
         listviewArticles.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 
-        listviewArticles.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
-            @Override
-            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-                // Capture total checked items
-                final int checkedCount = listviewArticles.getCheckedItemCount();
-
-                // Set the CAB title according to total checked items
-                mode.setTitle(checkedCount + " articles selected");
-
-                // Calls toggleSelection method from adapter Class
-                listArticlesAdapter.toggleSelection(position);
-            }
-
-            @Override
-            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                mode.getMenuInflater().inflate(R.menu.activity_home, menu);
-                floatingActionButton.setImageResource(R.drawable.abc_ic_clear_mtrl_alpha);
-                return true;
-            }
-
-            @Override
-            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-                return false;
-            }
-
-            @Override
-            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.action_article_delete:
-                        // Calls getSelectedIds method from ListViewAdapter Class
-                        SparseBooleanArray selected = listArticlesAdapter.getSelectedIds();
-
-                        // Captures all selected ids with a loop
-                        for (int i = (selected.size() - 1); i >= 0; i--) {
-                            if (selected.valueAt(i)) {
-                                Article selectedItem = listArticlesAdapter.getItem(selected.keyAt(i));
-
-                                // Update database, set deleted true
-                                selectedItem.setDeleted(true);
-                                GNRApplication.getDbHelper().updateArticle(selectedItem);
-
-                                // Remove selected items following the ids
-                                listArticlesAdapter.remove(selectedItem);
-                            }
-                        }
-
-                        // Close CAB
-                        mode.finish();
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-
-            @Override
-            public void onDestroyActionMode(ActionMode mode) {
-                listArticlesAdapter.removeSelection();
-            }
-        });
+        listviewArticles.setMultiChoiceModeListener(
+                new ArticlesMultiChoiceModeListener(
+                        listviewArticles,
+                        listArticlesAdapter,
+                        toolbar,
+                        appBar,
+                        floatingActionButton
+                )
+        );
 
         listviewArticles.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

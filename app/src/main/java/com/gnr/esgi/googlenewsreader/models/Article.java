@@ -21,7 +21,7 @@ public class Article {
     private Source source;
     private String linkTagName;
 
-    public Article(JSONObject jsonArticle){
+    public Article(JSONObject jsonArticle) {
         try {
             title = jsonArticle.getString(ArticleConstants.ARTICLE_KEY_TITLE);
             content = jsonArticle.getString(ArticleConstants.ARTICLE_KEY_CONTENT);
