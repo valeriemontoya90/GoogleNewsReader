@@ -6,6 +6,7 @@ import com.gnr.esgi.googlenewsreader.database.DatabaseManager;
 public class User {
     private SharedPreferences settings;
     private DatabaseManager data;
+    private Tag currentTag;
 
     public User() {
         data = new DatabaseManager();
@@ -26,6 +27,17 @@ public class User {
     public void setAutoUpdate(Boolean autoUpdate) {
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean("autoRefresh", autoUpdate);
+
+        editor.commit();
+    }
+
+    public Tag getCurrentTag() {
+        return new Tag(settings.getString("currentTag", ""));
+    }
+
+    public void setCurrentTag(Tag currentTag) {
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("currentTag", currentTag.getTagName());
 
         editor.commit();
     }

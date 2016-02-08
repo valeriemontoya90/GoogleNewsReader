@@ -6,9 +6,7 @@ android:layout_width="match_parent"
 android:layout_height="wrap_content">
 
 <TextView
-    android:id="@+id/tag_setting_title"
-    android:layout_alignTop="@+id/thumbnail"
-    android:layout_toRightOf="@+id/thumbnail"
+    android:id="@+id/tag_setting_name"
     android:textColor="#040404"
     android:typeface="sans"
     android:textSize="15dip"

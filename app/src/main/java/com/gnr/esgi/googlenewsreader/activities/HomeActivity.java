@@ -14,12 +14,9 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.util.SparseBooleanArray;
-import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -103,33 +100,6 @@ public class HomeActivity extends ActionBarActivity {
                 sendDataToDetailArticleActivity(position);
             }
         });
-
-        /*listviewArticles.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-
-                if(view.isSelected() || view.isFocusable() || view.isPressed()) {
-                    view.setBackgroundResource(R.color.link_text_material_light);
-                    view.setSelected(false);
-                    view.setFocusable(false);
-                    view.setPressed(false);
-
-                    floatingActionButton.setImageResource(R.drawable.abc_btn_check_material);
-                }
-                else {
-                    view.setBackgroundResource(R.color.dim_foreground_disabled_material_light);
-                    view.setSelected(true);
-                    view.setFocusable(true);
-                    view.setPressed(true);
-
-                    floatingActionButton.setImageResource(R.drawable.abc_ic_clear_mtrl_alpha);
-                }
-
-                return true;
-            }
-        });*/
-
-
     }
 
     public Integer refreshListArticles() {
@@ -162,14 +132,20 @@ public class HomeActivity extends ActionBarActivity {
     @Override
     public void onResume() {
         super.onResume();
+
+        listArticlesAdapter.notifyDataSetChanged();
     }
 
     private void refreshListView() {
         //Clean articles list before refresh
         articlesArrayList.clear();
 
-        for (Tag tag : GNRApplication.getUser().getData().getTags())
-            articlesArrayList.addAll(ArticleHelper.getArticles(tag));
+        // If user selected a tag show articles of tag, else show all articles
+        articlesArrayList.addAll(
+                GNRApplication.getUser().getCurrentTag().getTagName().isEmpty()
+                    ? ArticleHelper.getArticles()
+                    : ArticleHelper.getArticles(GNRApplication.getUser().getCurrentTag())
+        );
 
         ArticleHelper.sortByDate(articlesArrayList);
 
