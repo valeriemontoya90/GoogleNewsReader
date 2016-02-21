@@ -61,6 +61,7 @@ public class TagsMultiChoiceModeListener implements AbsListView.MultiChoiceModeL
         toolbar.setVisibility(View.GONE);
         appBar.setVisibility(View.GONE);
         floatingActionButton.setVisibility(View.GONE);
+
         return true;
     }
 
@@ -72,7 +73,7 @@ public class TagsMultiChoiceModeListener implements AbsListView.MultiChoiceModeL
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_article_delete:
+            case R.id.action_tag_delete:
                 // Calls getSelectedIds method from ListViewAdapter Class
                 SparseBooleanArray selected = adapter.getSelectedIds();
 
