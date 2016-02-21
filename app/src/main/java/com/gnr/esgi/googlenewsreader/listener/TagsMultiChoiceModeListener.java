@@ -40,10 +40,16 @@ public class TagsMultiChoiceModeListener implements AbsListView.MultiChoiceModeL
         // Capture total checked items
         final int checkedCount = listView.getCheckedItemCount();
 
+        String message = new StringBuilder()
+                .append(checkedCount)
+                .append(" ")
+                .append(checkedCount > 1
+                        ? " tags selected"
+                        : " tag selected")
+                .toString();
+
         // Set the CAB title according to total checked items
-        mode.setTitle(checkedCount + checkedCount > 1
-                ? " tags selected"
-                : " tag selected");
+        mode.setTitle(message);
 
         // Calls toggleSelection method from adapter Class
         adapter.toggleSelection(position);
@@ -51,7 +57,7 @@ public class TagsMultiChoiceModeListener implements AbsListView.MultiChoiceModeL
 
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-        mode.getMenuInflater().inflate(R.menu.activity_home, menu);
+        mode.getMenuInflater().inflate(R.menu.activity_tags, menu);
         toolbar.setVisibility(View.GONE);
         appBar.setVisibility(View.GONE);
         floatingActionButton.setVisibility(View.GONE);

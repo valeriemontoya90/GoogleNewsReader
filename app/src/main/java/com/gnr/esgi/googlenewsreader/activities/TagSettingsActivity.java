@@ -5,11 +5,12 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -22,7 +23,7 @@ import com.gnr.esgi.googlenewsreader.models.Tag;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TagSettingsActivity extends ActionBarActivity {
+public class TagSettingsActivity extends AppCompatActivity {
 
     List<Tag> tagsList = new ArrayList<>();
     ListView tagsListView;
@@ -41,6 +42,14 @@ public class TagSettingsActivity extends ActionBarActivity {
         toolbar = (Toolbar) findViewById(R.id.tag_setting_toolbar);
         setSupportActionBar(toolbar);
 
+        floatingActionButton = (FloatingActionButton) findViewById(R.id.action_tag_add);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showNewTagDialog();
+            }
+        });
+
         tagsListView = (ListView) findViewById(R.id.tag_settings_list);
 
         tagsAdapter = new ListTagsAdapter(getApplicationContext(), tagsList);
@@ -56,14 +65,6 @@ public class TagSettingsActivity extends ActionBarActivity {
                         floatingActionButton
                 )
         );
-
-        floatingActionButton = (FloatingActionButton) findViewById(R.id.action_tag_add);
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showNewTagDialog();
-            }
-        });
 
         searchTag = (EditText) findViewById(R.id.tag_setting_search);
         searchTag.addTextChangedListener(new TextWatcher() {
@@ -150,5 +151,13 @@ public class TagSettingsActivity extends ActionBarActivity {
 
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    public void checkboxHandler(View view) {
+        CheckBox checkBox = (CheckBox) view;
+
+        int position = Integer.parseInt(checkBox.getTag().toString());
+
+        //tagsList.get(position);
     }
 }

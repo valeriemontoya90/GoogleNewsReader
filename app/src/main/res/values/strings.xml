@@ -33,5 +33,6 @@
     <string name="day_ago">1 day ago</string>
     <string name="days_ago"> days ago</string>
     <string name="articles_load_more">Load more articles ...</string>
+    <string name="delete">Delete</string>
 
 </resources>

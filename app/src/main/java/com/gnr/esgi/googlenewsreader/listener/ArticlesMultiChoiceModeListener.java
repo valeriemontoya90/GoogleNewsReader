@@ -40,10 +40,16 @@ public class ArticlesMultiChoiceModeListener implements AbsListView.MultiChoiceM
         // Capture total checked items
         final int checkedCount = listView.getCheckedItemCount();
 
+        String message = new StringBuilder()
+                .append(checkedCount)
+                .append(" ")
+                .append(checkedCount > 1
+                        ? " articles selected"
+                        : " article selected")
+                .toString();
+
         // Set the CAB title according to total checked items
-        mode.setTitle(checkedCount + checkedCount > 1
-                ? " articles selected"
-                : " article selected");
+        mode.setTitle(message);
 
         // Calls toggleSelection method from adapter Class
         adapter.toggleSelection(position);
@@ -55,6 +61,7 @@ public class ArticlesMultiChoiceModeListener implements AbsListView.MultiChoiceM
         toolbar.setVisibility(View.GONE);
         appBar.setVisibility(View.GONE);
         floatingActionButton.setVisibility(View.GONE);
+
         return true;
     }
 
