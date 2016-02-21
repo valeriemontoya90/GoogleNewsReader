@@ -3,6 +3,7 @@ package com.gnr.esgi.googlenewsreader.constants;
 import android.provider.BaseColumns;
 
 public class DatabaseConstants {
+
     public static final int DB_VERSION = 1;
     public static final String DB_NAME = "googlenewsreader.db";
 
@@ -12,6 +13,7 @@ public class DatabaseConstants {
     public final static String COMMA_SEPARATOR = ",";
 
     public abstract class ArticleEntry implements BaseColumns {
+
         public static final String TABLE_NAME = "articles";
 
         public static final String COLUMN_TITLE = "article_title";
@@ -26,6 +28,7 @@ public class DatabaseConstants {
     }
 
     public abstract class TagEntry implements BaseColumns {
+
         public static final String TABLE_NAME = "tags";
 
         public static final String COLUMN_NAME = "tag_name";

@@ -1,8 +1,6 @@
 package com.gnr.esgi.googlenewsreader.utils;
 
-import android.content.res.Resources;
 import android.util.Log;
-
 import com.gnr.esgi.googlenewsreader.GNRApplication;
 import com.gnr.esgi.googlenewsreader.R;
 import java.text.DateFormat;

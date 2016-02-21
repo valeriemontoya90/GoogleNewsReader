@@ -3,6 +3,7 @@ package com.gnr.esgi.googlenewsreader.utils;
 import com.gnr.esgi.googlenewsreader.parser.HtmlParser;
 
 public class URLBuilder {
+
     private String url;
 
     public URLBuilder(String url) {

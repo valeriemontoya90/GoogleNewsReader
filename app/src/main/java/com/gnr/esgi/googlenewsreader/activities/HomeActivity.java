@@ -1,11 +1,13 @@
 package com.gnr.esgi.googlenewsreader.activities;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -27,8 +29,8 @@ import com.gnr.esgi.googlenewsreader.constants.ArticleConstants;
 import com.gnr.esgi.googlenewsreader.helper.ArticleHelper;
 import com.gnr.esgi.googlenewsreader.listener.ArticlesMultiChoiceModeListener;
 import com.gnr.esgi.googlenewsreader.models.Article;
-import com.gnr.esgi.googlenewsreader.models.Tag;
 import com.gnr.esgi.googlenewsreader.services.RefreshService;
+import com.gnr.esgi.googlenewsreader.tasks.DatabaseTask;
 import com.gnr.esgi.googlenewsreader.utils.Config;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -50,6 +52,7 @@ public class HomeActivity extends ActionBarActivity {
     AppBarLayout appBar;
     Toolbar toolbar;
     FloatingActionButton floatingActionButton;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +68,9 @@ public class HomeActivity extends ActionBarActivity {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                displaySnackbar(refreshListArticles());
+                displaySnackbar(
+                        refreshListArticles()
+                );
             }
         });
 
@@ -93,8 +98,8 @@ public class HomeActivity extends ActionBarActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 // Update database, set read true
-                articlesArrayList.get(position).setRead(true);
-                GNRApplication.getDbHelper().updateArticle(articlesArrayList.get(position));
+                ArticleHelper.setRead(articlesArrayList.get(position));
+
                 listArticlesAdapter.notifyDataSetChanged();
 
                 sendDataToDetailArticleActivity(position);
@@ -102,6 +107,42 @@ public class HomeActivity extends ActionBarActivity {
         });
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        initServices();
+
+        // At application start, if database contains no articles, load from internet
+        if(ArticleHelper.getArticles().isEmpty()) {
+            displaySnackbar(
+                    refreshListArticles()
+            );
+        }
+
+        refreshListView();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        listArticlesAdapter.swapItems(articlesArrayList);
+    }
+
+    private void progressOperation(AsyncTask<?, ?, ?> task) {
+        /*progressDialog = ProgressDialog.show(HomeActivity.this,
+                "Please wait...", "Retrieving data...", true, true);
+
+        progressDialog.setOnCancelListener(
+            new CancelTaskOnListener(
+                task,
+                listArticlesAdapter
+            )
+        );*/
+    }
+
+    // Erase entire articles list and update it with fresh news
     public Integer refreshListArticles() {
         // Save old news to compare with latest
         List<Article> oldArticles = articlesArrayList;
@@ -112,44 +153,39 @@ public class HomeActivity extends ActionBarActivity {
         // Then refresh view
         refreshListView();
 
-        return ArticleHelper.countRecentNews(articlesArrayList, oldArticles);
+        return ArticleHelper.countRecentNews(
+                articlesArrayList,
+                oldArticles
+        );
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+    // Keep current articles, load new articles from internet and add them to previous articles list
+    public Integer loadMoreArticles() {
+        // Save old news to compare with latest
+        List<Article> oldArticles = articlesArrayList;
 
-        GNRApplication.getUser().setSettings(getSharedPreferences(Config.PREFS_NAME, 0));
+        // First refresh articles in database getting new content from internet
+        ArticleHelper.moreArticles();
 
-        initServices();
-
-        if(GNRApplication.getUser().getData().getAllArticles().isEmpty())
-            ArticleHelper.refreshArticles();
-
+        // Then refresh view
         refreshListView();
-    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        listArticlesAdapter.notifyDataSetChanged();
+        return ArticleHelper.countRecentNews(
+                articlesArrayList,
+                oldArticles
+        );
     }
 
     private void refreshListView() {
-        //Clean articles list before refresh
+        //Clean listArticles list before refresh
         articlesArrayList.clear();
 
-        // If user selected a tag show articles of tag, else show all articles
-        articlesArrayList.addAll(
-                GNRApplication.getUser().getCurrentTag().getTagName().isEmpty()
-                    ? ArticleHelper.getArticles()
-                    : ArticleHelper.getArticles(GNRApplication.getUser().getCurrentTag())
-        );
-
-        ArticleHelper.sortByDate(articlesArrayList);
-
-        listArticlesAdapter.notifyDataSetChanged();
+        new
+            DatabaseTask(
+                articlesArrayList,
+                listArticlesAdapter
+            )
+            .execute();
     }
 
     @Override
@@ -182,8 +218,8 @@ public class HomeActivity extends ActionBarActivity {
         intent.putExtra(ArticleConstants.ARTICLE_KEY_TITLE, articlesArrayList.get(position).getTitle());
         intent.putExtra(ArticleConstants.ARTICLE_KEY_CONTENT, articlesArrayList.get(position).getContent());
         intent.putExtra(ArticleConstants.ARTICLE_KEY_CREATED_AT, articlesArrayList.get(position).getCreatedAt());
-        intent.putExtra(ArticleConstants.ARTICLE_KEY_SOURCE_NAME, articlesArrayList.get(position).getSource().getSourceName());
-        intent.putExtra(ArticleConstants.ARTICLE_KEY_SOURCE_URL, articlesArrayList.get(position).getSource().getSourceUrl());
+        intent.putExtra(ArticleConstants.ARTICLE_KEY_SOURCE_NAME, articlesArrayList.get(position).getSource().getName());
+        intent.putExtra(ArticleConstants.ARTICLE_KEY_SOURCE_URL, articlesArrayList.get(position).getSource().getUrl());
         intent.putExtra(ArticleConstants.ARTICLE_KEY_PICTURE_URL, articlesArrayList.get(position).getPicture().getPictureUrl());
 
         startActivity(intent);
@@ -260,34 +296,35 @@ public class HomeActivity extends ActionBarActivity {
     }
 
     public void showRefreshDialog() {
-        final CharSequence[] items = { "Refresh every hour" };
+        final CharSequence[] items = { getString(R.string.refreshDialog_message) };
 
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder
-                .setTitle(R.string.refreshDialog_title)
-                .setCancelable(false)
-                .setMultiChoiceItems(items, null, new DialogInterface.OnMultiChoiceClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                        isRefresh = isChecked;
-                    }
-                })
-                .setPositiveButton(R.string.refreshDialog_accept, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        GNRApplication.getUser().setAutoUpdate(isRefresh);
+        final AlertDialog.Builder builder
+            = new AlertDialog
+                    .Builder(this)
+                    .setTitle(R.string.refreshDialog_title)
+                    .setCancelable(false)
+                    .setMultiChoiceItems(items, null, new DialogInterface.OnMultiChoiceClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                            isRefresh = isChecked;
+                        }
+                    })
+                    .setPositiveButton(R.string.refreshDialog_accept, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            GNRApplication.getUser().setAutoUpdate(isRefresh);
 
-                        initServices();
+                            initServices();
 
-                        dialog.dismiss();
-                    }
-                })
-                .setNegativeButton(R.string.refreshDialog_cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
+                            dialog.dismiss();
+                        }
+                    })
+                    .setNegativeButton(R.string.refreshDialog_cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
 
         AlertDialog dialog = builder.create();
         dialog.show();
@@ -307,6 +344,7 @@ public class HomeActivity extends ActionBarActivity {
                 return true;
 
             case R.id.action_tags:
+
                 showTags();
                 return true;
 

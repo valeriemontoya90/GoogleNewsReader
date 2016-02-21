@@ -3,7 +3,9 @@ package com.gnr.esgi.googlenewsreader.utils;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.widget.Toast;
 import com.gnr.esgi.googlenewsreader.GNRApplication;
+import com.gnr.esgi.googlenewsreader.R;
 
 public class NetworkUtil {
     public static boolean checkInternetConnection(){
@@ -21,5 +23,15 @@ public class NetworkUtil {
         }
 
         return false;
+    }
+
+    public static void showInvalidNetworkMessage() {
+        Toast
+            .makeText(
+                    GNRApplication.getAppContext(),
+                    R.string.no_internet,
+                    Toast.LENGTH_LONG
+            )
+            .show();
     }
 }

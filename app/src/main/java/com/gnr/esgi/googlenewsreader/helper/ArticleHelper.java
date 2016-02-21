@@ -3,12 +3,14 @@ package com.gnr.esgi.googlenewsreader.helper;
 import android.util.Log;
 import com.gnr.esgi.googlenewsreader.GNRApplication;
 import com.gnr.esgi.googlenewsreader.constants.APIConstants;
+import com.gnr.esgi.googlenewsreader.factory.ArticleFactory;
 import com.gnr.esgi.googlenewsreader.models.Article;
 import com.gnr.esgi.googlenewsreader.models.Tag;
 import com.gnr.esgi.googlenewsreader.utils.Config;
 import com.gnr.esgi.googlenewsreader.utils.DateUtil;
+import com.gnr.esgi.googlenewsreader.utils.NetworkUtil;
 import com.gnr.esgi.googlenewsreader.utils.URLBuilder;
-import com.gnr.esgi.googlenewsreader.webservices.ArticleSearchTask;
+import com.gnr.esgi.googlenewsreader.tasks.ArticleSearchTask;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -68,37 +70,70 @@ public class ArticleHelper {
         return count;
     }
 
+    public static void setRead(Article article) {
+        article.setRead(true);
+        GNRApplication.getDbHelper().updateArticle(article);
+    }
+
     public static List<Article> getArticles() {
-        return GNRApplication.getDbHelper().getArticles();
+        return ArticleFactory.fromCursor(
+                GNRApplication.getDbHelper().getArticles()
+        );
     }
 
     public static List<Article> getArticles(Tag tag) {
-        return GNRApplication.getDbHelper().getArticles(tag.getTagName());
+        return ArticleFactory.fromCursor(
+                GNRApplication.getDbHelper().getArticles(tag.getName())
+        );
     }
 
-    public static void refreshArticles() {
-        // Clear database
-        //GNRApplication.getDbHelper().deleteArticles();
+    public static ArticleSearchTask refreshArticles() {
+        if(NetworkUtil.checkInternetConnection()) {
+            // Clear database
+            GNRApplication.getDbHelper().deleteArticles();
 
-        // Repopulate with fresh online news
-        for (final Tag tag : GNRApplication.getUser().getData().getTags()) {
-            ArticleSearchTask search = new ArticleSearchTask();
-            search.execute(tag);
+            return searchArticles();
+        }
+        else {
+            NetworkUtil.showInvalidNetworkMessage();
+
+            return null;
         }
     }
 
-    public static void saveInDataBase(Article article, Tag tag) {
+    public static ArticleSearchTask moreArticles() {
+        if(NetworkUtil.checkInternetConnection()) {
+             return searchArticles();
+        }
+        else {
+            NetworkUtil.showInvalidNetworkMessage();
+
+            return null;
+        }
+    }
+
+    // Repopulate with fresh online news
+    private static ArticleSearchTask searchArticles() {
+        ArticleSearchTask task = new ArticleSearchTask();
+
+        // If user has tags, search articles for those tags
+        if(!TagHelper.getTags().isEmpty()) {
+            for (final Tag tag : TagHelper.getTags()) {
+                task.execute(tag);
+            }
+        }
+        // Else get headlines articles
+        else {
+            task.execute();
+        }
+
+        return task;
+    }
+
+    public static void saveInDataBase(Article article) {
         if(Config.DISPLAY_LOG)
             Log.d(Config.LOG_PREFIX, "saveArticleInDataBase");
 
-            GNRApplication.getDbHelper().addArticle(article);
-    }
-
-    public static void saveInDatabase(Tag tag) {
-        if(Config.DISPLAY_LOG)
-            Log.d(Config.LOG_PREFIX, "saveInDatabase");
-
-        for (Article article : tag.getArticlesList())
             GNRApplication.getDbHelper().addArticle(article);
     }
 

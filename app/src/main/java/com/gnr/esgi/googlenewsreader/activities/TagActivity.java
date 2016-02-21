@@ -2,12 +2,13 @@ package com.gnr.esgi.googlenewsreader.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import com.gnr.esgi.googlenewsreader.GNRApplication;
 import com.gnr.esgi.googlenewsreader.R;
+import com.gnr.esgi.googlenewsreader.helper.TagHelper;
 import com.gnr.esgi.googlenewsreader.models.Tag;
 
 public class TagActivity extends AppCompatActivity {
@@ -17,12 +18,24 @@ public class TagActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tag);
 
-        LinearLayout relativeLayout = (LinearLayout) findViewById(R.id.tag_layout);
-        AbsListView.LayoutParams lp = new AbsListView.LayoutParams(AbsListView.LayoutParams.WRAP_CONTENT, AbsListView.LayoutParams.WRAP_CONTENT);
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.tag_layout);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f);
 
-        for (final Tag tag : GNRApplication.getUser().getData().getTags()) {
+        boolean left = true;
+        for (final Tag tag : TagHelper.getTags()) {
             Button button = new Button(this);
-            button.setText(tag.getTagName());
+            button.setText(tag.getName());
+
+            if(left) {
+                button.setGravity(Gravity.LEFT);
+
+                left = false;
+            }
+            else {
+                button.setGravity(Gravity.RIGHT);
+
+                left = true;
+            }
 
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -31,7 +44,7 @@ public class TagActivity extends AppCompatActivity {
                 }
             });
 
-            relativeLayout.addView(button, lp);
+            linearLayout.addView(button, params);
         }
     }
 

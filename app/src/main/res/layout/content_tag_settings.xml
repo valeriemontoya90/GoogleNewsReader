@@ -12,4 +12,11 @@
     tools:context="com.gnr.esgi.googlenewsreader.activities.TagSettingsActivity"
     tools:showIn="@layout/activity_tag_settings">
 
+    <ListView
+        android:id="@+id/tag_settings_list"
+        android:choiceMode="multipleChoice"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+    </ListView>
+
 </RelativeLayout>

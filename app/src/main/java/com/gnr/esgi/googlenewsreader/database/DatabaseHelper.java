@@ -7,16 +7,20 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import com.gnr.esgi.googlenewsreader.constants.DatabaseConstants;
-import com.gnr.esgi.googlenewsreader.factory.ArticleFactory;
 import com.gnr.esgi.googlenewsreader.models.Article;
 import com.gnr.esgi.googlenewsreader.models.Tag;
-import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
+
     private final static String TAG = DatabaseHelper.class.getSimpleName();
 
     public DatabaseHelper(Context context) {
-        super(context, DatabaseConstants.DB_NAME, null, DatabaseConstants.DB_VERSION);
+        super(
+                context,
+                DatabaseConstants.DB_NAME,
+                null,
+                DatabaseConstants.DB_VERSION
+        );
     }
 
     @Override
@@ -61,7 +65,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public long addArticle(Article article) {
         // Check first if already article with same title from same source exists
         // in database, else insert
-        return getArticles(article.getTitle(), article.getSource().getSourceName()).size() == 0
+        return getArticles(
+                article.getTitle(),
+                article.getSource().getName()
+            ).getCount() == 0
                 ? getWritableDatabase()
                     .insert(
                             DatabaseConstants.ArticleEntry.TABLE_NAME,
@@ -71,48 +78,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 : 0;
     }
 
-    public List<Article> getArticles() {
-        return ArticleFactory.fromCursor(
-                getReadableDatabase()
-                        .query(
-                                DatabaseConstants.ArticleEntry.TABLE_NAME,
-                                null,
-                                null,
-                                null,
-                                null,
-                                null,
-                                null
-                        )
-        );
-    }
-
-    public List<Article> getArticles(String[] projection, String selection, String[] selectionArgs, String groupBy, String having, String sort) {
-        return ArticleFactory.fromCursor(
-                getReadableDatabase()
-                        .query(
-                                DatabaseConstants.ArticleEntry.TABLE_NAME,
-                                projection,
-                                selection,
-                                selectionArgs,
-                                groupBy,
-                                having,
-                                sort
-                        )
-        );
-    }
-
-    public Article getArticle(long rowID) {
+    public Cursor getArticles() {
         return getArticles(
                 null,
-                DatabaseConstants.ArticleEntry._ID + " = ? ",
-                new String[]{ String.valueOf(rowID) },
+                DatabaseConstants.ArticleEntry.COLUMN_DELETED + " = 0 ",
+                null,
                 null,
                 null,
                 null
-        ).get(0);
+        );
     }
 
-    public List<Article> getArticles(String title, String sourceName) {
+    public Cursor getArticle(long rowID) {
+        return getArticles(
+                null,
+                DatabaseConstants.ArticleEntry._ID + " = ? ",
+                new String[]{String.valueOf(rowID)},
+                null,
+                null,
+                null
+        );
+    }
+
+    public Cursor getArticles(String title, String sourceName) {
         return getArticles(
                 null,
                 DatabaseConstants.ArticleEntry.COLUMN_TITLE + " LIKE ? "
@@ -124,7 +112,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         );
     }
 
-    public List<Article> getArticles(String tagName) {
+    public Cursor getArticles(String tagName) {
         // Get only articles not manually deleted by user
         return getArticles(
                 null,
@@ -137,6 +125,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         );
     }
 
+    public Cursor getArticles(String[] projection, String selection, String[] selectionArgs, String groupBy, String having, String sort) {
+        return getReadableDatabase()
+                .query(
+                        DatabaseConstants.ArticleEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        groupBy,
+                        having,
+                        sort
+                );
+    }
 
     public int updateArticle(Article article) {
         return getWritableDatabase()
@@ -144,7 +144,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         DatabaseConstants.ArticleEntry.TABLE_NAME,
                         getContentValues(article),
                         DatabaseConstants.ArticleEntry._ID + " = ?",
-                        new String[] { String.valueOf(article.getArticleId()) }
+                        new String[]{String.valueOf(article.getArticleId())}
                 );
     }
 
@@ -154,7 +154,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return deleteArticles(
                 DatabaseConstants.ArticleEntry.COLUMN_DELETED + " = 0 ",
                 null
-            );
+        );
+    }
+
+    public int deleteArticles(String[] rowIDs) {
+        return deleteArticles(
+                DatabaseConstants.ArticleEntry._ID + " IN (" + makePlaceholders(rowIDs.length) + ")",
+                rowIDs
+        );
     }
 
     public int deleteArticles(String selection, String[] selectionArgs) {
@@ -166,42 +173,53 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 );
     }
 
-    public int deleteArticles(String[] rowIDs) {
-        return deleteArticles(
-                DatabaseConstants.ArticleEntry._ID + " IN (" + makePlaceholders(rowIDs.length) + ")",
-                rowIDs
-            );
-    }
-
     //endregion
 
     //region Tags
 
     public long addTag(Tag tag) {
-        ContentValues values = new ContentValues();
-        values.put(DatabaseConstants.TagEntry.COLUMN_NAME, tag.getTagName());
-
-        Log.d("DB COLUMN_NAME", values.get(DatabaseConstants.TagEntry.COLUMN_NAME).toString());
-
-        return getWritableDatabase()
+        // Insert tag if only tag with same name does not already exist in database
+        return getTag(tag.getName()).getCount() == 0
+                ? getWritableDatabase()
                 .insert(
                         DatabaseConstants.TagEntry.TABLE_NAME,
                         null,
-                        values
-                );
+                        getContentValues(tag)
+                )
+                : 0;
     }
 
     public Cursor getTags() {
-        return getReadableDatabase()
-                .query(
-                        DatabaseConstants.ArticleEntry.TABLE_NAME,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null
-                );
+        return getTags(
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+    }
+
+    public Cursor getTag(long rowID) {
+        return getTags(
+                null,
+                DatabaseConstants.TagEntry._ID + " = ? ",
+                new String[] { String.valueOf(rowID) },
+                null,
+                null,
+                null
+        );
+    }
+
+    public Cursor getTag(String name) {
+        return getTags(
+                null,
+                DatabaseConstants.TagEntry.COLUMN_NAME + " LIKE ? ",
+                new String[] { name },
+                null,
+                null,
+                null
+        );
     }
 
     public Cursor getTags(String[] projection, String selection, String[] selectionArgs, String groupBy, String having, String sort) {
@@ -217,33 +235,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 );
     }
 
-    public Cursor getTag(long rowID) {
-        return getTags(
-                    null,
-                    DatabaseConstants.TagEntry._ID + "=?",
-                    new String[]{ String.valueOf(rowID) },
-                    null,
-                    null,
-                    null
-                );
-    }
-
-    public Cursor getTag(String name) {
-        return getTags(
-                    null,
-                    DatabaseConstants.TagEntry.COLUMN_NAME + "=?",
-                    new String[]{ name },
-                    null,
-                    null,
-                    null
-            );
+    public int deleteTag(String name) {
+        return deleteTags(
+                DatabaseConstants.TagEntry.COLUMN_NAME + " LIKE ? ",
+                new String[] { name }
+        );
     }
 
     public int deleteTags() {
         return deleteTags(
-                        null,
-                        null
-                );
+                null,
+                null
+        );
+    }
+
+    public int deleteTags(String[] rowIDs) {
+        return deleteTags(
+                DatabaseConstants.TagEntry._ID + " IN (" + makePlaceholders(rowIDs.length) + ")",
+                rowIDs
+        );
     }
 
     public int deleteTags(String selection, String[] selectionArgs) {
@@ -255,13 +265,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 );
     }
 
-    public int deleteTags(String[] rowIDs) {
-        return deleteTags(
-                        DatabaseConstants.TagEntry._ID + " IN (" + makePlaceholders(rowIDs.length) + ")",
-                        rowIDs
-                );
-    }
-
     //endregion
 
     private ContentValues getContentValues(Article article) {
@@ -270,8 +273,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(DatabaseConstants.ArticleEntry.COLUMN_TITLE, article.getTitle());
         values.put(DatabaseConstants.ArticleEntry.COLUMN_DATE, article.getCreatedAt());
         values.put(DatabaseConstants.ArticleEntry.COLUMN_CONTENT, article.getContent());
-        values.put(DatabaseConstants.ArticleEntry.COLUMN_SOURCE_NAME, article.getSource().getSourceName());
-        values.put(DatabaseConstants.ArticleEntry.COLUMN_SOURCE_URL, article.getSource().getSourceUrl());
+        values.put(DatabaseConstants.ArticleEntry.COLUMN_SOURCE_NAME, article.getSource().getName());
+        values.put(DatabaseConstants.ArticleEntry.COLUMN_SOURCE_URL, article.getSource().getUrl());
         values.put(DatabaseConstants.ArticleEntry.COLUMN_PICTURE_URL, article.getPicture().getPictureUrl());
         values.put(DatabaseConstants.ArticleEntry.COLUMN_READ, article.getRead() ? 1 : 0);
         values.put(DatabaseConstants.ArticleEntry.COLUMN_DELETED, article.getDeleted() ? 1 : 0);
@@ -283,6 +286,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Log.d("DB COLUMN_SOURCE_NAME", values.get(DatabaseConstants.ArticleEntry.COLUMN_SOURCE_NAME).toString());
         Log.d("DB COLUMN_SOURCE_URL", values.get(DatabaseConstants.ArticleEntry.COLUMN_SOURCE_URL).toString());
         Log.d("DB COLUMN_TAG_NAME", values.get(DatabaseConstants.ArticleEntry.COLUMN_TAG_NAME).toString());
+
+        return values;
+    }
+
+    private ContentValues getContentValues(Tag tag) {
+        ContentValues values = new ContentValues();
+        values.put(DatabaseConstants.TagEntry.COLUMN_NAME, tag.getName());
+
+        Log.d("DB COLUMN_NAME", values.get(DatabaseConstants.TagEntry.COLUMN_NAME).toString());
 
         return values;
     }

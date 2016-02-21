@@ -1,35 +1,41 @@
 package com.gnr.esgi.googlenewsreader.models;
 
+import android.database.Cursor;
+import com.gnr.esgi.googlenewsreader.GNRApplication;
+import com.gnr.esgi.googlenewsreader.R;
+import com.gnr.esgi.googlenewsreader.constants.DatabaseConstants;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Tag {
-    private Integer tagId;
-    private String tagName;
+
+    private String name;
     private List<Article> articlesList;
-    private int currentCounter;
 
     public Tag(String name) {
-        tagId = 0;
-        tagName = name;
+        this.name = name;
         articlesList = new ArrayList<>();
-        currentCounter = 0;
     }
 
-    public Integer getTagId() {
-        return tagId;
+    public Tag(List<Article> articles) {
+        name = GNRApplication.getAppContext().getString(R.string.topic_headlines);
+        articlesList = articles;
     }
 
-    public void setTagId(Integer id) {
-        tagId = id;
+    public Tag(Cursor cursor) {
+        name = cursor.getString(
+                    cursor.getColumnIndex(
+                        DatabaseConstants.TagEntry.COLUMN_NAME
+                    )
+        );
     }
 
-    public String getTagName() {
-        return tagName;
+    public String getName() {
+        return name;
     }
 
-    public void setTagName(String name) {
-        tagName = name;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public List<Article> getArticlesList() {
@@ -38,13 +44,5 @@ public class Tag {
 
     public void setArticles(List<Article> articles) {
         articlesList = articles;
-    }
-
-    public int getCurrentCounter() {
-        return currentCounter;
-    }
-
-    public void setCurrentCounter(int count) {
-        currentCounter = count;
     }
 }

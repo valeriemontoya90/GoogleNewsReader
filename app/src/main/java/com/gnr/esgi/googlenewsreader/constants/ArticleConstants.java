@@ -1,6 +1,7 @@
 package com.gnr.esgi.googlenewsreader.constants;
 
 public class ArticleConstants {
+
     public static final String TAG = "Article";
 
     public static final String ARTICLE_KEY_ID = "id";

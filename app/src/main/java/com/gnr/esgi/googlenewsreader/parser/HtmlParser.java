@@ -3,6 +3,7 @@ package com.gnr.esgi.googlenewsreader.parser;
 import android.text.Html;
 
 public final class HtmlParser {
+
     public static final String ELLIPSIS = "&ellip;";
     public static final String TAG_PATTERN = "<[^>]+>";
     public static final String WHITESPACE_PATTERN = "\\s!+";

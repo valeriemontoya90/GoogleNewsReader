@@ -12,6 +12,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class RefreshService extends Service {
+
     public static final String NEW_ARTICLES_ARE_READY = "NEW_ARTICLES_ARE_READY";
     static LocalBroadcastManager broadcaster;
 

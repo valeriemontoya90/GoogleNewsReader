@@ -7,36 +7,31 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import com.gnr.esgi.googlenewsreader.R;
 import com.gnr.esgi.googlenewsreader.models.Tag;
 import java.util.List;
 
 public class ListTagsAdapter extends BaseAdapter {
 
-    private Context mContext;
-    private List<Tag> mListTags;
-    private SparseBooleanArray mSelectedItemsIds;
-    private int layout;
-    private int tagName;
+    private Context context;
+    private List<Tag> tagsList;
+    private SparseBooleanArray selectedItems;
 
-    public ListTagsAdapter(Context context,
-                           List<Tag> tags,
-                           int layout,
-                           int tagName) {
-        this.mContext = context;
-        this.mListTags = tags;
-        this.mSelectedItemsIds = new SparseBooleanArray();
-        this.layout = layout;
-        this.tagName = tagName;
+    public ListTagsAdapter(Context context, List<Tag> tags) {
+        this.context = context;
+        this.tagsList = tags;
+        this.selectedItems = new SparseBooleanArray();
     }
 
     @Override
     public int getCount() {
-        return mListTags.size();
+        return tagsList.size();
     }
 
     @Override
     public Tag getItem(int position) {
-        return mListTags.get(position);
+        return tagsList.get(position);
     }
 
     @Override
@@ -45,12 +40,12 @@ public class ListTagsAdapter extends BaseAdapter {
     }
 
     public void remove(Tag tag) {
-        mListTags.remove(tag);
+        tagsList.remove(tag);
         notifyDataSetChanged();
     }
 
     public void removeItem(int position) {
-        mListTags.remove(position);
+        tagsList.remove(position);
     }
 
     @Override
@@ -58,17 +53,17 @@ public class ListTagsAdapter extends BaseAdapter {
         final ViewHolder viewHolder;
 
         if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(layout, parent, false);
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_tag, parent, false);
             viewHolder = new ViewHolder();
-            viewHolder.name = (TextView) convertView.findViewById(tagName);
+            viewHolder.name = (TextView) convertView.findViewById(R.id.tag_setting_name);
             convertView.setTag(viewHolder);
         }
         else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        Tag tagSelected = mListTags.get(position);
-        viewHolder.name.setText(tagSelected.getTagName());
+        Tag tagSelected = tagsList.get(position);
+        viewHolder.name.setText(tagSelected.getName());
 
         return convertView;
     }
@@ -77,31 +72,36 @@ public class ListTagsAdapter extends BaseAdapter {
         TextView name;
     }
 
+    public void swapItems(List<Tag> items) {
+        this.tagsList = items;
+        notifyDataSetChanged();
+    }
+
     public void toggleSelection(int position) {
-        selectView(position, !mSelectedItemsIds.get(position));
+        selectView(position, !selectedItems.get(position));
     }
 
     public void removeSelection() {
-        mSelectedItemsIds = new SparseBooleanArray();
+        selectedItems = new SparseBooleanArray();
         notifyDataSetChanged();
     }
 
     public void selectView(int position, boolean value) {
         if(value) {
-            mSelectedItemsIds.put(position, value);
+            selectedItems.put(position, value);
         }
         else {
-            mSelectedItemsIds.delete(position);
+            selectedItems.delete(position);
         }
 
         notifyDataSetChanged();
     }
 
     public int getSelectedCount() {
-        return mSelectedItemsIds.size();
+        return selectedItems.size();
     }
 
     public SparseBooleanArray getSelectedIds() {
-        return mSelectedItemsIds;
+        return selectedItems;
     }
 }

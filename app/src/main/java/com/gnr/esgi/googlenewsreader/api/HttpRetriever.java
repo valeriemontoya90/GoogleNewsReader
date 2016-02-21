@@ -11,7 +11,7 @@ public class HttpRetriever
     public static String retrieveStream(String str) {
         try{
             URL url = new URL(str);
-            HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("User-Agent", "");
             connection.setRequestMethod("GET");
             connection.setDoInput(true);

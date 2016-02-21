@@ -23,20 +23,50 @@ public class Article {
 
     public Article(JSONObject jsonArticle) {
         try {
-            title = jsonArticle.getString(ArticleConstants.ARTICLE_KEY_TITLE);
-            content = jsonArticle.getString(ArticleConstants.ARTICLE_KEY_CONTENT);
+            if(jsonArticle.has(ArticleConstants.ARTICLE_KEY_TITLE))
+                title = jsonArticle.getString(
+                            ArticleConstants.ARTICLE_KEY_TITLE
+                );
 
-            createdAt = jsonArticle.getString(ArticleConstants.ARTICLE_KEY_CREATED_AT);
+            if(jsonArticle.has(ArticleConstants.ARTICLE_KEY_CONTENT))
+                content = jsonArticle.getString(
+                            ArticleConstants.ARTICLE_KEY_CONTENT
+                );
+
+            if(jsonArticle.has(ArticleConstants.ARTICLE_KEY_CREATED_AT))
+                createdAt = jsonArticle.getString(
+                                ArticleConstants.ARTICLE_KEY_CREATED_AT
+                );
 
             source = new Source();
-            source.setSourceName(jsonArticle.getString(ArticleConstants.ARTICLE_KEY_SOURCE_NAME));
-            source.setSourceUrl(jsonArticle.getString(ArticleConstants.ARTICLE_KEY_SOURCE_URL));
+
+            if(jsonArticle.has(ArticleConstants.ARTICLE_KEY_SOURCE_NAME))
+                source.setName(
+                        jsonArticle.getString(
+                                ArticleConstants.ARTICLE_KEY_SOURCE_NAME
+                        )
+                );
+
+            if(jsonArticle.has(ArticleConstants.ARTICLE_KEY_SOURCE_URL))
+                source.setUrl(
+                        jsonArticle.getString(
+                                ArticleConstants.ARTICLE_KEY_SOURCE_URL
+                        )
+                );
 
             picture = new Picture();
             if(jsonArticle.has(ArticleConstants.ARTICLE_KEY_PICTURE))
             {
-                JSONObject image = jsonArticle.getJSONObject(ArticleConstants.ARTICLE_KEY_PICTURE);
-                picture.setPictureUrl(image.getString(ArticleConstants.ARTICLE_KEY_PICTURE_URL));
+                JSONObject jsonImage = jsonArticle.getJSONObject(
+                        ArticleConstants.ARTICLE_KEY_PICTURE
+                );
+
+                if(jsonImage.has(ArticleConstants.ARTICLE_KEY_PICTURE_URL))
+                    picture.setPictureUrl(
+                            jsonImage.getString(
+                                    ArticleConstants.ARTICLE_KEY_PICTURE_URL
+                            )
+                    );
             }
 
             read = false;
@@ -52,21 +82,72 @@ public class Article {
     }
 
     public Article(Cursor cursor) {
-        articleId = cursor.getLong(cursor.getColumnIndex(DatabaseConstants.ArticleEntry._ID));
-        title = cursor.getString(cursor.getColumnIndex(DatabaseConstants.ArticleEntry.COLUMN_TITLE));
-        content = cursor.getString(cursor.getColumnIndex(DatabaseConstants.ArticleEntry.COLUMN_CONTENT));
-        createdAt = cursor.getString(cursor.getColumnIndex(DatabaseConstants.ArticleEntry.COLUMN_DATE));
+        articleId = cursor.getLong(
+                        cursor.getColumnIndex(
+                            DatabaseConstants.ArticleEntry._ID
+                        )
+        );
+
+        title = cursor.getString(
+                    cursor.getColumnIndex(
+                        DatabaseConstants.ArticleEntry.COLUMN_TITLE
+                )
+        );
+
+        content = cursor.getString(
+                    cursor.getColumnIndex(
+                        DatabaseConstants.ArticleEntry.COLUMN_CONTENT
+                    )
+        );
+
+        createdAt = cursor.getString(
+                        cursor.getColumnIndex(
+                            DatabaseConstants.ArticleEntry.COLUMN_DATE
+                        )
+        );
 
         source = new Source();
-        source.setSourceName(cursor.getString(cursor.getColumnIndex(DatabaseConstants.ArticleEntry.COLUMN_SOURCE_NAME)));
-        source.setSourceUrl(cursor.getString(cursor.getColumnIndex(DatabaseConstants.ArticleEntry.COLUMN_SOURCE_URL)));
+        source.setName(
+                cursor.getString(
+                        cursor.getColumnIndex(
+                                DatabaseConstants.ArticleEntry.COLUMN_SOURCE_NAME
+                        )
+                )
+        );
 
-        picture = new Picture(cursor.getString(cursor.getColumnIndex(DatabaseConstants.ArticleEntry.COLUMN_PICTURE_URL)));
+        source.setUrl(
+                cursor.getString(
+                        cursor.getColumnIndex(
+                                DatabaseConstants.ArticleEntry.COLUMN_SOURCE_URL
+                        )
+                )
+        );
 
-        read = cursor.getInt(cursor.getColumnIndex(DatabaseConstants.ArticleEntry.COLUMN_READ)) == 1;
-        deleted = cursor.getInt(cursor.getColumnIndex(DatabaseConstants.ArticleEntry.COLUMN_DELETED)) == 1;
+        picture = new Picture(
+                    cursor.getString(
+                        cursor.getColumnIndex(
+                            DatabaseConstants.ArticleEntry.COLUMN_PICTURE_URL
+                        )
+                    )
+        );
 
-        linkTagName = cursor.getString(cursor.getColumnIndex(DatabaseConstants.ArticleEntry.COLUMN_TAG_NAME));
+        read = cursor.getInt(
+                cursor.getColumnIndex(
+                    DatabaseConstants.ArticleEntry.COLUMN_READ
+                )
+        ) == 1;
+
+        deleted = cursor.getInt(
+                    cursor.getColumnIndex(
+                        DatabaseConstants.ArticleEntry.COLUMN_DELETED
+                )
+        ) == 1;
+
+        linkTagName = cursor.getString(
+                        cursor.getColumnIndex(
+                            DatabaseConstants.ArticleEntry.COLUMN_TAG_NAME
+                        )
+        );
     }
 
     public Long getArticleId() {

@@ -1,23 +1,19 @@
 package com.gnr.esgi.googlenewsreader.models;
 
 import android.content.SharedPreferences;
-import com.gnr.esgi.googlenewsreader.database.DatabaseManager;
+import com.gnr.esgi.googlenewsreader.GNRApplication;
+import com.gnr.esgi.googlenewsreader.utils.Config;
 
 public class User {
+
     private SharedPreferences settings;
-    private DatabaseManager data;
-    private Tag currentTag;
 
     public User() {
-        data = new DatabaseManager();
-    }
-
-    public SharedPreferences getSettings() {
-        return settings;
-    }
-
-    public void setSettings(SharedPreferences sharedPreferences) {
-        settings = sharedPreferences;
+        settings = GNRApplication
+                    .getAppContext()
+                    .getSharedPreferences(
+                        Config.PREFS_NAME, 0
+                    );
     }
 
     public Boolean getAutoUpdate() {
@@ -37,20 +33,8 @@ public class User {
 
     public void setCurrentTag(Tag currentTag) {
         SharedPreferences.Editor editor = settings.edit();
-        editor.putString("currentTag", currentTag.getTagName());
+        editor.putString("currentTag", currentTag.getName());
 
         editor.commit();
-    }
-
-    public void enableAutoUpdate() {
-        setAutoUpdate(true);
-    }
-
-    public void disableAutoUpdate() {
-        setAutoUpdate(false);
-    }
-
-    public DatabaseManager getData() {
-        return  data;
     }
 }

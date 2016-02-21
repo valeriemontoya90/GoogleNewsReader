@@ -1,12 +1,15 @@
 <resources>
     <string name="app_name">GoogleNews Reader</string>
 
-    <string name="toolbar_search">Search</string>
+    <string name="toolbar_tags_settings">Tags Settings</string>
     <string name="toolbar_tags">Tags</string>
     <string name="toolbar_refresh">Refresh Settings</string>
+    <string name="topic_headlines">Headlines</string>
 
     <string name="snackbar_close">Close</string>
     <string name="snackbar_addedNews"> news was added in total</string>
+
+    <string name="no_internet">Oops no internet connection was found</string>
 
     <string name="progressDialog_title">Please wait...</string>
     <string name="progressDialog_message">Retrieving data...</string>
@@ -15,6 +18,10 @@
     <string name="refreshDialog_message">Refresh every hour.</string>
     <string name="refreshDialog_accept">ACCEPT</string>
     <string name="refreshDialog_cancel">CANCEL</string>
+
+    <string name="addTagDialog_title">Add a new tag</string>
+    <string name="addTagDialog_accept">ACCEPT</string>
+    <string name="addTagDialog_cancel">CANCEL</string>
 
     <string name="title_activity_tag">Tags</string>
     <string name="title_activity_tag_settings">Settings</string>

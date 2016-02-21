@@ -16,29 +16,29 @@ import com.gnr.esgi.googlenewsreader.utils.DateUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 public class ListArticlesAdapter extends BaseAdapter {
 
-    private Context mContext;
-    private List<Article> mListArticles;
-    private SparseBooleanArray mSelectedItemsIds;
+    private Context context;
+    private List<Article> articlesList;
+    private SparseBooleanArray selectedItems;
 
     public ListArticlesAdapter(Context context, List<Article> articles) {
-        this.mContext = context;
-        this.mListArticles = articles;
-        this.mSelectedItemsIds = new SparseBooleanArray();
+        this.context = context;
+        this.articlesList = articles;
+        this.selectedItems = new SparseBooleanArray();
     }
 
     @Override
     public int getCount() {
-        return mListArticles.size();
+        return articlesList.size();
     }
 
     @Override
     public Article getItem(int position) {
-        return mListArticles.get(position);
+        return articlesList.get(position);
     }
 
     @Override
@@ -47,12 +47,12 @@ public class ListArticlesAdapter extends BaseAdapter {
     }
 
     public void remove(Article article) {
-        mListArticles.remove(article);
+        articlesList.remove(article);
         notifyDataSetChanged();
     }
 
     public void removeItem(int position) {
-        mListArticles.remove(position);
+        articlesList.remove(position);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class ListArticlesAdapter extends BaseAdapter {
         final ViewHolder viewHolder;
 
         if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.item_article, parent, false);
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_article, parent, false);
             viewHolder = new ViewHolder();
             viewHolder.title = (TextView) convertView.findViewById(R.id.news_title);
             viewHolder.createdAt = (TextView) convertView.findViewById(R.id.news_date);
@@ -73,10 +73,10 @@ public class ListArticlesAdapter extends BaseAdapter {
         }
 
         //viewHolder.picture.setVisibility(View.INVISIBLE);
-        Article articleSelected = mListArticles.get(position);
+        Article articleSelected = articlesList.get(position);
         viewHolder.title.setText(articleSelected.getTitle());
         viewHolder.createdAt.setText(DateUtil.getDuration(articleSelected.getCreatedAt()));
-        viewHolder.source.setText(articleSelected.getSource().getSourceName());
+        viewHolder.source.setText(articleSelected.getSource().getName());
 
         viewHolder.title.setTypeface(
                 null,
@@ -99,7 +99,7 @@ public class ListArticlesAdapter extends BaseAdapter {
                         : Typeface.BOLD
         );
 
-        //Picasso.with(mContext).load(articleSelected.getPictureUrl()).into(viewHolder.picture);
+        //Picasso.with(context).load(articleSelected.getPictureUrl()).into(viewHolder.picture);
 
         ImageLoader.getInstance().displayImage(articleSelected.getPicture().getPictureUrl(), viewHolder.picture, new ImageLoadingListener() {
             @Override
@@ -134,35 +134,35 @@ public class ListArticlesAdapter extends BaseAdapter {
     }
 
     public void swapItems(List<Article> items) {
-        this.mListArticles = items;
+        this.articlesList = items;
         notifyDataSetChanged();
     }
 
     public void toggleSelection(int position) {
-        selectView(position, !mSelectedItemsIds.get(position));
+        selectView(position, !selectedItems.get(position));
     }
 
     public void removeSelection() {
-        mSelectedItemsIds = new SparseBooleanArray();
+        selectedItems = new SparseBooleanArray();
         notifyDataSetChanged();
     }
 
     public void selectView(int position, boolean value) {
         if(value) {
-            mSelectedItemsIds.put(position, value);
+            selectedItems.put(position, value);
         }
         else {
-            mSelectedItemsIds.delete(position);
+            selectedItems.delete(position);
         }
 
         notifyDataSetChanged();
     }
 
     public int getSelectedCount() {
-        return mSelectedItemsIds.size();
+        return selectedItems.size();
     }
 
     public SparseBooleanArray getSelectedIds() {
-        return mSelectedItemsIds;
+        return selectedItems;
     }
 }

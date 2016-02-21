@@ -1,37 +1,23 @@
 package com.gnr.esgi.googlenewsreader.models;
 
 public class Source {
-    private Integer sourceId;
-    private String sourceName;
-    private String sourceUrl;
 
-    public Source() {
-        sourceId = 0;
-        sourceName = new String();
-        sourceUrl = new String();
+    private String name;
+    private String url;
+
+    public String getName() {
+        return name;
     }
 
-    public Integer getSourceId() {
-        return sourceId;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setSourceId(Integer id) {
-        sourceId = id;
+    public String getUrl() {
+        return url;
     }
 
-    public String getSourceName() {
-        return sourceName;
-    }
-
-    public void setSourceName(String name) {
-        sourceName = name;
-    }
-
-    public String getSourceUrl() {
-        return sourceUrl;
-    }
-
-    public void setSourceUrl(String url) {
-        sourceUrl = url;
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

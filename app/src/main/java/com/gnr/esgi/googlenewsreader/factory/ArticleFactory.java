@@ -17,13 +17,24 @@ public class ArticleFactory {
         ArrayList<Article> articlesList = new ArrayList<>();
 
         try {
-            JSONObject source = new JSONObject(response);
+            JSONObject jsonObject = new JSONObject(response);
 
-            JSONArray array = source.getJSONObject("responseData").getJSONArray("results");
+            if(jsonObject.has("responseData")) {
+                JSONObject responseData = jsonObject.getJSONObject("responseData");
 
-            for (int i=0; i < array.length(); i++)
-                articlesList.add(ArticleParser.parse(new Article(array.getJSONObject(i))));
+                if(responseData.has("results")) {
+                    JSONArray results = responseData.getJSONArray("results");
 
+                    for (int i=0; i < results.length(); i++)
+                        articlesList.add(
+                                ArticleParser.parse(
+                                        new Article(
+                                                results.getJSONObject(i)
+                                        )
+                                )
+                        );
+                }
+            }
         } catch (JSONException e) {
             if(Config.DISPLAY_LOG)
                 Log.w("ArticleFactory", e);
