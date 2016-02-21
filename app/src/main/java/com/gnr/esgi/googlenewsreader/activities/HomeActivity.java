@@ -171,12 +171,7 @@ public class HomeActivity extends ActionBarActivity {
         //Clean listArticles list before refresh
         articlesArrayList.clear();
 
-        new
-            DatabaseTask(
-                articlesArrayList,
-                listArticlesAdapter
-            )
-            .execute();
+        new DatabaseTask(listArticlesAdapter).execute();
     }
 
     private void initServices() {

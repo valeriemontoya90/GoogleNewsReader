@@ -9,11 +9,9 @@ import java.util.List;
 
 public class DatabaseTask extends AsyncTask<Void, List<Article>, List<Article>>{
 
-    private List<Article> listArticles;
     private ListArticlesAdapter adapter;
 
-    public DatabaseTask(List<Article> articles, ListArticlesAdapter adapter) {
-        this.listArticles = articles;
+    public DatabaseTask(ListArticlesAdapter adapter) {
         this.adapter = adapter;
     }
 
@@ -33,12 +31,7 @@ public class DatabaseTask extends AsyncTask<Void, List<Article>, List<Article>>{
     @Override
     protected void onPostExecute(List<Article> articles) {
         if(!articles.isEmpty()) {
-            // If user selected a tag show listArticles of tag, else show all listArticles
-            listArticles.addAll(
-                    articles
-            );
-
-            adapter.notifyDataSetChanged();
+            adapter.swapItems(articles);
         }
     }
 }

@@ -134,6 +134,9 @@ public class TagSettingsActivity extends ActionBarActivity {
                         // Add new tag to database
                         GNRApplication.getDbHelper().addTag(new Tag(input.getText().toString()));
 
+                        // Update tag list with new added tag
+                        listTagsAdapter.swapItems(TagHelper.getTags());
+
                         dialog.dismiss();
                     }
                 })
