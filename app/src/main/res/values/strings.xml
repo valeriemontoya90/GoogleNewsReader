@@ -32,5 +32,6 @@
     <string name="hours_ago"> hours ago</string>
     <string name="day_ago">1 day ago</string>
     <string name="days_ago"> days ago</string>
+    <string name="articles_load_more">Load more articles ...</string>
 
 </resources>

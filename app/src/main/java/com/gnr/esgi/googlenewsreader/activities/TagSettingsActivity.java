@@ -24,9 +24,9 @@ import java.util.List;
 
 public class TagSettingsActivity extends ActionBarActivity {
 
-    List<Tag> tagsArrayList = new ArrayList<>();
-    ListView listviewTags;
-    ListTagsAdapter listTagsAdapter;
+    List<Tag> tagsList = new ArrayList<>();
+    ListView tagsListView;
+    ListTagsAdapter tagsAdapter;
     FloatingActionButton floatingActionButton;
     AppBarLayout appBar;
     Toolbar toolbar;
@@ -41,16 +41,16 @@ public class TagSettingsActivity extends ActionBarActivity {
         toolbar = (Toolbar) findViewById(R.id.tag_setting_toolbar);
         setSupportActionBar(toolbar);
 
-        listviewTags = (ListView) findViewById(R.id.tag_settings_list);
+        tagsListView = (ListView) findViewById(R.id.tag_settings_list);
 
-        listTagsAdapter = new ListTagsAdapter(getApplicationContext(), tagsArrayList);
-        listviewTags.setAdapter(listTagsAdapter);
-        listviewTags.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        tagsAdapter = new ListTagsAdapter(getApplicationContext(), tagsList);
+        tagsListView.setAdapter(tagsAdapter);
+        tagsListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 
-        listviewTags.setMultiChoiceModeListener(
+        tagsListView.setMultiChoiceModeListener(
                 new TagsMultiChoiceModeListener(
-                        listviewTags,
-                        listTagsAdapter,
+                        tagsListView,
+                        tagsAdapter,
                         toolbar,
                         appBar,
                         floatingActionButton
@@ -76,7 +76,7 @@ public class TagSettingsActivity extends ActionBarActivity {
                 List<Tag> tagsList = TagHelper.getTags();
 
                 if(s.length() > 0) {
-                    tagsArrayList.clear();
+                    TagSettingsActivity.this.tagsList.clear();
                     List<Tag> tempTags = new ArrayList<Tag>();
 
                     for (Tag tag : tagsList) {
@@ -85,13 +85,13 @@ public class TagSettingsActivity extends ActionBarActivity {
                         }
                     }
 
-                    tagsArrayList = tempTags;
+                    TagSettingsActivity.this.tagsList = tempTags;
                 }
                 else {
-                    tagsArrayList = tagsList;
+                    TagSettingsActivity.this.tagsList = tagsList;
                 }
 
-                listTagsAdapter.swapItems(tagsArrayList);
+                tagsAdapter.swapItems(TagSettingsActivity.this.tagsList);
             }
 
             @Override
@@ -104,16 +104,16 @@ public class TagSettingsActivity extends ActionBarActivity {
     protected void onStart() {
         super.onStart();
 
-        tagsArrayList = TagHelper.getTags();
+        tagsList = TagHelper.getTags();
 
-        listTagsAdapter.notifyDataSetChanged();
+        tagsAdapter.notifyDataSetChanged();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        listTagsAdapter.swapItems(tagsArrayList);
+        tagsAdapter.swapItems(tagsList);
     }
 
     public void showNewTagDialog() {
@@ -135,7 +135,7 @@ public class TagSettingsActivity extends ActionBarActivity {
                         GNRApplication.getDbHelper().addTag(new Tag(input.getText().toString()));
 
                         // Update tag list with new added tag
-                        listTagsAdapter.swapItems(TagHelper.getTags());
+                        tagsAdapter.swapItems(TagHelper.getTags());
 
                         dialog.dismiss();
                     }

@@ -3,6 +3,7 @@ package com.gnr.esgi.googlenewsreader.helper;
 import android.util.Log;
 import com.gnr.esgi.googlenewsreader.GNRApplication;
 import com.gnr.esgi.googlenewsreader.constants.APIConstants;
+import com.gnr.esgi.googlenewsreader.constants.TagConstants;
 import com.gnr.esgi.googlenewsreader.factory.ArticleFactory;
 import com.gnr.esgi.googlenewsreader.models.Article;
 import com.gnr.esgi.googlenewsreader.models.Tag;
@@ -94,16 +95,16 @@ public class ArticleHelper {
             // Clear database
             GNRApplication.getDbHelper().deleteArticles();
 
-            searchArticles();
+            searchArticles(0);
         }
         else {
             NetworkUtil.showInvalidNetworkMessage();
         }
     }
 
-    public static void moreArticles() {
+    public static void moreArticles(Integer page) {
         if(NetworkUtil.checkInternetConnection()) {
-             searchArticles();
+             searchArticles(page);
         }
         else {
             NetworkUtil.showInvalidNetworkMessage();
@@ -111,16 +112,25 @@ public class ArticleHelper {
     }
 
     // Repopulate with fresh online news
-    private static void searchArticles() {
+    private static void searchArticles(Integer page) {
         // If user has tags, search articles for those tags
         if(!TagHelper.getTags().isEmpty()) {
-            for (final Tag tag : TagHelper.getTags()) {
-                new ArticleSearchTask().execute(tag);
+            Tag currentTag = GNRApplication.getUser().getCurrentTag();
+
+            // If user wants all tags
+            if(currentTag.getName().equals(TagConstants.ALL)) {
+                for (final Tag tag : TagHelper.getTags()) {
+                    new ArticleSearchTask(page).execute(tag);
+                }
+            }
+            // Else search only selected tag
+            else {
+                new ArticleSearchTask(page).execute(currentTag);
             }
         }
         // Else get headlines articles
         else {
-            new ArticleSearchTask().execute();
+            new ArticleSearchTask(page).execute();
         }
     }
 

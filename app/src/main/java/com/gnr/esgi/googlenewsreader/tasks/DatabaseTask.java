@@ -1,5 +1,6 @@
 package com.gnr.esgi.googlenewsreader.tasks;
 
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import com.gnr.esgi.googlenewsreader.GNRApplication;
 import com.gnr.esgi.googlenewsreader.adapters.ListArticlesAdapter;
@@ -10,9 +11,11 @@ import java.util.List;
 public class DatabaseTask extends AsyncTask<Void, List<Article>, List<Article>>{
 
     private ListArticlesAdapter adapter;
+    private ProgressDialog progressDialog;
 
-    public DatabaseTask(ListArticlesAdapter adapter) {
+    public DatabaseTask(ListArticlesAdapter adapter, ProgressDialog progressDialog) {
         this.adapter = adapter;
+        this.progressDialog = progressDialog;
     }
 
     @Override
@@ -32,6 +35,12 @@ public class DatabaseTask extends AsyncTask<Void, List<Article>, List<Article>>{
     protected void onPostExecute(List<Article> articles) {
         if(!articles.isEmpty()) {
             adapter.swapItems(articles);
+        }
+
+        if(progressDialog != null) {
+            progressDialog.dismiss();
+
+            progressDialog = null;
         }
     }
 }

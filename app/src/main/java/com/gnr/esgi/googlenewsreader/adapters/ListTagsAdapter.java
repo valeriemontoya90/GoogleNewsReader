@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.gnr.esgi.googlenewsreader.R;
@@ -70,6 +71,7 @@ public class ListTagsAdapter extends BaseAdapter {
 
     private class ViewHolder {
         TextView name;
+        CheckBox checkBox;
     }
 
     public void swapItems(List<Tag> items) {

@@ -8,26 +8,32 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+
 import com.gnr.esgi.googlenewsreader.GNRApplication;
 import com.gnr.esgi.googlenewsreader.R;
 import com.gnr.esgi.googlenewsreader.adapters.ListArticlesAdapter;
 import com.gnr.esgi.googlenewsreader.constants.ArticleConstants;
 import com.gnr.esgi.googlenewsreader.helper.ArticleHelper;
 import com.gnr.esgi.googlenewsreader.listener.ArticlesMultiChoiceModeListener;
+import com.gnr.esgi.googlenewsreader.listener.CancelTaskOnListener;
 import com.gnr.esgi.googlenewsreader.models.Article;
 import com.gnr.esgi.googlenewsreader.services.RefreshService;
 import com.gnr.esgi.googlenewsreader.tasks.DatabaseTask;
@@ -37,18 +43,20 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeActivity extends ActionBarActivity {
+public class HomeActivity extends AppCompatActivity {
 
     boolean isRefresh = GNRApplication.getUser().getAutoUpdate();
-
+    Integer currentPage = 0;
     RelativeLayout relativeLayout;
-    List<Article> articlesArrayList = new ArrayList<>();
-    ListView listviewArticles;
-    ListArticlesAdapter listArticlesAdapter;
+    List<Article> articlesList = new ArrayList<>();
+    ListView articlesListView;
+    ListArticlesAdapter articlesAdapter;
     static LocalBroadcastManager broadcaster;
+    ProgressDialog progressDialog;
     AppBarLayout appBar;
     Toolbar toolbar;
     FloatingActionButton floatingActionButton;
+    Button loadMore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,30 +81,43 @@ public class HomeActivity extends ActionBarActivity {
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
         ImageLoader.getInstance().init(config);
 
-        listviewArticles = (ListView) findViewById(R.id.news_list);
+        articlesListView = (ListView) findViewById(R.id.news_list);
 
-        listArticlesAdapter = new ListArticlesAdapter(getApplicationContext(), articlesArrayList);
-        listviewArticles.setAdapter(listArticlesAdapter);
-        listviewArticles.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        loadMore = new Button(this);
+        loadMore.setText(getString(R.string.articles_load_more));
+        loadMore.setVisibility(View.GONE);
 
-        listviewArticles.setMultiChoiceModeListener(
+        loadMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadMoreArticles();
+            }
+        });
+
+        articlesListView.addFooterView(loadMore);
+
+        articlesAdapter = new ListArticlesAdapter(getApplicationContext(), articlesList);
+        articlesListView.setAdapter(articlesAdapter);
+        articlesListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+
+        articlesListView.setMultiChoiceModeListener(
                 new ArticlesMultiChoiceModeListener(
-                        listviewArticles,
-                        listArticlesAdapter,
+                        articlesListView,
+                        articlesAdapter,
                         toolbar,
                         appBar,
                         floatingActionButton
                 )
         );
 
-        listviewArticles.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        articlesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 // Update database, set read true
-                ArticleHelper.setRead(articlesArrayList.get(position));
+                ArticleHelper.setRead(articlesList.get(position));
 
-                listArticlesAdapter.notifyDataSetChanged();
+                articlesAdapter.notifyDataSetChanged();
 
                 openArticleDetail(position);
             }
@@ -123,7 +144,7 @@ public class HomeActivity extends ActionBarActivity {
     public void onResume() {
         super.onResume();
 
-        listArticlesAdapter.swapItems(articlesArrayList);
+        articlesAdapter.swapItems(articlesList);
     }
 
     @Override
@@ -136,7 +157,7 @@ public class HomeActivity extends ActionBarActivity {
     // Erase entire articles list and update it with fresh news
     public Integer refreshListArticles() {
         // Save old news to compare with latest
-        List<Article> oldArticles = articlesArrayList;
+        List<Article> oldArticles = articlesList;
 
         // First refresh articles in database getting new content from internet
         ArticleHelper.refreshArticles();
@@ -145,7 +166,7 @@ public class HomeActivity extends ActionBarActivity {
         refreshListView();
 
         return ArticleHelper.countRecentNews(
-                articlesArrayList,
+                articlesList,
                 oldArticles
         );
     }
@@ -153,25 +174,30 @@ public class HomeActivity extends ActionBarActivity {
     // Keep current articles, load new articles from internet and add them to previous articles list
     public Integer loadMoreArticles() {
         // Save old news to compare with latest
-        List<Article> oldArticles = articlesArrayList;
+        List<Article> oldArticles = articlesList;
 
-        // First refresh articles in database getting new content from internet
-        ArticleHelper.moreArticles();
+        // Update number of current page, then get news from that page without deleting previous news
+        ArticleHelper.moreArticles(++currentPage);
 
         // Then refresh view
         refreshListView();
 
         return ArticleHelper.countRecentNews(
-                articlesArrayList,
+                articlesList,
                 oldArticles
         );
     }
 
     private void refreshListView() {
         //Clean listArticles list before refresh
-        articlesArrayList.clear();
+        articlesList.clear();
 
-        new DatabaseTask(listArticlesAdapter).execute();
+        DatabaseTask task = new DatabaseTask(articlesAdapter, progressDialog);
+        //progressOperation(task);
+        task.execute();
+
+        // Show "Load more" button only if articles list already have items
+        loadMore.setVisibility(articlesList.size() > 0 ? View.GONE : View.VISIBLE);
     }
 
     private void initServices() {
@@ -202,32 +228,32 @@ public class HomeActivity extends ActionBarActivity {
 
         intent.putExtra(
                 ArticleConstants.ARTICLE_KEY_TITLE,
-                articlesArrayList.get(position).getTitle()
+                articlesList.get(position).getTitle()
         );
 
         intent.putExtra(
                 ArticleConstants.ARTICLE_KEY_CONTENT,
-                articlesArrayList.get(position).getContent()
+                articlesList.get(position).getContent()
         );
 
         intent.putExtra(
                 ArticleConstants.ARTICLE_KEY_CREATED_AT,
-                articlesArrayList.get(position).getCreatedAt()
+                articlesList.get(position).getCreatedAt()
         );
 
         intent.putExtra(
                 ArticleConstants.ARTICLE_KEY_SOURCE_NAME,
-                articlesArrayList.get(position).getSource().getName()
+                articlesList.get(position).getSource().getName()
         );
 
         intent.putExtra(
                 ArticleConstants.ARTICLE_KEY_SOURCE_URL,
-                articlesArrayList.get(position).getSource().getUrl()
+                articlesList.get(position).getSource().getUrl()
         );
 
         intent.putExtra(
                 ArticleConstants.ARTICLE_KEY_PICTURE_URL,
-                articlesArrayList.get(position).getPicture().getPictureUrl()
+                articlesList.get(position).getPicture().getPictureUrl()
         );
 
         startActivity(intent);
@@ -282,7 +308,7 @@ public class HomeActivity extends ActionBarActivity {
         if(Config.DISPLAY_LOG)
             Log.d(
                     RefreshService.TAG,
-                    "launchRefreshService startService"
+                    "Launch refresh service"
             );
 
        // If refresh service isn't already running, start it
@@ -299,7 +325,7 @@ public class HomeActivity extends ActionBarActivity {
         if (Config.DISPLAY_LOG)
             Log.d(
                     RefreshService.TAG,
-                    "launchRefreshService stopRefreshService"
+                    "Stop refresh service"
             );
 
         // If refresh service is already running, stop it
@@ -322,6 +348,23 @@ public class HomeActivity extends ActionBarActivity {
         }
 
         return false;
+    }
+
+    private void progressOperation(AsyncTask<?, ?, ?> task) {
+        progressDialog = ProgressDialog.show(
+                HomeActivity.this,
+                getString(R.string.progressDialog_title),
+                getString(R.string.progressDialog_message),
+                true,
+                true
+        );
+
+        progressDialog.setOnCancelListener(
+                new CancelTaskOnListener(
+                        task,
+                        articlesAdapter
+                )
+        );
     }
 
     public void showRefreshDialog() {
@@ -378,7 +421,6 @@ public class HomeActivity extends ActionBarActivity {
                 return true;
 
             case R.id.action_tags:
-
                 showTags();
                 return true;
 
