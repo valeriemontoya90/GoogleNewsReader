@@ -57,7 +57,6 @@ public class ListTagsAdapter extends BaseAdapter {
             convertView = LayoutInflater.from(context).inflate(R.layout.item_tag, parent, false);
             viewHolder = new ViewHolder();
             viewHolder.name = (TextView) convertView.findViewById(R.id.tag_setting_name);
-            viewHolder.checkBox = (CheckBox) convertView.findViewById(R.id.tag_setting_checkbox);
             convertView.setTag(viewHolder);
         }
         else {
@@ -72,7 +71,6 @@ public class ListTagsAdapter extends BaseAdapter {
 
     private class ViewHolder {
         TextView name;
-        CheckBox checkBox;
     }
 
     public void swapItems(List<Tag> items) {

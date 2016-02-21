@@ -135,6 +135,9 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         refreshListView();
+
+        // Set title of activity with current tag name
+        setTitle(GNRApplication.getUser().getCurrentTag().getName());
     }
 
     @Override

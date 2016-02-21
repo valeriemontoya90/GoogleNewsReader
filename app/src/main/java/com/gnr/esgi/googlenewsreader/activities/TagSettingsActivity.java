@@ -21,6 +21,8 @@ import com.gnr.esgi.googlenewsreader.adapters.ListTagsAdapter;
 import com.gnr.esgi.googlenewsreader.helper.TagHelper;
 import com.gnr.esgi.googlenewsreader.listener.TagsMultiChoiceModeListener;
 import com.gnr.esgi.googlenewsreader.models.Tag;
+import com.gnr.esgi.googlenewsreader.utils.StringUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -133,8 +135,14 @@ public class TagSettingsActivity extends AppCompatActivity {
                 .setPositiveButton(R.string.addTagDialog_accept, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // Add new tag to database
-                        GNRApplication.getDbHelper().addTag(new Tag(input.getText().toString()));
+                        // Add new tag to database (capitalize first letter)
+                        GNRApplication.getDbHelper().addTag(
+                                new Tag(
+                                        StringUtil.capitalize(
+                                                input.getText().toString()
+                                        )
+                                )
+                        );
 
                         // Update tag list with new added tag
                         tagsAdapter.swapItems(TagHelper.getTags());
