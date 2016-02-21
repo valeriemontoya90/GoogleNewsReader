@@ -49,6 +49,7 @@ public class ArticleSearchTask extends AsyncTask<Tag, Tag, Tag>{
         if(tag != null) {
             for (Article article : tag.getArticlesList()) {
                 article.setLinkTagName(tag.getName());
+
                 ArticleHelper.saveInDataBase(article);
             }
         }

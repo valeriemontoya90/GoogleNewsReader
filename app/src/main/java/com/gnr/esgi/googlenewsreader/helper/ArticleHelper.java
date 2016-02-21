@@ -17,6 +17,8 @@ import java.util.List;
 
 public class ArticleHelper {
 
+    public static final String TAG = "ArticleHelper";
+
     // Get headlines of first page
     public static String getUrl() {
         return getUrl(0);
@@ -124,7 +126,7 @@ public class ArticleHelper {
 
     public static void saveInDataBase(Article article) {
         if(Config.DISPLAY_LOG)
-            Log.d(Config.LOG_PREFIX, "saveArticleInDataBase");
+            Log.d(TAG, "saveArticleInDataBase");
 
         GNRApplication.getDbHelper().addArticle(article);
     }

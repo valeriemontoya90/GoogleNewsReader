@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -35,17 +34,12 @@ import com.gnr.esgi.googlenewsreader.tasks.DatabaseTask;
 import com.gnr.esgi.googlenewsreader.utils.Config;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-
-import java.sql.Ref;
 import java.util.ArrayList;
 import java.util.List;
 
 public class HomeActivity extends ActionBarActivity {
 
-    public static final String ACTIVATE_AUTO_REFRESH = "activate_auto_refresh";
-    public static final String DESACTIVATE_AUTO_REFRESH = "desactivate_auto_refresh";
-    public static final String DISPLAY_NEW_ARTICLES = "display_new_articles";
-    boolean isRefresh = false;
+    boolean isRefresh = GNRApplication.getUser().getAutoUpdate();
 
     RelativeLayout relativeLayout;
     List<Article> articlesArrayList = new ArrayList<>();
@@ -55,7 +49,6 @@ public class HomeActivity extends ActionBarActivity {
     AppBarLayout appBar;
     Toolbar toolbar;
     FloatingActionButton floatingActionButton;
-    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,19 +130,7 @@ public class HomeActivity extends ActionBarActivity {
     protected void onStop() {
         super.onStop();
 
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiverFromHomeActivity);
-    }
-
-    private void progressOperation(AsyncTask<?, ?, ?> task) {
-        /*progressDialog = ProgressDialog.show(HomeActivity.this,
-                "Please wait...", "Retrieving data...", true, true);
-
-        progressDialog.setOnCancelListener(
-            new CancelTaskOnListener(
-                task,
-                listArticlesAdapter
-            )
-        );*/
+        //broadcaster.unregisterReceiver(broadcastReceiverFromHomeActivity);
     }
 
     // Erase entire articles list and update it with fresh news
@@ -223,12 +204,36 @@ public class HomeActivity extends ActionBarActivity {
 
     private void openArticleDetail(int position) {
         Intent intent = new Intent(this, DetailArticleActivity.class);
-        intent.putExtra(ArticleConstants.ARTICLE_KEY_TITLE, articlesArrayList.get(position).getTitle());
-        intent.putExtra(ArticleConstants.ARTICLE_KEY_CONTENT, articlesArrayList.get(position).getContent());
-        intent.putExtra(ArticleConstants.ARTICLE_KEY_CREATED_AT, articlesArrayList.get(position).getCreatedAt());
-        intent.putExtra(ArticleConstants.ARTICLE_KEY_SOURCE_NAME, articlesArrayList.get(position).getSource().getName());
-        intent.putExtra(ArticleConstants.ARTICLE_KEY_SOURCE_URL, articlesArrayList.get(position).getSource().getUrl());
-        intent.putExtra(ArticleConstants.ARTICLE_KEY_PICTURE_URL, articlesArrayList.get(position).getPicture().getPictureUrl());
+
+        intent.putExtra(
+                ArticleConstants.ARTICLE_KEY_TITLE,
+                articlesArrayList.get(position).getTitle()
+        );
+
+        intent.putExtra(
+                ArticleConstants.ARTICLE_KEY_CONTENT,
+                articlesArrayList.get(position).getContent()
+        );
+
+        intent.putExtra(
+                ArticleConstants.ARTICLE_KEY_CREATED_AT,
+                articlesArrayList.get(position).getCreatedAt()
+        );
+
+        intent.putExtra(
+                ArticleConstants.ARTICLE_KEY_SOURCE_NAME,
+                articlesArrayList.get(position).getSource().getName()
+        );
+
+        intent.putExtra(
+                ArticleConstants.ARTICLE_KEY_SOURCE_URL,
+                articlesArrayList.get(position).getSource().getUrl()
+        );
+
+        intent.putExtra(
+                ArticleConstants.ARTICLE_KEY_PICTURE_URL,
+                articlesArrayList.get(position).getPicture().getPictureUrl()
+        );
 
         startActivity(intent);
     }
@@ -239,7 +244,10 @@ public class HomeActivity extends ActionBarActivity {
 
             if(message.equals(RefreshService.NEW_ARTICLES_ARE_READY)) {
                 if(Config.DISPLAY_LOG)
-                    Log.d(RefreshService.TAG, "receiveBroadcastMessageFromHomeActivity " + RefreshService.NEW_ARTICLES_ARE_READY);
+                    Log.d(
+                            RefreshService.TAG,
+                            "receiveBroadcastMessageFromHomeActivity " + RefreshService.NEW_ARTICLES_ARE_READY
+                    );
 
                 refreshListView();
             }
@@ -277,20 +285,36 @@ public class HomeActivity extends ActionBarActivity {
 
     public void launchRefreshService() {
         if(Config.DISPLAY_LOG)
-            Log.d(RefreshService.TAG, "launchRefreshService startService");
+            Log.d(
+                    RefreshService.TAG,
+                    "launchRefreshService startService"
+            );
 
        // If refresh service isn't already running, start it
         if (!isRefreshServiceRunning(RefreshService.class))
-            startService(new Intent(this, RefreshService.class));
+            startService(
+                    new Intent(
+                            this,
+                            RefreshService.class
+                    )
+            );
     }
 
     public void stopRefreshService() {
         if (Config.DISPLAY_LOG)
-            Log.d(RefreshService.TAG, "launchRefreshService stopRefreshService");
+            Log.d(
+                    RefreshService.TAG,
+                    "launchRefreshService stopRefreshService"
+            );
 
         // If refresh service is already running, stop it
         if (isRefreshServiceRunning(RefreshService.class))
-            stopService(new Intent(this, RefreshService.class));
+            stopService(
+                    new Intent(
+                            this,
+                            RefreshService.class
+                    )
+            );
     }
 
     public boolean isRefreshServiceRunning(Class<?> serviceClass) {
@@ -307,13 +331,14 @@ public class HomeActivity extends ActionBarActivity {
 
     public void showRefreshDialog() {
         final CharSequence[] items = { getString(R.string.refreshDialog_message) };
+        boolean[] checkedItems = new boolean[] { isRefresh };
 
         final AlertDialog.Builder builder
             = new AlertDialog
                     .Builder(this)
                     .setTitle(R.string.refreshDialog_title)
                     .setCancelable(false)
-                    .setMultiChoiceItems(items, null, new DialogInterface.OnMultiChoiceClickListener() {
+                    .setMultiChoiceItems(items, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which, boolean isChecked) {
                             isRefresh = isChecked;
@@ -342,7 +367,11 @@ public class HomeActivity extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_home, menu);
+        getMenuInflater().inflate(
+                R.menu.menu_home,
+                menu
+        );
+
         return true;
     }
 
