@@ -46,6 +46,10 @@ public class ListArticlesAdapter extends BaseAdapter {
         return position;
     }
 
+    public List<Article> getItems() {
+        return articlesList;
+    }
+
     public void remove(Article article) {
         articlesList.remove(article);
         notifyDataSetChanged();
@@ -135,6 +139,7 @@ public class ListArticlesAdapter extends BaseAdapter {
 
     public void swapItems(List<Article> items) {
         this.articlesList = items;
+
         notifyDataSetChanged();
     }
 

@@ -11,6 +11,7 @@ import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import com.gnr.esgi.googlenewsreader.GNRApplication;
 import com.gnr.esgi.googlenewsreader.R;
+import com.gnr.esgi.googlenewsreader.constants.TagConstants;
 import com.gnr.esgi.googlenewsreader.helper.TagHelper;
 import com.gnr.esgi.googlenewsreader.models.Tag;
 
@@ -32,6 +33,19 @@ public class TagActivity extends AppCompatActivity {
                 (int) (width/2),
                 1.0f
         );
+
+        Button buttonAll = new Button(this);
+        buttonAll.setText(TagConstants.ALL);
+        buttonAll.setLayoutParams(params);
+
+        buttonAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectTag(new Tag(TagConstants.ALL));
+            }
+        });
+
+        layout.addView(buttonAll);
 
         for (final Tag tag : TagHelper.getTags()) {
 

@@ -17,7 +17,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,8 +24,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
-
 import com.gnr.esgi.googlenewsreader.GNRApplication;
 import com.gnr.esgi.googlenewsreader.R;
 import com.gnr.esgi.googlenewsreader.adapters.ListArticlesAdapter;
@@ -48,7 +45,7 @@ public class HomeActivity extends AppCompatActivity {
     boolean isRefresh = GNRApplication.getUser().getAutoUpdate();
     Integer currentPage = 0;
     RelativeLayout relativeLayout;
-    List<Article> articlesList = new ArrayList<>();
+    public static List<Article> articlesList = new ArrayList<>();
     ListView articlesListView;
     ListArticlesAdapter articlesAdapter;
     static LocalBroadcastManager broadcaster;
@@ -197,7 +194,7 @@ public class HomeActivity extends AppCompatActivity {
         task.execute();
 
         // Show "Load more" button only if articles list already have items
-        loadMore.setVisibility(articlesList.size() > 0 ? View.GONE : View.VISIBLE);
+        loadMore.setVisibility(articlesList.size() > 0 ? View.VISIBLE : View.GONE);
     }
 
     private void initServices() {
