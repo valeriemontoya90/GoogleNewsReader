@@ -37,8 +37,8 @@ public class DatabaseTask extends AsyncTask<Void, List<Article>, List<Article>>{
             listArticles.addAll(
                     articles
             );
-        }
 
-        adapter.notifyDataSetChanged();
+            adapter.notifyDataSetChanged();
+        }
     }
 }

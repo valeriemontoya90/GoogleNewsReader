@@ -87,54 +87,46 @@ public class ArticleHelper {
         );
     }
 
-    public static ArticleSearchTask refreshArticles() {
+    public static void refreshArticles() {
         if(NetworkUtil.checkInternetConnection()) {
             // Clear database
             GNRApplication.getDbHelper().deleteArticles();
 
-            return searchArticles();
+            searchArticles();
         }
         else {
             NetworkUtil.showInvalidNetworkMessage();
-
-            return null;
         }
     }
 
-    public static ArticleSearchTask moreArticles() {
+    public static void moreArticles() {
         if(NetworkUtil.checkInternetConnection()) {
-             return searchArticles();
+             searchArticles();
         }
         else {
             NetworkUtil.showInvalidNetworkMessage();
-
-            return null;
         }
     }
 
     // Repopulate with fresh online news
-    private static ArticleSearchTask searchArticles() {
-        ArticleSearchTask task = new ArticleSearchTask();
-
+    private static void searchArticles() {
         // If user has tags, search articles for those tags
         if(!TagHelper.getTags().isEmpty()) {
             for (final Tag tag : TagHelper.getTags()) {
-                task.execute(tag);
+                new ArticleSearchTask().execute(tag);
             }
         }
         // Else get headlines articles
         else {
-            task.execute();
+            new ArticleSearchTask().execute();
         }
-
-        return task;
     }
 
     public static void saveInDataBase(Article article) {
         if(Config.DISPLAY_LOG)
             Log.d(Config.LOG_PREFIX, "saveArticleInDataBase");
 
-            GNRApplication.getDbHelper().addArticle(article);
+        GNRApplication.getDbHelper().addArticle(article);
     }
 
     public static void sortByDate(List<Article> articles) {

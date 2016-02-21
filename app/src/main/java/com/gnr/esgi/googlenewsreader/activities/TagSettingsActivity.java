@@ -74,13 +74,13 @@ public class TagSettingsActivity extends ActionBarActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 List<Tag> tagsList = TagHelper.getTags();
-                
+
                 if(s.length() > 0) {
                     tagsArrayList.clear();
                     List<Tag> tempTags = new ArrayList<Tag>();
 
                     for (Tag tag : tagsList) {
-                        if(tag.getName().contains(s)) {
+                        if(tag.getName().startsWith(s.toString())) {
                             tempTags.add(tag);
                         }
                     }

@@ -1,5 +1,6 @@
 package com.gnr.esgi.googlenewsreader.activities;
 
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -34,6 +35,8 @@ import com.gnr.esgi.googlenewsreader.tasks.DatabaseTask;
 import com.gnr.esgi.googlenewsreader.utils.Config;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+
+import java.sql.Ref;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -102,7 +105,7 @@ public class HomeActivity extends ActionBarActivity {
 
                 listArticlesAdapter.notifyDataSetChanged();
 
-                sendDataToDetailArticleActivity(position);
+                openArticleDetail(position);
             }
         });
     }
@@ -128,6 +131,13 @@ public class HomeActivity extends ActionBarActivity {
         super.onResume();
 
         listArticlesAdapter.swapItems(articlesArrayList);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiverFromHomeActivity);
     }
 
     private void progressOperation(AsyncTask<?, ?, ?> task) {
@@ -188,32 +198,30 @@ public class HomeActivity extends ActionBarActivity {
             .execute();
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiverFromHomeActivity);
-    }
-
     private void initServices() {
         if(GNRApplication.getUser().getAutoUpdate()) {
-            broadcaster = LocalBroadcastManager.getInstance(this);
+            if (!isRefreshServiceRunning(RefreshService.class)) {
+                broadcaster = LocalBroadcastManager.getInstance(this);
 
-            IntentFilter intentFilter = new IntentFilter();
-            intentFilter.addAction(RefreshService.NEW_ARTICLES_ARE_READY);
-            //intentFilter.addAction(DISPLAY_NEW_ARTICLES);
-            //intentFilter.addAction(ACTIVATE_AUTO_REFRESH);
-            //intentFilter.addAction(DESACTIVATE_AUTO_REFRESH);
-            LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiverFromHomeActivity, intentFilter);
+                IntentFilter intentFilter = new IntentFilter();
+                intentFilter.addAction(RefreshService.NEW_ARTICLES_ARE_READY);
 
-            launchRefreshService();
+                broadcaster.registerReceiver(
+                        broadcastReceiverFromHomeActivity,
+                        intentFilter
+                );
+
+                launchRefreshService();
+            }
         }
         else {
-            stopRefreshService();
+            if (isRefreshServiceRunning(RefreshService.class)) {
+                stopRefreshService();
+            }
         }
     }
 
-    private void sendDataToDetailArticleActivity(int position) {
+    private void openArticleDetail(int position) {
         Intent intent = new Intent(this, DetailArticleActivity.class);
         intent.putExtra(ArticleConstants.ARTICLE_KEY_TITLE, articlesArrayList.get(position).getTitle());
         intent.putExtra(ArticleConstants.ARTICLE_KEY_CONTENT, articlesArrayList.get(position).getContent());
@@ -228,34 +236,28 @@ public class HomeActivity extends ActionBarActivity {
     private final BroadcastReceiver broadcastReceiverFromHomeActivity = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String message = intent.getAction();
-            if (message.equals(RefreshService.NEW_ARTICLES_ARE_READY)) {
-                Log.d(Config.LOG_PREFIX, "receiveBroadcastMessageFromHomeActivity " + RefreshService.NEW_ARTICLES_ARE_READY);
+
+            if(message.equals(RefreshService.NEW_ARTICLES_ARE_READY)) {
+                if(Config.DISPLAY_LOG)
+                    Log.d(RefreshService.TAG, "receiveBroadcastMessageFromHomeActivity " + RefreshService.NEW_ARTICLES_ARE_READY);
+
                 refreshListView();
-            }
-            if (message.equals(DISPLAY_NEW_ARTICLES)) {
-                Log.d(Config.LOG_PREFIX, "broadcastReceiverFromHomeActivity " + DISPLAY_NEW_ARTICLES);
-                displaySnackbar(refreshListArticles());
-            }
-            if (message.equals(ACTIVATE_AUTO_REFRESH)) {
-                Log.d(Config.LOG_PREFIX, "broadcastReceiverFromHomeActivity "+ACTIVATE_AUTO_REFRESH);
-            }
-            if (message.equals(DESACTIVATE_AUTO_REFRESH)) {
-                Log.d(Config.LOG_PREFIX, "broadcastReceiverFromHomeActivity "+DESACTIVATE_AUTO_REFRESH);
             }
         }
     };
 
     private void displaySnackbar(Integer count) {
-        StringBuilder message = new StringBuilder();
-        message.append(count);
-        message.append(" ");
-        message.append(getString(R.string.snackbar_addedNews));
+        String message =
+                new StringBuilder()
+                    .append(count)
+                    .append(" ")
+                    .append(getString(R.string.snackbar_addedNews))
+                    .toString();
 
-        final Snackbar snackbar = Snackbar.make(relativeLayout, message.toString(), Snackbar.LENGTH_LONG);
+        final Snackbar snackbar = Snackbar.make(relativeLayout, message, Snackbar.LENGTH_LONG);
         snackbar.setAction(R.string.snackbar_close, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                broadcastMessageFromHomeActivity(DISPLAY_NEW_ARTICLES);
                 snackbar.dismiss();
             }
         });
@@ -273,26 +275,34 @@ public class HomeActivity extends ActionBarActivity {
         startActivity(intent);
     }
 
-    private void broadcastMessageFromHomeActivity(final String message) {
-        if(Config.DISPLAY_LOG)
-            Log.d(Config.LOG_PREFIX, "broadcastMessageFromHomeActivity " + message);
-
-        final Intent intent = new Intent(message);
-        broadcaster.sendBroadcast(intent);
-    }
-
     public void launchRefreshService() {
         if(Config.DISPLAY_LOG)
-            Log.d(Config.LOG_PREFIX, "launchRefreshService startService");
+            Log.d(RefreshService.TAG, "launchRefreshService startService");
 
-        startService(new Intent(this, RefreshService.class));
+       // If refresh service isn't already running, start it
+        if (!isRefreshServiceRunning(RefreshService.class))
+            startService(new Intent(this, RefreshService.class));
     }
 
     public void stopRefreshService() {
-        if(Config.DISPLAY_LOG)
-            Log.d(Config.LOG_PREFIX, "launchRefreshService stopRefreshService");
+        if (Config.DISPLAY_LOG)
+            Log.d(RefreshService.TAG, "launchRefreshService stopRefreshService");
 
-        stopService(new Intent(this, RefreshService.class));
+        // If refresh service is already running, stop it
+        if (isRefreshServiceRunning(RefreshService.class))
+            stopService(new Intent(this, RefreshService.class));
+    }
+
+    public boolean isRefreshServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void showRefreshDialog() {
