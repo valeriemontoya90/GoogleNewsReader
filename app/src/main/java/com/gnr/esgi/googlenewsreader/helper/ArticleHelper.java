@@ -79,14 +79,20 @@ public class ArticleHelper {
     }
 
     public static List<Article> getArticles() {
-        return ArticleFactory.fromCursor(
-                GNRApplication.getDbHelper().getArticles()
-        );
-    }
+        Tag currentTag = GNRApplication.getUser().getCurrentTag();
 
-    public static List<Article> getArticles(Tag tag) {
+        // If current tag is All, or there is no tag (default current tag is ALL)
+        // Get all articles from database
+        if (currentTag.getName().equals(TagConstants.ALL))
+            return ArticleFactory.fromCursor(
+                    GNRApplication.getDbHelper().getArticles()
+            );
+
+        // Else get articles from specified tag
         return ArticleFactory.fromCursor(
-                GNRApplication.getDbHelper().getArticles(tag.getName())
+                GNRApplication.getDbHelper().getArticles(
+                        currentTag.getName()
+                )
         );
     }
 

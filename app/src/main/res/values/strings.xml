@@ -9,6 +9,9 @@
     <string name="snackbar_close">Close</string>
     <string name="snackbar_addedNews"> news was added in total</string>
 
+    <string name="notification_title">news were added</string>
+    <string name="notification_content">Tap to read</string>
+
     <string name="no_internet">Oops no internet connection was found</string>
 
     <string name="progressDialog_title">Please wait...</string>

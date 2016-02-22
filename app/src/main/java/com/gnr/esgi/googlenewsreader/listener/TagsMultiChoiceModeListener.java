@@ -87,6 +87,9 @@ public class TagsMultiChoiceModeListener implements AbsListView.MultiChoiceModeL
 
                         // Remove selected items following the ids
                         adapter.remove(selectedItem);
+
+                        // Delete articles from this tag on database
+                        GNRApplication.getDbHelper().deleteArticles(selectedItem);
                     }
                 }
 

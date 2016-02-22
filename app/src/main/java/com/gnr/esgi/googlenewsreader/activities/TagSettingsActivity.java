@@ -10,8 +10,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -22,7 +20,6 @@ import com.gnr.esgi.googlenewsreader.helper.TagHelper;
 import com.gnr.esgi.googlenewsreader.listener.TagsMultiChoiceModeListener;
 import com.gnr.esgi.googlenewsreader.models.Tag;
 import com.gnr.esgi.googlenewsreader.utils.StringUtil;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -135,14 +132,15 @@ public class TagSettingsActivity extends AppCompatActivity {
                 .setPositiveButton(R.string.addTagDialog_accept, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // Add new tag to database (capitalize first letter)
-                        GNRApplication.getDbHelper().addTag(
-                                new Tag(
-                                        StringUtil.capitalize(
-                                                input.getText().toString()
-                                        )
+                        // Create new tage (capitalize first letter)
+                        Tag tag = new Tag(
+                                StringUtil.capitalize(
+                                        input.getText().toString()
                                 )
                         );
+
+                        // Add new tag to database
+                        GNRApplication.getDbHelper().addTag(tag);
 
                         // Update tag list with new added tag
                         tagsAdapter.swapItems(TagHelper.getTags());
@@ -160,13 +158,5 @@ public class TagSettingsActivity extends AppCompatActivity {
 
         AlertDialog dialog = builder.create();
         dialog.show();
-    }
-
-    public void checkboxHandler(View view) {
-        CheckBox checkBox = (CheckBox) view;
-
-        int position = Integer.parseInt(checkBox.getTag().toString());
-
-        //tagsList.get(position);
     }
 }

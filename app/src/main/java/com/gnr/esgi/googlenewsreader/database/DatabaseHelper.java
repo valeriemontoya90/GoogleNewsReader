@@ -164,6 +164,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         );
     }
 
+    public int deleteArticles(Tag tag) {
+        return deleteArticles(
+                DatabaseConstants.ArticleEntry.COLUMN_TAG_NAME + " LIKE ? ",
+                new String[] { tag.getName() }
+        );
+    }
+
     public int deleteArticles(String selection, String[] selectionArgs) {
         return getWritableDatabase()
                 .delete(
