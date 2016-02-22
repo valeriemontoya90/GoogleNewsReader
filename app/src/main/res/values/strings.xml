@@ -26,6 +26,7 @@
     <string name="title_activity_tag">Tags</string>
     <string name="title_activity_tag_settings">Settings</string>
 
+    <string name="detailArticle_share">Share</string>
     <string name="detailArticle_viewOnline">View online</string>
 
     <string name="hour_ago">1 hour ago</string>

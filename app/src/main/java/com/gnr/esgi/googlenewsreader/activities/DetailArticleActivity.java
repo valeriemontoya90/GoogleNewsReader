@@ -1,7 +1,9 @@
 package com.gnr.esgi.googlenewsreader.activities;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
@@ -21,6 +23,7 @@ public class DetailArticleActivity extends AppCompatActivity {
     ImageView pictureDetailArticle;
     TextView sourceDetailArticle;
     TextView viewOnlineDetailArticle;
+    TextView shareDetailArticle;
 
     private ImageLoader mImageLoader;
 
@@ -38,6 +41,7 @@ public class DetailArticleActivity extends AppCompatActivity {
         pictureDetailArticle = (ImageView) findViewById(R.id.detail_article_picture);
         sourceDetailArticle = (TextView) findViewById(R.id.detail_article_source_name);
         viewOnlineDetailArticle = (TextView) findViewById(R.id.detail_article_view_online);
+        shareDetailArticle = (TextView) findViewById(R.id.detail_article_share);
 
         mImageLoader = ImageLoader.getInstance();
 
@@ -45,6 +49,13 @@ public class DetailArticleActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 showOnline();
+            }
+        });
+
+        shareDetailArticle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shareArticle();
             }
         });
     }
@@ -85,5 +96,22 @@ public class DetailArticleActivity extends AppCompatActivity {
         Intent webViewIntent = new Intent(this, WebViewActivity.class);
         webViewIntent.putExtra(ArticleConstants.ARTICLE_KEY_SOURCE_URL, sourceUrl);
         startActivity(webViewIntent);
+    }
+
+    public void shareArticle() {
+        Intent intent = getIntent();
+        String title = intent.getStringExtra(ArticleConstants.ARTICLE_KEY_TITLE);
+
+        String content = new StringBuilder()
+            .append(title)
+            .append("\n\n")
+                .append(intent.getStringExtra(ArticleConstants.ARTICLE_KEY_CONTENT))
+            .toString();
+
+        Intent share = new Intent(Intent.ACTION_SEND);
+        share.setType("text/plain");
+        share.putExtra(Intent.EXTRA_TEXT, content);
+
+        startActivity(Intent.createChooser(share, title));
     }
 }
