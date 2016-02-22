@@ -118,7 +118,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 null,
                 DatabaseConstants.ArticleEntry.COLUMN_TAG_NAME + " LIKE ? "
                         + " AND " + DatabaseConstants.ArticleEntry.COLUMN_DELETED + " = 0 ",
-                new String[]{ tagName },
+                new String[]{tagName},
                 null,
                 null,
                 null
@@ -181,6 +181,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     //endregion
+
+    // Erase all articles and tags
+    public void purge() {
+        deleteArticles(
+                null,
+                null
+        );
+
+        deleteTags(
+                null,
+                null
+        );
+    }
 
     //region Tags
 

@@ -15,7 +15,7 @@
         android:choiceMode="multipleChoice"
         android:divider="#c7c7c7"
         android:dividerHeight="1dp"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
 </RelativeLayout>
