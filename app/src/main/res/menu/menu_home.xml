@@ -1,4 +1,5 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".HomeActivity">
@@ -7,21 +8,29 @@
         android:id="@+id/action_refresh"
         android:title="@string/toolbar_refresh"
         android:icon="@android:drawable/ic_menu_recent_history"
-        android:orderInCategory="100"
+        android:orderInCategory="1"
         app:showAsAction="ifRoom" />
 
-    <item
+    <!--<item
         android:id="@+id/action_tags"
         android:title="@string/toolbar_tags"
         android:icon="@android:drawable/ic_menu_sort_by_size"
-        android:orderInCategory="100"
-        app:showAsAction="ifRoom" />
+        android:orderInCategory="2"
+        app:showAsAction="ifRoom" />-->
 
     <item
         android:id="@+id/action_search"
-        android:title="@string/toolbar_search"
+        android:title="@string/toolbar_tags_settings"
         android:icon="@android:drawable/ic_search_category_default"
-        android:orderInCategory="100"
+        android:orderInCategory="3"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_settings"
+        android:showAsAction="never"
+        android:orderInCategory="4"
+        android:title="@string/toolbar_settings"
+        tools:ignore="AppCompatResource">
+    </item>
 
 </menu>

@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.gnr.esgi.googlenewsreader"
-        minSdkVersion 9
+        minSdkVersion 11
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -22,7 +22,8 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
+    compile files('libs/gson-2.3.1.jar', 'libs/picasso-2.5.2.jar')
     compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'com.android.support:design:22.2.1'
-    compile files('libs/gson-2.3.1.jar')
+    compile 'com.android.support:support-v4:22.2.1'
 }
