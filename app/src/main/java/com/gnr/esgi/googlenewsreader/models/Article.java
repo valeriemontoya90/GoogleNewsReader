@@ -13,6 +13,7 @@ public class Article {
     private Long articleId;
     private Boolean read;
     private Boolean deleted;
+    private Boolean bookmarked;
 
     private String title;
     private String content;
@@ -71,6 +72,7 @@ public class Article {
 
             read = false;
             deleted = false;
+            bookmarked = false;
         }
         catch (JSONException e) {
             if(Config.DISPLAY_LOG)
@@ -89,7 +91,7 @@ public class Article {
         );
 
         title = cursor.getString(
-                    cursor.getColumnIndex(
+                cursor.getColumnIndex(
                         DatabaseConstants.ArticleEntry.COLUMN_TITLE
                 )
         );
@@ -138,8 +140,14 @@ public class Article {
         ) == 1;
 
         deleted = cursor.getInt(
-                    cursor.getColumnIndex(
+                cursor.getColumnIndex(
                         DatabaseConstants.ArticleEntry.COLUMN_DELETED
+                )
+        ) == 1;
+
+        bookmarked = cursor.getInt(
+                cursor.getColumnIndex(
+                        DatabaseConstants.ArticleEntry.COLUMN_BOOKMARKED
                 )
         ) == 1;
 
@@ -220,5 +228,13 @@ public class Article {
 
     public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public Boolean getBookmarked() {
+        return bookmarked;
+    }
+
+    public void setBookmarked(Boolean bookmarked) {
+        this.bookmarked = bookmarked;
     }
 }

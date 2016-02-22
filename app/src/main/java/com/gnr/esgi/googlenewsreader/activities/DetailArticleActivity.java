@@ -9,8 +9,11 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.gnr.esgi.googlenewsreader.GNRApplication;
 import com.gnr.esgi.googlenewsreader.R;
 import com.gnr.esgi.googlenewsreader.constants.ArticleConstants;
+import com.gnr.esgi.googlenewsreader.models.Article;
 import com.gnr.esgi.googlenewsreader.utils.Config;
 import com.gnr.esgi.googlenewsreader.utils.DateUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -25,6 +28,7 @@ public class DetailArticleActivity extends AppCompatActivity {
     TextView sourceDetailArticle;
     TextView viewOnlineDetailArticle;
     TextView shareDetailArticle;
+    TextView bookmarkDetailArticle;
 
     private ImageLoader mImageLoader;
 
@@ -47,6 +51,7 @@ public class DetailArticleActivity extends AppCompatActivity {
         sourceDetailArticle = (TextView) findViewById(R.id.detail_article_source_name);
         viewOnlineDetailArticle = (TextView) findViewById(R.id.detail_article_view_online);
         shareDetailArticle = (TextView) findViewById(R.id.detail_article_share);
+        bookmarkDetailArticle = (TextView) findViewById(R.id.detail_article_bookmark);
 
         mImageLoader = ImageLoader.getInstance();
 
@@ -61,6 +66,17 @@ public class DetailArticleActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 shareArticle();
+            }
+        });
+
+        bookmarkDetailArticle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Article article = HomeActivity.articlesList.
+
+                // Update database, set deleted true
+                article.setBookmarked(false);
+                GNRApplication.getDbHelper().updateArticle(article);
             }
         });
     }
