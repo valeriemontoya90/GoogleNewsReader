@@ -53,7 +53,7 @@ public class HomeActivity extends AppCompatActivity {
     AppBarLayout appBar;
     Toolbar toolbar;
     FloatingActionButton floatingActionButton;
-    Button loadMore;
+    public static Button loadMore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -203,9 +203,6 @@ public class HomeActivity extends AppCompatActivity {
         DatabaseTask task = new DatabaseTask(articlesAdapter, progressDialog);
         //progressOperation(task);
         task.execute();
-
-        // Show "Load more" button only if articles list already have items
-        loadMore.setVisibility(articlesList.size() > 0 ? View.VISIBLE : View.GONE);
     }
 
     private void initServices() {

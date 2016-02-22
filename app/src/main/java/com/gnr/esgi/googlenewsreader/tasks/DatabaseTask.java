@@ -2,6 +2,8 @@ package com.gnr.esgi.googlenewsreader.tasks;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
+import android.view.View;
+
 import com.gnr.esgi.googlenewsreader.GNRApplication;
 import com.gnr.esgi.googlenewsreader.activities.HomeActivity;
 import com.gnr.esgi.googlenewsreader.adapters.ListArticlesAdapter;
@@ -34,7 +36,15 @@ public class DatabaseTask extends AsyncTask<Void, List<Article>, List<Article>>{
     protected void onPostExecute(List<Article> articles) {
         if(!articles.isEmpty()) {
             HomeActivity.articlesList = articles;
+            
             adapter.swapItems(articles);
+
+            // Show "Load more" button only if articles list already have items
+            HomeActivity.loadMore.setVisibility(
+                    articles.size() > 0
+                            ? View.VISIBLE
+                            : View.GONE
+            );
         }
 
         if(progressDialog != null) {
