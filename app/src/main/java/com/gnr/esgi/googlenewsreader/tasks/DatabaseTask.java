@@ -23,11 +23,7 @@ public class DatabaseTask extends AsyncTask<Void, List<Article>, List<Article>>{
 
     @Override
     protected List<Article> doInBackground(Void... params) {
-        // If user selected a tag show listArticles of tag, else show all listArticles
-        List<Article> articles =
-                GNRApplication.getUser().getCurrentTag().getName().equals(TagConstants.ALL)
-                        ? ArticleHelper.getArticles()
-                        : ArticleHelper.getArticles(GNRApplication.getUser().getCurrentTag());
+        List<Article> articles = ArticleHelper.getArticles();
 
         ArticleHelper.sortByDate(articles);
 

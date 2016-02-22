@@ -58,6 +58,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(Config.getTheme());
         setContentView(R.layout.activity_home);
 
         relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout);
@@ -72,6 +73,13 @@ public class HomeActivity extends AppCompatActivity {
                 displaySnackbar(
                         refreshListArticles()
                 );
+            }
+        });
+
+        toolbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTags();
             }
         });
 
@@ -295,13 +303,30 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void showTagSettings() {
-        Intent intent = new Intent(this, TagSettingsActivity.class);
-        startActivity(intent);
+        startActivity(
+                new Intent(
+                        this,
+                        TagSettingsActivity.class
+                )
+        );
     }
 
     public void showTags() {
-        Intent intent = new Intent(this, TagActivity.class);
-        startActivity(intent);
+        startActivity(
+                new Intent(
+                        this,
+                        TagActivity.class
+                )
+        );
+    }
+
+    public void showSettings() {
+        startActivity(
+                new Intent(
+                        this,
+                        SettingsActivity.class
+                )
+        );
     }
 
     public void launchRefreshService() {
@@ -420,12 +445,16 @@ public class HomeActivity extends AppCompatActivity {
                 showRefreshDialog();
                 return true;
 
-            case R.id.action_tags:
+            /*case R.id.action_tags:
                 showTags();
-                return true;
+                return true;*/
 
             case R.id.action_search:
                 showTagSettings();
+                return true;
+
+            case R.id.action_settings:
+                showSettings();
                 return true;
 
             default:

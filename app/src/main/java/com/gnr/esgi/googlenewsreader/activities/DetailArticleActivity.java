@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.gnr.esgi.googlenewsreader.R;
 import com.gnr.esgi.googlenewsreader.constants.ArticleConstants;
+import com.gnr.esgi.googlenewsreader.utils.Config;
 import com.gnr.esgi.googlenewsreader.utils.DateUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.squareup.picasso.Picasso;
@@ -30,9 +31,13 @@ public class DetailArticleActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //Remove notification bar
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        super.onCreate(savedInstanceState);
+        this.getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN
+        );
 
+        super.onCreate(savedInstanceState);
+        setTheme(Config.getTheme());
         setContentView(R.layout.activity_detail_article);
 
         titleDetailArticle = (TextView) findViewById(R.id.detail_article_title);

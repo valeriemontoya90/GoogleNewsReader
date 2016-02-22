@@ -14,12 +14,14 @@ import com.gnr.esgi.googlenewsreader.R;
 import com.gnr.esgi.googlenewsreader.constants.TagConstants;
 import com.gnr.esgi.googlenewsreader.helper.TagHelper;
 import com.gnr.esgi.googlenewsreader.models.Tag;
+import com.gnr.esgi.googlenewsreader.utils.Config;
 
 public class TagActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(Config.getTheme());
         setContentView(R.layout.activity_tag);
 
         DisplayMetrics metrics = new DisplayMetrics();

@@ -25,7 +25,7 @@
 
             <TextView
                 android:id="@+id/detail_article_title"
-                android:textColor="#040404"
+                android:textColor="#3d3d3d"
                 android:typeface="sans"
                 android:textSize="19dip"
                 android:textStyle="bold"
@@ -48,7 +48,7 @@
 
                     <TextView
                         android:id="@+id/detail_article_source_name"
-                        android:textColor="#353434"
+                        android:textColor="#717171"
                         android:typeface="sans"
                         android:textSize="14dip"
                         android:textStyle="bold"
@@ -59,7 +59,7 @@
 
                     <TextView
                         android:id="@+id/detail_article_created_at"
-                        android:textColor="#353434"
+                        android:textColor="#717171"
                         android:typeface="sans"
                         android:textSize="12dip"
                         android:textStyle="bold"

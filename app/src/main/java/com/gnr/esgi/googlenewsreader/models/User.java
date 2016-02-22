@@ -49,4 +49,21 @@ public class User {
 
         editor.commit();
     }
+
+    public Boolean getNightMode() {
+        return settings.getBoolean(
+                        "nightMode",
+                        false
+        );
+    }
+
+    public void setNightMode(Boolean nightMode) {
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean(
+                "nightMode",
+                nightMode
+        );
+
+        editor.commit();
+    }
 }

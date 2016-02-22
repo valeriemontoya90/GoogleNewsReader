@@ -1,5 +1,8 @@
 package com.gnr.esgi.googlenewsreader.utils;
 
+import com.gnr.esgi.googlenewsreader.GNRApplication;
+import com.gnr.esgi.googlenewsreader.R;
+
 public class Config {
 
     public static final boolean DISPLAY_LOG = true;
@@ -20,4 +23,10 @@ public class Config {
 
     // Headlines topic
     public static final String API_TOPIC = "h";
+
+    public static Integer getTheme() {
+        return GNRApplication.getUser().getNightMode()
+                ? R.style.AppTheme_Dark
+                : R.style.AppTheme_Light;
+    }
 }

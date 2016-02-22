@@ -19,6 +19,7 @@ import com.gnr.esgi.googlenewsreader.adapters.ListTagsAdapter;
 import com.gnr.esgi.googlenewsreader.helper.TagHelper;
 import com.gnr.esgi.googlenewsreader.listener.TagsMultiChoiceModeListener;
 import com.gnr.esgi.googlenewsreader.models.Tag;
+import com.gnr.esgi.googlenewsreader.utils.Config;
 import com.gnr.esgi.googlenewsreader.utils.StringUtil;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,7 @@ public class TagSettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(Config.getTheme());
         setContentView(R.layout.activity_tag_settings);
 
         appBar = (AppBarLayout) findViewById(R.id.tag_settings_app_bar);

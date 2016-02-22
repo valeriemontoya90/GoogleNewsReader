@@ -9,7 +9,7 @@
 
     <TextView
         android:id="@+id/tag_setting_name"
-        android:textColor="#040404"
+        android:textColor="#3d3d3d"
         android:typeface="sans"
         android:textSize="15dip"
         android:textStyle="bold"
