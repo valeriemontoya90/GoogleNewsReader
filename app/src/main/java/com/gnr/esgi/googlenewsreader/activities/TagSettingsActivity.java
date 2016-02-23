@@ -48,7 +48,11 @@ public class TagSettingsActivity extends AppCompatActivity {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showNewTagDialog();
+                showNewTagDialog(
+                        searchTag.getText().length() > 0
+                            ? searchTag.getText().toString()
+                            : null
+                );
             }
         });
 
@@ -83,7 +87,8 @@ public class TagSettingsActivity extends AppCompatActivity {
                     List<Tag> tempTags = new ArrayList<Tag>();
 
                     for (Tag tag : tagsList) {
-                        if(tag.getName().startsWith(s.toString())) {
+                        // Compare existing tags with search (ignore capitalization)
+                        if(tag.getName().startsWith(StringUtil.capitalize(s.toString()))) {
                             tempTags.add(tag);
                         }
                     }
@@ -119,8 +124,12 @@ public class TagSettingsActivity extends AppCompatActivity {
         tagsAdapter.swapItems(tagsList);
     }
 
-    public void showNewTagDialog() {
+    public void showNewTagDialog(String tagName) {
         final EditText input = new EditText(TagSettingsActivity.this);
+
+        if (tagName != null)
+            input.setText(tagName);
+
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT);
