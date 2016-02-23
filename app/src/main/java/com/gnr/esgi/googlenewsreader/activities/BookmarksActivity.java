@@ -29,7 +29,6 @@ public class BookmarksActivity extends AppCompatActivity {
 
         bookmarksAdapter = new ListArticlesAdapter(getApplicationContext(), bookmarksList);
         bookmarksListView.setAdapter(bookmarksAdapter);
-        bookmarksListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 
         bookmarksListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
