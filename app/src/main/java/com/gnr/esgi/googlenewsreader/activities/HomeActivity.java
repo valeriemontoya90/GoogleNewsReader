@@ -135,7 +135,7 @@ public class HomeActivity extends AppCompatActivity {
 
         initServices();
 
-        // At application start, if database contains no articles, load from internet
+        // At application start, if database contains no articles, load fromCursor internet
         if(ArticleHelper.getArticles().isEmpty()) {
             displaySnackbar(
                     refreshListArticles()
@@ -167,7 +167,7 @@ public class HomeActivity extends AppCompatActivity {
         // Save old news to compare with latest
         List<Article> oldArticles = articlesList;
 
-        // First refresh articles in database getting new content from internet
+        // First refresh articles in database getting new content fromCursor internet
         ArticleHelper.refreshArticles();
 
         // Then refresh view
@@ -232,33 +232,8 @@ public class HomeActivity extends AppCompatActivity {
         Intent intent = new Intent(this, DetailArticleActivity.class);
 
         intent.putExtra(
-                ArticleConstants.ARTICLE_KEY_TITLE,
-                articlesList.get(position).getTitle()
-        );
-
-        intent.putExtra(
-                ArticleConstants.ARTICLE_KEY_CONTENT,
-                articlesList.get(position).getContent()
-        );
-
-        intent.putExtra(
-                ArticleConstants.ARTICLE_KEY_CREATED_AT,
-                articlesList.get(position).getCreatedAt()
-        );
-
-        intent.putExtra(
-                ArticleConstants.ARTICLE_KEY_SOURCE_NAME,
-                articlesList.get(position).getSource().getName()
-        );
-
-        intent.putExtra(
-                ArticleConstants.ARTICLE_KEY_SOURCE_URL,
-                articlesList.get(position).getSource().getUrl()
-        );
-
-        intent.putExtra(
-                ArticleConstants.ARTICLE_KEY_PICTURE_URL,
-                articlesList.get(position).getPicture().getPictureUrl()
+                ArticleConstants.ARTICLE_KEY_ID,
+                articlesList.get(position).getArticleId()
         );
 
         startActivity(intent);

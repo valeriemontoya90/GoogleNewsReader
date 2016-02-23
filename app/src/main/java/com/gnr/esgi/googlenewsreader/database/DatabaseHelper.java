@@ -37,6 +37,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         DatabaseConstants.ArticleEntry.COLUMN_PICTURE_URL + DatabaseConstants.TEXT_TYPE + DatabaseConstants.COMMA_SEPARATOR +
                         DatabaseConstants.ArticleEntry.COLUMN_READ + DatabaseConstants.INTEGER_TYPE + DatabaseConstants.COMMA_SEPARATOR +
                         DatabaseConstants.ArticleEntry.COLUMN_DELETED + DatabaseConstants.INTEGER_TYPE + DatabaseConstants.COMMA_SEPARATOR +
+                        DatabaseConstants.ArticleEntry.COLUMN_BOOKMARKED + DatabaseConstants.INTEGER_TYPE + DatabaseConstants.COMMA_SEPARATOR +
                         DatabaseConstants.ArticleEntry.COLUMN_TAG_NAME + DatabaseConstants.TEXT_TYPE + ")";
 
         sqLiteDatabase.execSQL(CREATE_TABLE_ARTICLES);
@@ -63,7 +64,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //region Articles
 
     public long addArticle(Article article) {
-        // Check first if already article with same title from same source exists
+        // Check first if already article with same title fromCursor same source exists
         // in database, else insert
         return getArticles(
                 article.getTitle(),
@@ -104,8 +105,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return getArticles(
                 null,
                 DatabaseConstants.ArticleEntry.COLUMN_TITLE + " LIKE ? "
-                    + " AND " + DatabaseConstants.ArticleEntry.COLUMN_SOURCE_NAME + " LIKE ? ",
-                new String[]{ title, sourceName },
+                        + " AND " + DatabaseConstants.ArticleEntry.COLUMN_SOURCE_NAME + " LIKE ? ",
+                new String[]{title, sourceName},
                 null,
                 null,
                 null
@@ -119,6 +120,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 DatabaseConstants.ArticleEntry.COLUMN_TAG_NAME + " LIKE ? "
                         + " AND " + DatabaseConstants.ArticleEntry.COLUMN_DELETED + " = 0 ",
                 new String[]{tagName},
+                null,
+                null,
+                null
+        );
+    }
+
+    public Cursor getBookmarkedArticles() {
+        // Get only articles not manually deleted by user
+        return getArticles(
+                null,
+                DatabaseConstants.ArticleEntry.COLUMN_DELETED + " = 0 "
+                        + " AND " + DatabaseConstants.ArticleEntry.COLUMN_BOOKMARKED + " = 1 ",
+                null,
                 null,
                 null,
                 null
@@ -148,11 +162,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 );
     }
 
+    public int bookmarkArticle(Article article) {
+        ContentValues values = new ContentValues();
+        values.put(DatabaseConstants.ArticleEntry.COLUMN_BOOKMARKED, article.getBookmarked() ? 1 : 0);
+
+        return getWritableDatabase()
+                .update(
+                        DatabaseConstants.ArticleEntry.TABLE_NAME,
+                        values,
+                        DatabaseConstants.ArticleEntry._ID + " = ?",
+                        new String[] { String.valueOf(article.getArticleId()) }
+                );
+    }
+
     public int deleteArticles() {
         // Never delete articles which were manually deleted by users
+        // And bookmarked articles
         // Will be useful to retrieve only news not already deleted
         return deleteArticles(
-                DatabaseConstants.ArticleEntry.COLUMN_DELETED + " = 0 ",
+                DatabaseConstants.ArticleEntry.COLUMN_DELETED + " = 0 "
+                    + " AND " + DatabaseConstants.ArticleEntry.COLUMN_BOOKMARKED + " = 0 ",
                 null
         );
     }
@@ -298,6 +327,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(DatabaseConstants.ArticleEntry.COLUMN_PICTURE_URL, article.getPicture().getPictureUrl());
         values.put(DatabaseConstants.ArticleEntry.COLUMN_READ, article.getRead() ? 1 : 0);
         values.put(DatabaseConstants.ArticleEntry.COLUMN_DELETED, article.getDeleted() ? 1 : 0);
+        values.put(DatabaseConstants.ArticleEntry.COLUMN_BOOKMARKED, article.getBookmarked() ? 1 : 0);
         values.put(DatabaseConstants.ArticleEntry.COLUMN_TAG_NAME, article.getLinkTagName());
 
         Log.d("DB COLUMN_TITLE", values.get(DatabaseConstants.ArticleEntry.COLUMN_TITLE).toString());

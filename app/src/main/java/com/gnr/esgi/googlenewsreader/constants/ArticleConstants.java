@@ -12,4 +12,7 @@ public class ArticleConstants {
     public static final String ARTICLE_KEY_SOURCE_URL = "unescapedUrl";
     public static final String ARTICLE_KEY_PICTURE = "image";
     public static final String ARTICLE_KEY_PICTURE_URL = "url";
+    public static final String ARTICLE_KEY_READ = "read";
+    public static final String ARTICLE_KEY_DELETED = "deleted";
+    public static final String ARTICLE_KEY_BOOKMARKED = "bookmarked";
 }

@@ -36,12 +36,12 @@ public class ArticleHelper {
         return builder.getUrl();
     }
 
-    // Get news from tag of first page
+    // Get news fromCursor tag of first page
     public static String getUrl(String tagName) {
         return getUrl(tagName, 0);
     }
 
-    // Get news from tag of specific page
+    // Get news fromCursor tag of specific page
     public static String getUrl(String tagName, Integer page) {
         URLBuilder builder = buildUrl();
 
@@ -78,18 +78,32 @@ public class ArticleHelper {
         GNRApplication.getDbHelper().updateArticle(article);
     }
 
+    public static Article getArticle(Long articleId) {
+        return ArticleFactory.fromCursor(
+                GNRApplication.getDbHelper().getArticle(
+                        articleId
+                )
+        );
+    }
+
+    public static List<Article> getBookmarkedArticles() {
+        return ArticleFactory.fromCursorToList(
+                GNRApplication.getDbHelper().getBookmarkedArticles()
+        );
+    }
+
     public static List<Article> getArticles() {
         Tag currentTag = GNRApplication.getUser().getCurrentTag();
 
         // If current tag is All, or there is no tag (default current tag is ALL)
-        // Get all articles from database
+        // Get all articles fromCursor database
         if (currentTag.getName().equals(TagConstants.ALL))
-            return ArticleFactory.fromCursor(
+            return ArticleFactory.fromCursorToList(
                     GNRApplication.getDbHelper().getArticles()
             );
 
-        // Else get articles from specified tag
-        return ArticleFactory.fromCursor(
+        // Else get articles fromCursor specified tag
+        return ArticleFactory.fromCursorToList(
                 GNRApplication.getDbHelper().getArticles(
                         currentTag.getName()
                 )

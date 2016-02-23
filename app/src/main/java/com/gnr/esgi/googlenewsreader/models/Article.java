@@ -22,6 +22,9 @@ public class Article {
     private Source source;
     private String linkTagName;
 
+    public Article() {
+    }
+
     public Article(JSONObject jsonArticle) {
         try {
             if(jsonArticle.has(ArticleConstants.ARTICLE_KEY_TITLE))

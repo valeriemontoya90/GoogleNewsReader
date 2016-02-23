@@ -51,7 +51,7 @@ public class TagsMultiChoiceModeListener implements AbsListView.MultiChoiceModeL
         // Set the CAB title according to total checked items
         mode.setTitle(message);
 
-        // Calls toggleSelection method from adapter Class
+        // Calls toggleSelection method fromCursor adapter Class
         adapter.toggleSelection(position);
     }
 
@@ -74,7 +74,7 @@ public class TagsMultiChoiceModeListener implements AbsListView.MultiChoiceModeL
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_tag_delete:
-                // Calls getSelectedIds method from ListViewAdapter Class
+                // Calls getSelectedIds method fromCursor ListViewAdapter Class
                 SparseBooleanArray selected = adapter.getSelectedIds();
 
                 // Captures all selected ids with a loop
@@ -88,7 +88,7 @@ public class TagsMultiChoiceModeListener implements AbsListView.MultiChoiceModeL
                         // Remove selected items following the ids
                         adapter.remove(selectedItem);
 
-                        // Delete articles from this tag on database
+                        // Delete articles fromCursor this tag on database
                         GNRApplication.getDbHelper().deleteArticles(selectedItem);
                     }
                 }

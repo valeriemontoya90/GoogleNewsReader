@@ -42,7 +42,7 @@ public class BookmarksMultiChoiceModeListener implements AbsListView.MultiChoice
         // Set the CAB title according to total checked items
         mode.setTitle(message);
 
-        // Calls toggleSelection method from adapter Class
+        // Calls toggleSelection method fromCursor adapter Class
         adapter.toggleSelection(position);
     }
 
@@ -60,7 +60,7 @@ public class BookmarksMultiChoiceModeListener implements AbsListView.MultiChoice
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_article_delete:
-                // Calls getSelectedIds method from ListViewAdapter Class
+                // Calls getSelectedIds method fromCursor ListViewAdapter Class
                 SparseBooleanArray selected = adapter.getSelectedIds();
 
                 // Captures all selected ids with a loop
