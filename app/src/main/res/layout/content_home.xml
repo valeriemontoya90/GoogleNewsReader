@@ -14,7 +14,7 @@
         android:id="@+id/news_list"
         android:choiceMode="multipleChoice"
         android:divider="@color/dim_foreground_disabled_material_dark"
-        android:dividerHeight="5dp"
+        android:dividerHeight="4dp"
         android:padding="5dip"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />

@@ -11,6 +11,7 @@ import com.gnr.esgi.googlenewsreader.adapters.ListArticlesAdapter;
 import com.gnr.esgi.googlenewsreader.constants.ArticleConstants;
 import com.gnr.esgi.googlenewsreader.helper.ArticleHelper;
 import com.gnr.esgi.googlenewsreader.models.Article;
+import com.gnr.esgi.googlenewsreader.utils.Config;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class BookmarksActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(Config.getTheme());
         setContentView(R.layout.activity_bookmarks);
 
         bookmarksListView = (ListView) findViewById(R.id.bookmarks_list);
