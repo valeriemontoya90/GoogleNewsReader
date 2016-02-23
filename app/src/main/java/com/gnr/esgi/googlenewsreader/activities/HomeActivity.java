@@ -326,6 +326,15 @@ public class HomeActivity extends AppCompatActivity {
         );
     }
 
+    public void showBookmarks() {
+        startActivity(
+                new Intent(
+                        this,
+                        BookmarksActivity.class
+                )
+        );
+    }
+
     public void launchRefreshService() {
         if(Config.DISPLAY_LOG)
             Log.d(
@@ -452,6 +461,10 @@ public class HomeActivity extends AppCompatActivity {
 
             case R.id.action_settings:
                 showSettings();
+                return true;
+
+            case R.id.action_bookmarks:
+                showBookmarks();
                 return true;
 
             default:

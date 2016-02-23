@@ -25,6 +25,7 @@ public class DatabaseConstants {
         public static final String COLUMN_TAG_NAME = "article_tag_name";
         public static final String COLUMN_READ = "article_read";
         public static final String COLUMN_DELETED = "article_deleted";
+        public static final String COLUMN_BOOKMARKED = "article_bookmarked";
     }
 
     public abstract class TagEntry implements BaseColumns {

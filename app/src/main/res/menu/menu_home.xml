@@ -33,4 +33,12 @@
         tools:ignore="AppCompatResource">
     </item>
 
+    <item
+        android:id="@+id/action_bookmarks"
+        android:showAsAction="never"
+        android:orderInCategory="4"
+        android:title="@string/toolbar_bookmarks"
+        tools:ignore="AppCompatResource">
+    </item>
+
 </menu>
