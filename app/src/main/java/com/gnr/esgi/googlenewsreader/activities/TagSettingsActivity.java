@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -50,8 +51,8 @@ public class TagSettingsActivity extends AppCompatActivity {
             public void onClick(View view) {
                 showNewTagDialog(
                         searchTag.getText().length() > 0
-                            ? searchTag.getText().toString()
-                            : null
+                                ? searchTag.getText().toString()
+                                : null
                 );
             }
         });
@@ -71,6 +72,17 @@ public class TagSettingsActivity extends AppCompatActivity {
                         floatingActionButton
                 )
         );
+
+        tagsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                selectTag(
+                        tagsList.get(
+                                position
+                        )
+                );
+            }
+        });
 
         searchTag = (EditText) findViewById(R.id.tag_setting_search);
         searchTag.addTextChangedListener(new TextWatcher() {
@@ -169,5 +181,11 @@ public class TagSettingsActivity extends AppCompatActivity {
 
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    public void selectTag(Tag tag) {
+        GNRApplication.getUser().setCurrentTag(tag);
+
+        finish();
     }
 }

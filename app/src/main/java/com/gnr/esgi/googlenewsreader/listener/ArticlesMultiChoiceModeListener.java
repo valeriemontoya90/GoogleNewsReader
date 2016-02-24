@@ -59,7 +59,7 @@ public class ArticlesMultiChoiceModeListener implements AbsListView.MultiChoiceM
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
         mode.getMenuInflater().inflate(R.menu.activity_home, menu);
         toolbar.setVisibility(View.GONE);
-        appBar.setVisibility(View.GONE);
+        appBar.setVisibility(View.VISIBLE);
         floatingActionButton.setVisibility(View.GONE);
 
         return true;
@@ -83,7 +83,7 @@ public class ArticlesMultiChoiceModeListener implements AbsListView.MultiChoiceM
                         Article selectedItem = adapter.getItem(selected.keyAt(i));
 
                         // Update database, set deleted true
-                        selectedItem.setBookmarked(false);
+                        selectedItem.setDeleted(true);
                         GNRApplication.getDbHelper().updateArticle(selectedItem);
 
                         // Remove selected items following the ids
