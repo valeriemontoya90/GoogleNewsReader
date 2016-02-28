@@ -5,11 +5,11 @@ import com.gnr.esgi.googlenewsreader.GNRApplication;
 import com.gnr.esgi.googlenewsreader.constants.TagConstants;
 import com.gnr.esgi.googlenewsreader.utils.Config;
 
-public class User {
+public class SessionManager {
 
     private SharedPreferences settings;
 
-    public User() {
+    public SessionManager() {
         settings = GNRApplication
                     .getAppContext()
                     .getSharedPreferences(

@@ -3,7 +3,7 @@ package com.gnr.esgi.googlenewsreader;
 import android.app.Application;
 import android.content.Context;
 import com.gnr.esgi.googlenewsreader.database.DatabaseHelper;
-import com.gnr.esgi.googlenewsreader.models.User;
+import com.gnr.esgi.googlenewsreader.models.SessionManager;
 
 public class GNRApplication extends Application {
 
@@ -23,11 +23,11 @@ public class GNRApplication extends Application {
     ///////////////
     ///USER///
     ///////////////
-    private static User user;
+    private static SessionManager user;
 
-    public static User getUser() {
+    public static SessionManager getUser() {
         if(user == null)
-            user = new User();
+            user = new SessionManager();
 
         return user;
     }

@@ -67,6 +67,7 @@ public class ListArticlesAdapter extends BaseAdapter {
             convertView = LayoutInflater.from(context).inflate(R.layout.item_article, parent, false);
             viewHolder = new ViewHolder();
             viewHolder.title = (TextView) convertView.findViewById(R.id.news_title);
+            viewHolder.content = (TextView) convertView.findViewById(R.id.news_content);
             viewHolder.createdAt = (TextView) convertView.findViewById(R.id.news_date);
             viewHolder.source = (TextView) convertView.findViewById(R.id.news_source);
             viewHolder.picture = (ImageView) convertView.findViewById(R.id.news_picture);
@@ -79,6 +80,7 @@ public class ListArticlesAdapter extends BaseAdapter {
         //viewHolder.picture.setVisibility(View.INVISIBLE);
         Article articleSelected = articlesList.get(position);
         viewHolder.title.setText(articleSelected.getTitle());
+        viewHolder.content.setText(articleSelected.getContent());
         viewHolder.createdAt.setText(DateUtil.getDuration(articleSelected.getCreatedAt()));
         viewHolder.source.setText(articleSelected.getSource().getName());
 
@@ -132,6 +134,7 @@ public class ListArticlesAdapter extends BaseAdapter {
 
     private class ViewHolder {
         TextView title;
+        TextView content;
         TextView createdAt;
         TextView source;
         ImageView picture;

@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Toast;
-
 import com.gnr.esgi.googlenewsreader.GNRApplication;
 import com.gnr.esgi.googlenewsreader.R;
 import com.gnr.esgi.googlenewsreader.utils.Config;

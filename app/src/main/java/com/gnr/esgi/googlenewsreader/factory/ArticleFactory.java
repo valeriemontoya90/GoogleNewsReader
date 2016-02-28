@@ -43,11 +43,21 @@ public class ArticleFactory {
         return articlesList;
     }
 
-    public static List<Article> fromCursor(Cursor cursor) {
+    public static Article fromCursor(Cursor cursor) {
+        cursor.moveToFirst();
+
+        return new Article(cursor);
+    }
+
+    public static List<Article> fromCursorToList(Cursor cursor) {
         ArrayList<Article> articlesList = new ArrayList<>();
 
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext())
-            articlesList.add(new Article(cursor));
+            articlesList.add(
+                    new Article(
+                            cursor
+                    )
+            );
 
         return articlesList;
     }

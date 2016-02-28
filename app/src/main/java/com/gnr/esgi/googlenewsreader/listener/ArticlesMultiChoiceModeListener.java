@@ -51,7 +51,7 @@ public class ArticlesMultiChoiceModeListener implements AbsListView.MultiChoiceM
         // Set the CAB title according to total checked items
         mode.setTitle(message);
 
-        // Calls toggleSelection method from adapter Class
+        // Calls toggleSelection method fromCursor adapter Class
         adapter.toggleSelection(position);
     }
 
@@ -59,7 +59,7 @@ public class ArticlesMultiChoiceModeListener implements AbsListView.MultiChoiceM
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
         mode.getMenuInflater().inflate(R.menu.activity_home, menu);
         toolbar.setVisibility(View.GONE);
-        appBar.setVisibility(View.GONE);
+        appBar.setVisibility(View.VISIBLE);
         floatingActionButton.setVisibility(View.GONE);
 
         return true;
@@ -74,7 +74,7 @@ public class ArticlesMultiChoiceModeListener implements AbsListView.MultiChoiceM
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_article_delete:
-                // Calls getSelectedIds method from ListViewAdapter Class
+                // Calls getSelectedIds method fromCursor ListViewAdapter Class
                 SparseBooleanArray selected = adapter.getSelectedIds();
 
                 // Captures all selected ids with a loop
